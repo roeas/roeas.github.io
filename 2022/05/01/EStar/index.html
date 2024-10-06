@@ -1,0 +1,749 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Hinageshi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="E 星计划E 星计划网易不知道什么时候关闭了这门公开课的浏览权限，笑死 02 渲染流程简述GPU Driven、Mesh Cluster Rendering、Cluster whith LOD（nanite）Mesh Shader 04 纹理综述MRT（Multiple Render Targets）Virtual Texture 05 光照综述直接光漫反射 $\pi f_{dif}$ 的范围是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Archive】笔记 E 星计划">
+<meta property="og:url" content="http://example.com/2022/05/01/EStar/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="E 星计划E 星计划网易不知道什么时候关闭了这门公开课的浏览权限，笑死 02 渲染流程简述GPU Driven、Mesh Cluster Rendering、Cluster whith LOD（nanite）Mesh Shader 04 纹理综述MRT（Multiple Render Targets）Virtual Texture 05 光照综述直接光漫反射 $\pi f_{dif}$ 的范围是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/EStar/img.png">
+<meta property="article:published_time" content="2022-05-01T05:28:26.000Z">
+<meta property="article:modified_time" content="2024-07-18T04:04:01.297Z">
+<meta property="article:author" content="Hinageshi">
+<meta property="article:tag" content="GlobalIllumination">
+<meta property="article:tag" content="Rendering">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/EStar/img.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【Archive】笔记 E 星计划 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":32,"cursorChar":"","loop":false,"scope":"home"},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Hinageshi 的駄菓子屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Background.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【Archive】笔记 E 星计划</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-01 13:28" pubdate>
+          2022年5月1日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          694 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【Archive】笔记 E 星计划</h1>
+            
+              <p id="updated-time" class="note note-info" style="display: none">
+                
+                  
+                    本文最后更新于 2024-07-18T12:04:01+08:00
+                  
+                  
+
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="E-星计划"><a href="#E-星计划" class="headerlink" title="E 星计划"></a>E 星计划</h2><p><a target="_blank" rel="noopener" href="https://game.academy.163.com/activity/talent?page=course">E 星计划</a><br><em>网易不知道什么时候关闭了这门公开课的浏览权限，笑死</em></p>
+<h3 id="02-渲染流程简述"><a href="#02-渲染流程简述" class="headerlink" title="02 渲染流程简述"></a>02 渲染流程简述</h3><p>GPU Driven、Mesh Cluster Rendering、Cluster whith LOD（nanite）<br>Mesh Shader</p>
+<h3 id="04-纹理综述"><a href="#04-纹理综述" class="headerlink" title="04 纹理综述"></a>04 纹理综述</h3><p>MRT（Multiple Render Targets）<br>Virtual Texture</p>
+<h3 id="05-光照综述"><a href="#05-光照综述" class="headerlink" title="05 光照综述"></a>05 光照综述</h3><h4 id="直接光漫反射"><a href="#直接光漫反射" class="headerlink" title="直接光漫反射"></a>直接光漫反射</h4><ul>
+<li>$\pi f_{dif}$ 的范围是 $[0, 1]$，那么 $f_{dif}$ 的范围是 $[0, \frac{1}{\pi}]$ 难以理解。不如使 $f_{dif}&#x3D;\frac{albedo}{\pi}$，这样一来 $albedo$ 的范围就是 $[0, 1]$ 了。</li>
+<li>布林冯的 Diffuse Map 比较灵活，可以将一部分阴影和高光直接绘制在贴图上，但是 PBR 的 Albedo Map 只能绘制漫反射的贴图。albedo 要除以 $\pi$，看起来会比 diffuse 亮一点。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://marmoset.co/posts/pbr-texture-conversion/">PBR Texture Conversion</a></p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/EStar/5.1.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="/img/EStar/5.2.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<h4 id="直接光高光"><a href="#直接光高光" class="headerlink" title="直接光高光"></a>直接光高光</h4><ul>
+<li>非金属的 F0 普遍非常小且相差无几，在实际计算中可以用一个常量（比如 0.04）代替所有非金属的材质的 F0 属性。</li>
+<li>菲涅尔项也会影响漫反射的强度 $F_d&#x3D;1-F-s$ 然后 $L_o(v)&#x3D;F_d\frac{albedo}{\pi}L_i(n\cdot l)$，但是实际上不一定必须这么做。</li>
+<li>金属没有 Diffuse 反射，所以 $L_o(v)&#x3D;(1-metallic)F_d^*\frac{albedo}{\pi}L_i(n\cdot l)$ （这个 Fd 加不加都行）。</li>
+</ul>
+<p>Light Culling、Clustered Shading</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/EStar/5.3.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="/img/EStar/5.4.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="/img/EStar/5.5.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<h4 id="环境光"><a href="#环境光" class="headerlink" title="环境光"></a>环境光</h4><div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/EStar/5.6.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="/img/EStar/5.7.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
+<li>游戏中的 HDR 与显示器的 HDR 不是一个概念，如果显示器启用了 HDR，游戏 Tone Mapping 的曲线需要调整。<br>split sum approximate</li>
+</ul>
+<p><img src="/img/EStar/5.8.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="06-性能优化综述"><a href="#06-性能优化综述" class="headerlink" title="06 性能优化综述"></a>06 性能优化综述</h3><p>视锥剔除、遮挡剔除（硬件遮挡查询、软件遮挡查询、与计算可见集）、Triangle Cluster Culling<br><strong>渲染合批</strong><br>每次渲染调用涉及大量渲染状态设置和切换，显卡驱动需要根据状态组装命令队列（编码成 GPU 能理解的微指令，塞到队列里），CPU 产生开销。<br><strong>骨骼动画压缩</strong><br>对原始数据进行去重抽帧，拆分变换矩阵（可以进一步抽帧），对移动和缩放矩阵做线性插值，对旋转矩阵做球面插值。<br>用四元数表示的旋转可以用半精度的 float16 存储。<br><strong>虚拟纹理</strong><br>极大降低 GPU 开销：物理贴图不需要每帧更新。<br>消耗大量显存。<br>Compute Shader 可以进行运行时纹理压缩（TEC2，显卡可以直接使用，不需要解压）<br>可以用公式拟合一些贴图（Matlab 曲面拟合）<br><strong>TBDR</strong><br>过去：一个个 tile 算，算完一整张 G-Buffer 后将其存入内存，算完所有 G-Buffer 后将他们传回 GPU 进行最终的着色计算。<br>现在：在一个 tile 内完成全部的 G-Buffer 与着色的计算，这一小块 G-Buffer 用完即丢，不会实际进入内存。<br>新的 API 才支持，省显存又省带宽。<br>缺点是这些丢弃的 G-Buffer 在之后的流程中（比如一些后处理）无法再被访问。</p>
+<h3 id="07-全局光照技术综述"><a href="#07-全局光照技术综述" class="headerlink" title="07 全局光照技术综述"></a>07 全局光照技术综述</h3><p>LightMap<br>Point-Based Global Illumination<br><img src="/img/EStar/7.1.png" srcset="/img/loading.gif" lazyload><br>Light Propagation Volumes<br><img src="/img/EStar/7.2.png" srcset="/img/loading.gif" lazyload><br>SVO Cone Tracing</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/EStar/7.3.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="/img/EStar/7.4.png" srcset="/img/loading.gif" lazyload></div></div></div>
+<p>SVGF</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GlobalIllumination/" class="print-no-link">#GlobalIllumination</a>
+      
+        <a href="/tags/Rendering/" class="print-no-link">#Rendering</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/04/Atm/" title="大气散射">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">大气散射</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/27/CppPrimer/" title="笔记 C++ Primer">
+                        <span class="hidden-mobile">笔记 C++ Primer</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'ae0717d5234e7c5d71b80f58214a1ed3'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  var relativeDate = function() {
+    var updatedTime = document.getElementById('updated-time');
+    if (updatedTime) {
+      var text = updatedTime.textContent;
+      var reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})/;
+      var matchs = text.match(reg);
+      if (matchs) {
+        var relativeTime = moment(matchs[0]).fromNow();
+        updatedTime.textContent = text.replace(reg, relativeTime);
+      }
+      updatedTime.style.display = '';
+    }
+  };
+  Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/moment.min.js', function() {
+    if (!'zh-cn'.startsWith('en')) {
+      Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/locale/zh-cn.min.js', function() {
+        relativeDate();
+      });
+    } else {
+      relativeDate();
+    }
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

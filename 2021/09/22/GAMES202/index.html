@@ -1,0 +1,986 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Hinageshi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="百分比近似软阴影&emsp;&emsp;若要判断当前着色点是否处于阴影之中，我们需要知到该点与光源之间的遮挡关系。一种常见的做法是 Shadow Mapping，假设从光源看向场景，就像做深度测试一样，保存一张从光源处获得的 DepthBuffer，然后比较着色点与光源之间的距离与 DepthBuffer 中对应点的深度，前者更大则代表场景中有另一物体比当前着色点更接近光源，即该着色点被遮挡。 T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Archive】GAMES202">
+<meta property="og:url" content="http://example.com/2021/09/22/GAMES202/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="百分比近似软阴影&emsp;&emsp;若要判断当前着色点是否处于阴影之中，我们需要知到该点与光源之间的遮挡关系。一种常见的做法是 Shadow Mapping，假设从光源看向场景，就像做深度测试一样，保存一张从光源处获得的 DepthBuffer，然后比较着色点与光源之间的距离与 DepthBuffer 中对应点的深度，前者更大则代表场景中有另一物体比当前着色点更接近光源，即该着色点被遮挡。 T">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/GAMES202/img.png">
+<meta property="article:published_time" content="2021-09-22T14:12:39.000Z">
+<meta property="article:modified_time" content="2024-07-17T10:11:13.788Z">
+<meta property="article:author" content="Hinageshi">
+<meta property="article:tag" content="GlobalIllumination">
+<meta property="article:tag" content="Math">
+<meta property="article:tag" content="Rendering">
+<meta property="article:tag" content="RayTracing">
+<meta property="article:tag" content="GLSL">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="Reflection">
+<meta property="article:tag" content="Shadow">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/GAMES202/img.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【Archive】GAMES202 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":32,"cursorChar":"","loop":false,"scope":"home"},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Hinageshi 的駄菓子屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Background.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【Archive】GAMES202</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-22 22:12" pubdate>
+          2021年9月22日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          69 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【Archive】GAMES202</h1>
+            
+              <p id="updated-time" class="note note-info" style="display: none">
+                
+                  
+                    本文最后更新于 2024-07-17T18:11:13+08:00
+                  
+                  
+
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="百分比近似软阴影"><a href="#百分比近似软阴影" class="headerlink" title="百分比近似软阴影"></a>百分比近似软阴影</h1><p>&emsp;&emsp;若要判断当前着色点是否处于阴影之中，我们需要知到该点与光源之间的遮挡关系。一种常见的做法是 Shadow Mapping，假设从光源看向场景，就像做深度测试一样，保存一张从光源处获得的 DepthBuffer，然后比较着色点与光源之间的距离与 DepthBuffer 中对应点的深度，前者更大则代表场景中有另一物体比当前着色点更接近光源，即该着色点被遮挡。</p>
+<h2 id="Two-Pass-Shadow-Map-硬阴影"><a href="#Two-Pass-Shadow-Map-硬阴影" class="headerlink" title="Two Pass Shadow Map 硬阴影"></a>Two Pass Shadow Map 硬阴影</h2><figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-type">float</span> useShadowMap(<span class="hljs-type">sampler2D</span> shadowMap, <span class="hljs-type">vec4</span> coord) &#123;<br>    <span class="hljs-type">vec4</span> closestDepthVec = <span class="hljs-built_in">texture2D</span>(shadowMap, coord.xy);<br>    <span class="hljs-type">float</span> closestDepth = unpack(closestDepthVec);<br><br>    <span class="hljs-keyword">return</span> coord.z &lt; closestDepth + <span class="hljs-number">0.011</span> ? <span class="hljs-number">1.0</span> : <span class="hljs-number">0.0</span>;<br>&#125;<br><br><span class="hljs-type">void</span> main(<span class="hljs-type">void</span>) &#123;<br>    <span class="hljs-comment">// 转换至 NDC 空间</span><br>    <span class="hljs-type">vec3</span> shadowCoord = vPositionFromLight.xyz / vPositionFromLight.w;<br>    shadowCoord = shadowCoord * <span class="hljs-number">0.5</span> + <span class="hljs-number">0.5</span>;<br><br>    <span class="hljs-comment">// 省略布林冯光照模型的实现</span><br>    <span class="hljs-type">vec3</span> phongColor = blinnPhong();<br>    <span class="hljs-comment">// 这里将可见度作为一个单独的项拆分出来</span><br>    <span class="hljs-type">float</span> visibility = <span class="hljs-number">1.0</span>;<br><br>    visibility = useShadowMap(uShadowMap, <span class="hljs-type">vec4</span>(shadowCoord, <span class="hljs-number">1.0</span>));<br>    <span class="hljs-comment">//visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));</span><br>    <span class="hljs-comment">//visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));</span><br>    <span class="hljs-built_in">gl_FragColor</span> = <span class="hljs-type">vec4</span>(phongColor * visibility, <span class="hljs-number">1.0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="coord-z-closestDepth-1-0-0-0-的问题"><a href="#coord-z-closestDepth-1-0-0-0-的问题" class="headerlink" title="coord.z &lt; closestDepth ? 1.0 : 0.0 的问题"></a>coord.z &lt; closestDepth ? 1.0 : 0.0 的问题</h3><p>这个问题源自于 Shadow Map 对场景走样&#x2F;失真的理解。光源对场景的离散化认为 Shadow Map 内每一个纹素对应的表面属于同一个深度，此时对于侧对光源的表面，单个纹素内无法表示表面深度剧烈的变化，Shadow Map 便会将平面理解为一个…搓衣板。<br><img src="/img/GAMES202/s.png" srcset="/img/loading.gif" lazyload alt="光源与地板几乎位于同一平面上"><br><strong>解决方法</strong>：为判断条件添加一个容忍度。<br><code>return coord.z &lt; (closestDepth + 0.01) ? 1.0 : 0.0;</code><br><img src="/img/GAMES202/H.png" srcset="/img/loading.gif" lazyload><br><strong>新的问题</strong>：当这个容忍度较大时阴影的根部会与模型发生分离，这个问题是目前难以解决的。</p>
+<h2 id="Percentage-Closer-Filter"><a href="#Percentage-Closer-Filter" class="headerlink" title="Percentage Closer Filter"></a>Percentage Closer Filter</h2><p>不再仅仅查询 DepthBuffer 中对应点的深度，而是计算一定范围内深度大于着色点深度的比例，认为深度小于着色点深度的物体会遮挡着色点。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-type">float</span> PCF(<span class="hljs-type">sampler2D</span> shadowMap, <span class="hljs-type">vec4</span> coord) &#123;<br>    poissonDiskSamples(coord.xy);<br><br>    <span class="hljs-type">int</span> unShadowCount = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; NUM_SAMPLES; i ++) &#123;<br>        <span class="hljs-type">vec2</span> sampleCoord = poissonDisk[i] * FILTER_DIAMETER + coord.xy;<br>        <span class="hljs-type">vec4</span> closestDepthVec = <span class="hljs-built_in">texture2D</span>(shadowMap, sampleCoord); <br>        <span class="hljs-type">float</span> closestDepth = unpack(closestDepthVec);<br>        <span class="hljs-keyword">if</span>(coord.z &lt; closestDepth + <span class="hljs-number">0.011</span>) &#123;<br>            unShadowCount += <span class="hljs-number">1</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-type">float</span>(unShadowCount) / <span class="hljs-type">float</span>(NUM_SAMPLES);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="/img/GAMES202/PCF.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="Percentage-Closer-Soft-Shadow"><a href="#Percentage-Closer-Soft-Shadow" class="headerlink" title="Percentage Closer Soft Shadow"></a>Percentage Closer Soft Shadow</h2><p><strong>PCF 的问题</strong>：整体的阴影都会获得一个模糊，而现实情况是阴影的根部往往是最“扎实”的，远端的阴影才会渐渐变得模糊。<br><strong>解决方法</strong>：已知阴影模糊的程度取决于 Filter 的大小，如果能让 Filter 的大小随阴影着色点与遮挡物的距离增加而增加，便能实现较为真实的软阴影。<br>PCSS 分为三步：</p>
+<ol>
+<li>avgblocker depth</li>
+<li>calculate penumbra size</li>
+<li>filtering (PCF)</li>
+</ol>
+<h3 id="avgblocker-depth"><a href="#avgblocker-depth" class="headerlink" title="avgblocker depth"></a>avgblocker depth</h3><p>在一定范围内查找能够遮挡着色点的物体的深度平均值。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-type">float</span> findBlocker(<span class="hljs-type">sampler2D</span> shadowMap, <span class="hljs-type">vec2</span> uv, <span class="hljs-type">float</span> zReceiver) &#123;<br>    poissonDiskSamples(uv);<br><br>    <span class="hljs-type">int</span> shadowCount = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">float</span> blockDepthSum = <span class="hljs-number">0.0</span>;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; NUM_SAMPLES; i++) &#123;<br>        <span class="hljs-type">vec2</span> sampleCoord = poissonDisk[i] * FILTER_DIAMETER + uv;<br>        <span class="hljs-type">vec4</span> closestDepthVec = <span class="hljs-built_in">texture2D</span>(shadowMap, sampleCoord);<br>        <span class="hljs-type">float</span> closestDepth = unpack(closestDepthVec);<br>        <span class="hljs-keyword">if</span>(zReceiver &gt; closestDepth + <span class="hljs-number">0.011</span>) &#123;<br>            blockDepthSum += closestDepth;<br>            shadowCount += <span class="hljs-number">1</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> blockDepthSum / <span class="hljs-type">float</span>(shadowCount);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="calculate-penumbra-size"><a href="#calculate-penumbra-size" class="headerlink" title="calculate penumbra size"></a>calculate penumbra size</h3><p>根据第一步得到的遮挡物深度计算阴影的模糊程度。<br><img src="/img/GAMES202/3.png" srcset="/img/loading.gif" lazyload alt="相似三角形原理，wPenumbra 便代表了阴影的模糊程度"></p>
+<ul>
+<li>$W_{Penumbra}&#x3D;(d_{Receiver}-d_{Blocker})*W_{Light}&#x2F;d_{Blocker}$</li>
+</ul>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-type">float</span> PCSS(<span class="hljs-type">sampler2D</span> shadowMap, <span class="hljs-type">vec4</span> coord) &#123;<br>    <span class="hljs-type">float</span> zReceiver = coord.z;<br><br>    <span class="hljs-comment">// STEP 1: avgblocker depth</span><br>    <span class="hljs-type">float</span> zBlocker = findBlocker(shadowMap, coord.xy, zReceiver);<br>    <span class="hljs-keyword">if</span>(zBlocker &lt;= EPS) <span class="hljs-keyword">return</span> <span class="hljs-number">1.0</span>;<br>    <span class="hljs-keyword">if</span>(zBlocker &gt;= <span class="hljs-number">1.0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0.0</span>;<br><br>    <span class="hljs-comment">// STEP 2: penumbra size</span><br>    <span class="hljs-type">float</span> wPenumbra = W_LIGHT * (zReceiver - zBlocker) / zBlocker;<br><br>    <span class="hljs-comment">// STEP 3: filtering</span><br>    <span class="hljs-type">int</span> unShadowCount = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; NUM_SAMPLES; i ++) &#123;<br>        <span class="hljs-type">vec2</span> sampleCoord = poissonDisk[i] * FILTER_DIAMETER * wPenumbra + coord.xy;<br>        <span class="hljs-type">vec4</span> closestDepthVec = <span class="hljs-built_in">texture2D</span>(shadowMap, sampleCoord); <br>        <span class="hljs-type">float</span> closestDepth = unpack(closestDepthVec);<br>        <span class="hljs-keyword">if</span>(zReceiver &lt; closestDepth + <span class="hljs-number">0.011</span>) &#123;<br>            unShadowCount += <span class="hljs-number">1</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-type">float</span>(unShadowCount) / <span class="hljs-type">float</span>(NUM_SAMPLES);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="/img/GAMES202/PCSS.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="预计算辐射传递"><a href="#预计算辐射传递" class="headerlink" title="预计算辐射传递"></a>预计算辐射传递</h1><p>&emsp;&emsp;如何计算环境光照可以近似为一个 ManyLight 的问题，在这种情况下，如果想要得知某一着色点获得的光照，需要对该点的上半球进行采样，这会是一个非常大的性能开销。使用 PRT 的做法可以使用预计算的数据，在实时的条件下实现环境光照。未实现：球谐函数的快速旋转。</p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="Product-Integral"><a href="#Product-Integral" class="headerlink" title="Product Integral"></a>Product Integral</h3><ul>
+<li>$\int _\Omega f(x)g(x)dx$&emsp;两函数乘积的积分可以视为滤波，结果的频率由其中更低频的函数决定。</li>
+</ul>
+<h3 id="基函数"><a href="#基函数" class="headerlink" title="基函数"></a>基函数</h3><ul>
+<li>$f(x)&#x3D;\sum c_i\cdot B_i(x)$&emsp;对于任一函数，我们可以用一系列基函数的线性组合来近似出原函数。</li>
+</ul>
+<h3 id="球谐函数"><a href="#球谐函数" class="headerlink" title="球谐函数"></a>球谐函数</h3><p><img src="/img/GAMES202/SH.png" srcset="/img/loading.gif" lazyload><br><strong>定义</strong>：$\frac{1}{\sin \theta}\frac{\partial}{\partial \theta}(\sin \theta \frac{\partial Y}{\partial \theta})+\frac{1}{\sin ^2\theta}\frac{\partial ^2Y}{\partial \varphi ^2}+l(l+1)Y&#x3D;0$<br>球谐函数是一系列定义在球面上的基函数，这里不深入理解函数的定义，而是重点关注该函数的几个性质：</p>
+<ul>
+<li>$c_i&#x3D;\int _\Omega f(\omega)B_i(\omega){\rm d}x$</li>
+<li>正交性，任意两分量相乘结果为零。</li>
+<li>旋转不变性，旋转的结果可由同阶基函数的线性组合得到。</li>
+<li>只用三阶的球谐函数便可以很好地恢复出渲染方程中的 BRDF 项。 <img src="/img/GAMES202/BRDF.png" srcset="/img/loading.gif" lazyload></li>
+<li>所以对于 Diffuse 材质，同样用三阶的球谐函数表示 Lighting 项，误差不会超过 %3。 <img src="/img/GAMES202/L.png" srcset="/img/loading.gif" lazyload></li>
+</ul>
+<h2 id="Precomputed-Radiance-Transfer"><a href="#Precomputed-Radiance-Transfer" class="headerlink" title="Precomputed Radiance Transfer"></a>Precomputed Radiance Transfer</h2><p>先写出实时渲染中渲染方程的形式：</p>
+<ul>
+<li>$L(o)&#x3D;\int _\Omega L(i)V(i)\rho (i, o)max(0, n\cdot i)di$</li>
+</ul>
+<p>积分中 L(i) 当作 Lighting 项，其余为 LightTransport 项。假设场景中的物体不变（即每个点的 LightTransport 就像该点的一个性质一样不变），光源可以旋转。</p>
+<h3 id="Diffuse-的情况"><a href="#Diffuse-的情况" class="headerlink" title="Diffuse 的情况"></a>Diffuse 的情况</h3><p>BRDF 项为一个常值，可以直接提到积分外。</p>
+<ul>
+<li>$L(o)&#x3D;\rho \int _\Omega L(i)V(i)max(0, n\cdot i)di$</li>
+</ul>
+<p>由&nbsp;$L(i)\approx \sum l_iB_i(i)$&nbsp;得</p>
+<ul>
+<li>$L(o)\approx \rho \sum l_i\int _\Omega B_i(i)V(i)max(0, n\cdot i)di$（不考虑交换积分与求和顺序的条件）</li>
+</ul>
+<p>由&nbsp;$c_i&#x3D;\int _\Omega f(\omega)B_i(\omega){\rm d}x$&nbsp;得</p>
+<ul>
+<li>$L(o)\approx \rho \sum l_iT_i$</li>
+</ul>
+<h2 id="Precompute-部分"><a href="#Precompute-部分" class="headerlink" title="Precompute 部分"></a>Precompute 部分</h2><ul>
+<li>$c_i&#x3D;\int _\Omega f(\omega)B_i(\omega){\rm d}x$&emsp;</li>
+</ul>
+<p>使用黎曼积分的方式计算。</p>
+<ul>
+<li>$c_i&#x3D;\sum _if(\omega)B_i(\omega)\Delta \omega$</li>
+</ul>
+<p><code>std::vector&lt;Eigen::Array3f&gt; PrecomputeCubemapSH(const std::vector&lt;std::unique_ptr&lt;float[]&gt;&gt; &amp;images,                                                     const int &amp;width, const int &amp;height,                                                     const int &amp;channel)</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">6</span>; i++) &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> y = <span class="hljs-number">0</span>; y &lt; height; y++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x = <span class="hljs-number">0</span>; x &lt; width; x++) &#123;<br>			<span class="hljs-comment">// 遍历天空盒每个面的每个像素</span><br><br>            <span class="hljs-comment">// 像素对应的方向</span><br>            Eigen::Vector3f dir = cubemapDirs[i * width * height + y * width + x];<br>            <span class="hljs-type">int</span> index = (y * width + x) * channel;<br>            <span class="hljs-comment">// 像素对应的光照</span><br>            <span class="hljs-function">Eigen::Array3f <span class="hljs-title">Le</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">				images[i][index],</span></span><br><span class="hljs-params"><span class="hljs-function">				images[i][index + <span class="hljs-number">1</span>],</span></span><br><span class="hljs-params"><span class="hljs-function">				images[i][index + <span class="hljs-number">2</span>])</span></span>;<br>            <span class="hljs-comment">// 像素在单位球上对应的面积</span><br>            <span class="hljs-type">float</span> w = <span class="hljs-built_in">CalcArea</span>(x, y, width, height);	<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> l = <span class="hljs-number">0</span>; l &lt;= SHOrder; l++) &#123;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> m = -l; m &lt;= l; m++) &#123;<br>                    <span class="hljs-type">int</span> k = sh::<span class="hljs-built_in">GetIndex</span>(l, m);<br>					<span class="hljs-comment">// 投影于基函数上</span><br>                    <span class="hljs-type">double</span> basisFunc =<br>						sh::<span class="hljs-built_in">EvalSH</span>(l, m, dir.<span class="hljs-built_in">cast</span>&lt;<span class="hljs-type">double</span>&gt;().<span class="hljs-built_in">normalized</span>());	<br>                    SHCoeffiecents[k] += Le * basisFunc * w;<br>                &#125;<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>void preprocess(const Scene *scene)</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; mesh-&gt;<span class="hljs-built_in">getVertexCount</span>(); i++) <br>	<span class="hljs-comment">// 获取当前 mesh 的坐标和法线&#123;</span><br>	<span class="hljs-type">const</span> Point3f &amp;v = mesh-&gt;<span class="hljs-built_in">getVertexPositions</span>().<span class="hljs-built_in">col</span>(i);<br>	<span class="hljs-type">const</span> Normal3f &amp;n = mesh-&gt;<span class="hljs-built_in">getVertexNormals</span>().<span class="hljs-built_in">col</span>(i);<br>	<span class="hljs-keyword">auto</span> shFunc = [&amp;](<span class="hljs-type">double</span> phi, <span class="hljs-type">double</span> theta) -&gt; <span class="hljs-type">double</span> &#123;<br>		Eigen::Array3d d = sh::<span class="hljs-built_in">ToVector</span>(phi, theta);<br>		<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span> wi = <span class="hljs-built_in">Vector3f</span>(d.<span class="hljs-built_in">x</span>(), d.<span class="hljs-built_in">y</span>(), d.<span class="hljs-built_in">z</span>());<br>		<span class="hljs-type">double</span> H = wi.<span class="hljs-built_in">dot</span>(n);<br>		<span class="hljs-keyword">if</span> (m_Type == Type::Unshadowed) &#123;<br>			<span class="hljs-keyword">if</span> (H &gt; <span class="hljs-number">0</span>) &#123;<br>				<span class="hljs-keyword">return</span> H;<br>			&#125;<br>			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			Ray3f <span class="hljs-built_in">ray</span>(v, wi.<span class="hljs-built_in">normalized</span>());<br>			<span class="hljs-comment">// 没有hit到其他地方的射线就对最终光照信息有贡献</span><br>			<span class="hljs-keyword">if</span> (H &gt; <span class="hljs-number">0</span> &amp;&amp; !scene-&gt;<span class="hljs-built_in">rayIntersect</span>(ray)) &#123;<br>				<span class="hljs-keyword">return</span> H;<br>			&#125;<br>			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>		&#125;<br>	&#125;;<br>	<span class="hljs-comment">// 投影</span><br>	<span class="hljs-keyword">auto</span> shCoeff = sh::<span class="hljs-built_in">ProjectFunction</span>(SHOrder, shFunc, m_SampleCount);<br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; shCoeff-&gt;<span class="hljs-built_in">size</span>(); j++) &#123;<br>		m_TransportSHCoeffs.<span class="hljs-built_in">col</span>(i).<span class="hljs-built_in">coeffRef</span>(j) = (*shCoeff)[j];<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>结果保存在 light.txt 与 transport.txt 中。</p>
+<h2 id="Real-Time-部分"><a href="#Real-Time-部分" class="headerlink" title="Real Time 部分"></a>Real Time 部分</h2><p>材质</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">class</span> <span class="hljs-title class_">DiffuseMaterial</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Material</span> &#123;<br><br>	<span class="hljs-title function_">constructor</span>(<span class="hljs-params">vertexShader, fragmentShader</span>) &#123;<br>		<span class="hljs-keyword">let</span> precomputeL_mat = <span class="hljs-title function_">getMat3ValueFromRGB</span>(precomputeL[guiParams.<span class="hljs-property">envmapId</span>]);<br><br>		<span class="hljs-variable language_">super</span>(&#123;<br>			<span class="hljs-string">&#x27;aPrecomputeLR&#x27;</span>: &#123; <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;matrix3fv&#x27;</span>, <span class="hljs-attr">value</span>: precomputeL_mat[<span class="hljs-number">0</span>]&#125;,<br>			<span class="hljs-string">&#x27;aPrecomputeLG&#x27;</span>: &#123; <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;matrix3fv&#x27;</span>, <span class="hljs-attr">value</span>: precomputeL_mat[<span class="hljs-number">1</span>]&#125;,<br>			<span class="hljs-string">&#x27;aPrecomputeLB&#x27;</span>: &#123; <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;matrix3fv&#x27;</span>, <span class="hljs-attr">value</span>: precomputeL_mat[<span class="hljs-number">2</span>]&#125;<br>		&#125;, [<span class="hljs-string">&#x27;aPrecomputeLT&#x27;</span>], vertexShader, fragmentShader, <span class="hljs-literal">null</span>);<br>		<span class="hljs-variable language_">this</span>.<span class="hljs-property">mapid</span> = guiParams.<span class="hljs-property">envmapId</span>;<br>	&#125;<br>&#125;<br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">buildDiffuseMaterial</span>(<span class="hljs-params">vertexPath, fragmentPath</span>) &#123;<br>	<span class="hljs-keyword">let</span> vertexShader = <span class="hljs-keyword">await</span> <span class="hljs-title function_">getShaderString</span>(vertexPath);<br>	<span class="hljs-keyword">let</span> fragmentShader = <span class="hljs-keyword">await</span> <span class="hljs-title function_">getShaderString</span>(fragmentPath);<br><br>	<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DiffuseMaterial</span>(vertexShader, fragmentShader);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>VertexShader</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-keyword">uniform</span> <span class="hljs-type">mat3</span> aPrecomputeLR;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">mat3</span> aPrecomputeLG;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">mat3</span> aPrecomputeLB;<br><span class="hljs-keyword">attribute</span> <span class="hljs-type">mat3</span> aPrecomputeLT;<br><br><span class="hljs-keyword">attribute</span> <span class="hljs-type">vec3</span> aVertexPosition;<br><span class="hljs-keyword">attribute</span> <span class="hljs-type">vec3</span> aNormalPosition;<br><span class="hljs-keyword">attribute</span> <span class="hljs-type">vec2</span> aTextureCoord;<br><br><span class="hljs-keyword">uniform</span> <span class="hljs-type">mat4</span> uModelMatrix;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">mat4</span> uViewMatrix;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">mat4</span> uProjectionMatrix;<br><br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec2</span> vTextureCoord;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec3</span> vFragPos;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec3</span> vNormal;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec3</span> vColor;<br><br><span class="hljs-keyword">const</span> <span class="hljs-type">float</span> kd = <span class="hljs-number">2.0</span>;<br><span class="hljs-keyword">const</span> <span class="hljs-type">float</span> pi = <span class="hljs-number">3.14159</span>;<br><br><span class="hljs-type">void</span> main(<span class="hljs-type">void</span>) &#123;<br>  vFragPos = (uModelMatrix * <span class="hljs-type">vec4</span>(aVertexPosition, <span class="hljs-number">1.0</span>)).xyz;<br>  vNormal = (uModelMatrix * <span class="hljs-type">vec4</span>(aNormalPosition, <span class="hljs-number">0.0</span>)).xyz;<br><br>  <span class="hljs-type">vec3</span> iden = <span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>);<br>  vColor = <span class="hljs-type">vec3</span>(<br>      <span class="hljs-built_in">dot</span>(<span class="hljs-built_in">matrixCompMult</span>(aPrecomputeLR, aPrecomputeLT) * iden, iden),<br>      <span class="hljs-built_in">dot</span>(<span class="hljs-built_in">matrixCompMult</span>(aPrecomputeLG, aPrecomputeLT) * iden, iden),<br>      <span class="hljs-built_in">dot</span>(<span class="hljs-built_in">matrixCompMult</span>(aPrecomputeLB, aPrecomputeLT) * iden, iden)<br>  ) * kd / pi;<br><br>  <span class="hljs-built_in">gl_Position</span> =<br>  	uProjectionMatrix * uViewMatrix * uModelMatrix * <span class="hljs-type">vec4</span>(aVertexPosition, <span class="hljs-number">1.0</span>);<br>  vTextureCoord = aTextureCoord;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>FragmentShader</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-meta">#ifdef GL_ES</span><br><span class="hljs-keyword">precision</span> <span class="hljs-keyword">mediump</span> <span class="hljs-type">float</span>;<br><span class="hljs-meta">#endif</span><br><br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uSampler;<br><br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec2</span> vTextureCoord;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec3</span> vFragPos;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec3</span> vNormal;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec3</span> vColor;<br><br><span class="hljs-type">void</span> main(<span class="hljs-type">void</span>) &#123;<br>  <span class="hljs-type">vec3</span> color = <span class="hljs-built_in">texture2D</span>(uSampler, vTextureCoord).rgb;<br>  color = <span class="hljs-built_in">pow</span>(color, <span class="hljs-type">vec3</span>(<span class="hljs-number">2.2</span>));<br><br>  <span class="hljs-built_in">gl_FragColor</span> = <span class="hljs-type">vec4</span>(vColor, <span class="hljs-number">1.0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/GAMES202/1.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="/img/GAMES202/2.png" srcset="/img/loading.gif" lazyload></div></div><div class="group-image-row"><div class="group-image-wrap"><img src="/img/GAMES202/33.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="/img/GAMES202/4.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<h1 id="屏幕空间反射"><a href="#屏幕空间反射" class="headerlink" title="屏幕空间反射"></a>屏幕空间反射</h1><p>&emsp;&emsp;离线渲染的条件下，光线追踪可以处理光线在空间内的多次弹射，带来高质量的间接光照结果，那么如何在实时的条件下得到令人满意的全局光照效果呢。其中的一种做法是在做 RayTracing 时使用 DepthBuffer 判断射线与平面的相交问题，认为能被 DepthBuffer 看见得世界坐标是“位于物体外部”的坐标，看不见则在物体内部，那么一条步进的 Ray 从可见转为不可见时的位置便是某一表面所在的坐标，这样相交的计算就转变为二维空间下的步进与查表。</p>
+<h2 id="Shader"><a href="#Shader" class="headerlink" title="Shader"></a>Shader</h2><h3 id="Diffuse"><a href="#Diffuse" class="headerlink" title="Diffuse"></a>Diffuse</h3><p>EvalDiffuse(wi, wo, uv) 的返回值为 BSDF 的值。参数 wi 和 wo 为世界坐标系中的值，分别代表入射方向和出射方向，这两个方向的起点都是着色点，uv 为着色点在屏幕空间中的坐标。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-type">vec3</span> EvalDiffuse(<span class="hljs-type">vec3</span> wi, <span class="hljs-type">vec3</span> wo, <span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">vec3</span> Ld = GetGBufferDiffuse(uv);<br>  <span class="hljs-type">vec3</span> n = GetGBufferNormalWorld(uv);<br>  <span class="hljs-type">float</span> nDotL = <span class="hljs-built_in">max</span>(<span class="hljs-number">0.0</span>, <span class="hljs-built_in">dot</span>(n, wi));<br><br>  <span class="hljs-keyword">return</span> Ld * nDotL * INV_PI;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="DirectionalLight"><a href="#DirectionalLight" class="headerlink" title="DirectionalLight"></a>DirectionalLight</h3><p>EvalDirectionalLight(uv) 的返回值为，着色点位于 uv 处得到的光源的辐射度，并且需要考虑遮挡关系，可以使用 GetGBufferuShadow(uv) 函数得到。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-type">vec3</span> EvalDirectionalLight(<span class="hljs-type">vec2</span> uv) &#123;<br>    <span class="hljs-type">vec3</span> woeldPos = GetGBufferPosWorld(uv);<br>    <span class="hljs-type">vec3</span> wi = <span class="hljs-built_in">normalize</span>(uLightDir);<br>    <span class="hljs-type">vec3</span> wo = <span class="hljs-built_in">normalize</span>(uCameraPos - woeldPos);<br>    <span class="hljs-type">vec3</span> bsdf = EvalDiffuse(wi, wo, uv);<br><br>    <span class="hljs-keyword">return</span> uLightRadiance * bsdf * GetGBufferuShadow(uv);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="RayMarch"><a href="#RayMarch" class="headerlink" title="RayMarch"></a>RayMarch</h3><p>RayMarch(vec3 ori, vec3 dir, vec3 hitPos) 的返回值为是否相交，相交时将参数 hitPos 设置为交点。参数 ori 和 dir 为世界坐标系，分别代表光线的起点和方向。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-meta">#define EPS 1e-3</span><br><span class="hljs-type">bool</span> OutOfScreen(<span class="hljs-type">vec3</span> pos) &#123;<br>    <span class="hljs-type">vec2</span> uv = GetScreenCoordinate(pos);<br>    <span class="hljs-keyword">return</span> uv.x &lt; <span class="hljs-number">0.0</span> || uv.y &lt; <span class="hljs-number">0.0</span> || uv.x &gt; <span class="hljs-number">1.0</span> || uv.y &gt; <span class="hljs-number">1.0</span>;<br>&#125;<br><span class="hljs-type">bool</span> Visible(<span class="hljs-type">vec3</span> pos) &#123;<br>    <span class="hljs-keyword">return</span> GetDepth(pos) &lt; GetGBufferDepth(GetScreenCoordinate(pos));<br>&#125;<br><br><span class="hljs-type">bool</span> RayMarch(<span class="hljs-type">vec3</span> ori, <span class="hljs-type">vec3</span> dir, <span class="hljs-keyword">out</span> <span class="hljs-type">vec3</span> hitPos) &#123;<br>    <span class="hljs-type">bool</span> isHit = <span class="hljs-literal">false</span>, intersected = <span class="hljs-literal">false</span>;<br>    <span class="hljs-type">float</span> stepLenth = <span class="hljs-number">1.0</span>;<br>    <span class="hljs-type">vec3</span> crtPos = ori;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1280</span>; i++) &#123;<br>        <span class="hljs-keyword">if</span>(OutOfScreen(crtPos)) &#123;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span>(Visible(crtPos + dir * stepLenth)) &#123;<br>            <span class="hljs-comment">// 无交点则步长不变继续步进</span><br>            crtPos += dir * stepLenth;<br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<br>            intersected = <span class="hljs-literal">true</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span>(stepLenth &lt; EPS) &#123;<br>            <span class="hljs-comment">// 当精度高到一定程度时结束循环</span><br>            isHit = <span class="hljs-literal">true</span>;<br>            hitPos = crtPos;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span>(intersected) &#123;<br>            <span class="hljs-comment">// 一旦发现前方为交点则不断提高精度</span><br>            stepLenth *= <span class="hljs-number">0.5</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> isHit;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="IndirectLight"><a href="#IndirectLight" class="headerlink" title="IndirectLight"></a>IndirectLight</h3><p>使用蒙特卡洛的方式对半球进行积分，直接光照着色点 q 对间接光照作色点 p 的贡献为</p>
+<ul>
+<li>$L_{indir}&#x3D;\frac{EvalDiffuse(q)}{pdf}*EvalDiffuse(p)*EvalDirectionalLight(p)$</li>
+</ul>
+<p>SampleHemisphereCos(seed, pdf) 会返回一个局部坐标系的随机位置。LocalBasis(n, b1, b2) 通过传入的世界坐标系的法线 n，建立局部坐标系，返回两个切线向量。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-meta">#define SAMPLE_NUM 2</span><br><span class="hljs-type">vec3</span> EvalIndirectLight(<span class="hljs-type">float</span> seed, <span class="hljs-type">vec3</span> pos) &#123;<br>    <span class="hljs-type">float</span> pdf;<br>    <span class="hljs-type">vec3</span> Lid = <span class="hljs-type">vec3</span>(<span class="hljs-number">0.0</span>), hitPos;<br>    <span class="hljs-type">vec2</span> screenPos = GetScreenCoordinate(pos);<br><br>    <span class="hljs-comment">// 局部转换至世界坐标</span><br>    <span class="hljs-type">vec3</span> normal = GetGBufferNormalWorld(screenPos), b1, b2;<br>    LocalBasis(normal, b1, b2);<br>    <span class="hljs-type">mat3</span> TBN = <span class="hljs-type">mat3</span>(b1, b2, normal);<br><br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; SAMPLE_NUM; i++) &#123;<br>        <span class="hljs-type">vec3</span> sampleDir = <span class="hljs-built_in">normalize</span>(TBN * SampleHemisphereCos(seed, pdf));<br>        <span class="hljs-comment">// SampleHemisphereUniform(seed, pdf);</span><br>        <span class="hljs-keyword">if</span>(RayMarch(pos, sampleDir, hitPos)) &#123;<br>            <span class="hljs-type">vec3</span> wi = <span class="hljs-built_in">normalize</span>(uLightDir);<br>            <span class="hljs-type">vec3</span> wo = <span class="hljs-built_in">normalize</span>(uCameraPos - pos);<br>            <span class="hljs-type">vec2</span> screenHitPos = GetScreenCoordinate(hitPos);<br><br>            <span class="hljs-type">vec3</span> L = EvalDiffuse(sampleDir, wo, screenPos) / pdf *<br>        EvalDiffuse(wi, -sampleDir, screenHitPos) * EvalDirectionalLight(screenHitPos);<br>            <br>            Lid += L;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> Lid / <span class="hljs-type">float</span>(SAMPLE_NUM);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="完整的-FragmentSHader"><a href="#完整的-FragmentSHader" class="headerlink" title="完整的 FragmentSHader"></a>完整的 FragmentSHader</h3><figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-meta">#ifdef GL_ES</span><br><span class="hljs-keyword">precision</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">float</span>;<br><span class="hljs-meta">#endif</span><br><br><span class="hljs-keyword">uniform</span> <span class="hljs-type">vec3</span> uLightDir;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">vec3</span> uCameraPos;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">vec3</span> uLightRadiance;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uGDiffuse;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uGDepth;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uGNormalWorld;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uGShadow;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uGPosWorld;<br><br><span class="hljs-keyword">varying</span> <span class="hljs-type">mat4</span> vWorldToScreen;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec4</span> vPosWorld;<br><br><span class="hljs-meta">#define M_PI 3.1415926535897932384626433832795</span><br><span class="hljs-meta">#define TWO_PI 6.283185307</span><br><span class="hljs-meta">#define INV_PI 0.31830988618</span><br><span class="hljs-meta">#define INV_TWO_PI 0.15915494309</span><br><br><span class="hljs-type">float</span> Rand1(<span class="hljs-keyword">inout</span> <span class="hljs-type">float</span> p) &#123;<br>  p = <span class="hljs-built_in">fract</span>(p * <span class="hljs-number">.1031</span>);<br>  p *= p + <span class="hljs-number">33.33</span>;<br>  p *= p + p;<br>  <span class="hljs-keyword">return</span> <span class="hljs-built_in">fract</span>(p);<br>&#125;<br><br><span class="hljs-type">vec2</span> Rand2(<span class="hljs-keyword">inout</span> <span class="hljs-type">float</span> p) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-type">vec2</span>(Rand1(p), Rand1(p));<br>&#125;<br><br><span class="hljs-type">float</span> InitRand(<span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">vec3</span> p3 = <span class="hljs-built_in">fract</span>(<span class="hljs-type">vec3</span>(uv.xyx) * <span class="hljs-number">.1031</span>);<br>  p3 += <span class="hljs-built_in">dot</span>(p3, p3.yzx + <span class="hljs-number">33.33</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-built_in">fract</span>((p3.x + p3.y) * p3.z);<br>&#125;<br><br><span class="hljs-type">vec3</span> SampleHemisphereUniform(<span class="hljs-keyword">inout</span> <span class="hljs-type">float</span> s, <span class="hljs-keyword">out</span> <span class="hljs-type">float</span> pdf) &#123;<br>  <span class="hljs-type">vec2</span> uv = Rand2(s);<br>  <span class="hljs-type">float</span> z = uv.x;<br>  <span class="hljs-type">float</span> phi = uv.y * TWO_PI;<br>  <span class="hljs-type">float</span> sinTheta = <span class="hljs-built_in">sqrt</span>(<span class="hljs-number">1.0</span> - z*z);<br>  <span class="hljs-type">vec3</span> dir = <span class="hljs-type">vec3</span>(sinTheta * <span class="hljs-built_in">cos</span>(phi), sinTheta * <span class="hljs-built_in">sin</span>(phi), z);<br>  pdf = INV_TWO_PI;<br>  <span class="hljs-keyword">return</span> dir;<br>&#125;<br><br><span class="hljs-type">vec3</span> SampleHemisphereCos(<span class="hljs-keyword">inout</span> <span class="hljs-type">float</span> s, <span class="hljs-keyword">out</span> <span class="hljs-type">float</span> pdf) &#123;<br>  <span class="hljs-type">vec2</span> uv = Rand2(s);<br>  <span class="hljs-type">float</span> z = <span class="hljs-built_in">sqrt</span>(<span class="hljs-number">1.0</span> - uv.x);<br>  <span class="hljs-type">float</span> phi = uv.y * TWO_PI;<br>  <span class="hljs-type">float</span> sinTheta = <span class="hljs-built_in">sqrt</span>(uv.x);<br>  <span class="hljs-type">vec3</span> dir = <span class="hljs-type">vec3</span>(sinTheta * <span class="hljs-built_in">cos</span>(phi), sinTheta * <span class="hljs-built_in">sin</span>(phi), z);<br>  pdf = z * INV_PI;<br>  <span class="hljs-keyword">return</span> dir;<br>&#125;<br><br><span class="hljs-type">void</span> LocalBasis(<span class="hljs-type">vec3</span> n, <span class="hljs-keyword">out</span> <span class="hljs-type">vec3</span> b1, <span class="hljs-keyword">out</span> <span class="hljs-type">vec3</span> b2) &#123;<br>  <span class="hljs-type">float</span> sign_ = <span class="hljs-built_in">sign</span>(n.z);<br>  <span class="hljs-keyword">if</span> (n.z == <span class="hljs-number">0.0</span>) &#123;<br>    sign_ = <span class="hljs-number">1.0</span>;<br>  &#125;<br>  <span class="hljs-type">float</span> a = <span class="hljs-number">-1.0</span> / (sign_ + n.z);<br>  <span class="hljs-type">float</span> b = n.x * n.y * a;<br>  b1 = <span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span> + sign_ * n.x * n.x * a, sign_ * b, -sign_ * n.x);<br>  b2 = <span class="hljs-type">vec3</span>(b, sign_ + n.y * n.y * a, -n.y);<br>&#125;<br><br><span class="hljs-type">vec4</span> Project(<span class="hljs-type">vec4</span> a) &#123;<br>  <span class="hljs-keyword">return</span> a / a.w;<br>&#125;<br><br><span class="hljs-type">float</span> GetDepth(<span class="hljs-type">vec3</span> posWorld) &#123;<br>  <span class="hljs-type">float</span> depth = (vWorldToScreen * <span class="hljs-type">vec4</span>(posWorld, <span class="hljs-number">1.0</span>)).w;<br>  <span class="hljs-keyword">return</span> depth;<br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Transform point from world space to screen space([0, 1] x [0, 1])</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">vec2</span> GetScreenCoordinate(<span class="hljs-type">vec3</span> posWorld) &#123;<br>  <span class="hljs-type">vec2</span> uv = Project(vWorldToScreen * <span class="hljs-type">vec4</span>(posWorld, <span class="hljs-number">1.0</span>)).xy * <span class="hljs-number">0.5</span> + <span class="hljs-number">0.5</span>;<br>  <span class="hljs-keyword">return</span> uv;<br>&#125;<br><br><span class="hljs-type">float</span> GetGBufferDepth(<span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">float</span> depth = <span class="hljs-built_in">texture2D</span>(uGDepth, uv).x;<br>  <span class="hljs-keyword">if</span> (depth &lt; <span class="hljs-number">1e-2</span>) &#123;<br>    depth = <span class="hljs-number">1000.0</span>;<br>  &#125;<br>  <span class="hljs-keyword">return</span> depth;<br>&#125;<br><br><span class="hljs-type">vec3</span> GetGBufferNormalWorld(<span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">vec3</span> normal = <span class="hljs-built_in">texture2D</span>(uGNormalWorld, uv).xyz;<br>  <span class="hljs-keyword">return</span> normal;<br>&#125;<br><br><span class="hljs-type">vec3</span> GetGBufferPosWorld(<span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">vec3</span> posWorld = <span class="hljs-built_in">texture2D</span>(uGPosWorld, uv).xyz;<br>  <span class="hljs-keyword">return</span> posWorld;<br>&#125;<br><br><span class="hljs-type">float</span> GetGBufferuShadow(<span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">float</span> visibility = <span class="hljs-built_in">texture2D</span>(uGShadow, uv).x;<br>  <span class="hljs-keyword">return</span> visibility;<br>&#125;<br><br><span class="hljs-type">vec3</span> GetGBufferDiffuse(<span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">vec3</span> diffuse = <span class="hljs-built_in">texture2D</span>(uGDiffuse, uv).xyz;<br>  diffuse = <span class="hljs-built_in">pow</span>(diffuse, <span class="hljs-type">vec3</span>(<span class="hljs-number">2.2</span>));<br>  <span class="hljs-keyword">return</span> diffuse;<br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Evaluate diffuse bsdf value.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * wi, wo are all in world space.</span><br><span class="hljs-comment"> * uv is in screen space, [0, 1] x [0, 1].</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">vec3</span> EvalDiffuse(<span class="hljs-type">vec3</span> wi, <span class="hljs-type">vec3</span> wo, <span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">vec3</span> Ld = GetGBufferDiffuse(uv);<br>  <span class="hljs-type">vec3</span> n = GetGBufferNormalWorld(uv);<br>  <span class="hljs-type">float</span> nDotL = <span class="hljs-built_in">max</span>(<span class="hljs-number">0.0</span>, <span class="hljs-built_in">dot</span>(n, wi));<br>  <span class="hljs-keyword">return</span> Ld * nDotL * INV_PI;<br>&#125;<br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Evaluate directional light with shadow map</span><br><span class="hljs-comment"> * uv is in screen space, [0, 1] x [0, 1].</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">vec3</span> EvalDirectionalLight(<span class="hljs-type">vec2</span> uv) &#123;<br>  <span class="hljs-type">vec3</span> woeldPos = GetGBufferPosWorld(uv);<br>  <span class="hljs-type">vec3</span> wi = <span class="hljs-built_in">normalize</span>(uLightDir);<br>  <span class="hljs-type">vec3</span> wo = <span class="hljs-built_in">normalize</span>(uCameraPos - woeldPos);<br>  <span class="hljs-type">vec3</span> bsdf = EvalDiffuse(wi, wo, uv);<br>  <span class="hljs-keyword">return</span> uLightRadiance * bsdf * GetGBufferuShadow(uv);<br>&#125;<br><br><span class="hljs-meta">#define EPS 1e-3</span><br><span class="hljs-type">bool</span> OutOfScreen(<span class="hljs-type">vec3</span> pos) &#123;<br>  <span class="hljs-type">vec2</span> uv = GetScreenCoordinate(pos);<br>  <span class="hljs-keyword">return</span> uv.x &lt; <span class="hljs-number">0.0</span> || uv.y &lt; <span class="hljs-number">0.0</span> || uv.x &gt; <span class="hljs-number">1.0</span> || uv.y &gt; <span class="hljs-number">1.0</span>;<br>&#125;<br><span class="hljs-type">bool</span> Visible(<span class="hljs-type">vec3</span> pos) &#123;<br>  <span class="hljs-keyword">return</span> GetDepth(pos) &lt; GetGBufferDepth(GetScreenCoordinate(pos));<br>&#125;<br><span class="hljs-type">bool</span> RayMarch(<span class="hljs-type">vec3</span> ori, <span class="hljs-type">vec3</span> dir, <span class="hljs-keyword">out</span> <span class="hljs-type">vec3</span> hitPos) &#123;<br>  <span class="hljs-type">bool</span> isHit = <span class="hljs-literal">false</span>, intersected = <span class="hljs-literal">false</span>;<br>  <span class="hljs-type">float</span> stepLenth = <span class="hljs-number">0.1</span>;<br>  <span class="hljs-type">vec3</span> crtPos = ori;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1280</span>; i++) &#123;<br>    <span class="hljs-keyword">if</span>(OutOfScreen(crtPos)) &#123;<br>      <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span>(Visible(crtPos + dir * stepLenth)) &#123;<br>      <span class="hljs-comment">// 无交点则步长不变继续步进</span><br>      crtPos += dir * stepLenth;<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>      intersected = <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span>(stepLenth &lt; EPS) &#123;<br>      <span class="hljs-comment">// 当精度高到一定程度时结束循环</span><br>      isHit = <span class="hljs-literal">true</span>;<br>      hitPos = crtPos;<br>      <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span>(intersected) &#123;<br>      <span class="hljs-comment">// 一旦发现前方为交点则不断提高精度</span><br>      stepLenth *= <span class="hljs-number">0.5</span>;<br>    &#125;<br>  &#125;<br>  <span class="hljs-keyword">return</span> isHit;<br>&#125;<br><br><span class="hljs-meta">#define SAMPLE_NUM 2</span><br><span class="hljs-type">vec3</span> EvalIndirectLight(<span class="hljs-type">float</span> seed, <span class="hljs-type">vec3</span> pos) &#123;<br>  <span class="hljs-type">float</span> pdf;<br>  <span class="hljs-type">vec3</span> Lid = <span class="hljs-type">vec3</span>(<span class="hljs-number">0.0</span>), hitPos;<br>  <span class="hljs-type">vec2</span> screenPos = GetScreenCoordinate(pos);<br><br>  <span class="hljs-type">vec3</span> normal = GetGBufferNormalWorld(screenPos), b1, b2;<br>  LocalBasis(normal, b1, b2);<br>  <span class="hljs-type">mat3</span> TBN = <span class="hljs-type">mat3</span>(b1, b2, normal);<br><br>  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; SAMPLE_NUM; i++) &#123;<br>    <span class="hljs-comment">// SampleHemisphere</span><br>    <span class="hljs-type">vec3</span> sampleDir = <span class="hljs-built_in">normalize</span>(TBN * SampleHemisphereCos(seed, pdf));<br>    <span class="hljs-keyword">if</span>(RayMarch(pos, sampleDir, hitPos)) &#123;<br>      <span class="hljs-type">vec3</span> wi = <span class="hljs-built_in">normalize</span>(uLightDir);<br>      <span class="hljs-type">vec3</span> wo = <span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>);<br>      <span class="hljs-type">vec2</span> screenHitPos = GetScreenCoordinate(hitPos);<br><br>      <span class="hljs-type">vec3</span> L = EvalDiffuse(sampleDir, wo, screenPos) / pdf *<br>        EvalDiffuse(wi, wo, screenHitPos) * EvalDirectionalLight(screenHitPos);<br>        <br>      Lid += L;<br>    &#125;<br>  &#125;<br>  <span class="hljs-keyword">return</span> Lid / <span class="hljs-type">float</span>(SAMPLE_NUM) * <span class="hljs-number">100.0</span>;<br>&#125;<br><br><span class="hljs-type">void</span> main() &#123;<br>  <span class="hljs-type">float</span> s = InitRand(<span class="hljs-built_in">gl_FragCoord</span>.xy);<br><br>  <span class="hljs-type">vec3</span> L = <span class="hljs-type">vec3</span>(<span class="hljs-number">0.0</span>);<br>  <span class="hljs-comment">// L += GetGBufferDiffuse(GetScreenCoordinate(vPosWorld.xyz));</span><br>  L += EvalDirectionalLight(GetScreenCoordinate(vPosWorld.xyz));<br><br>  <span class="hljs-comment">// vec3 test_dir = vec3(0.0);</span><br>  <span class="hljs-comment">// vec3 wo = normalize(uCameraPos - vPosWorld.xyz);</span><br>  <span class="hljs-comment">// vec3 normal = GetGBufferNormalWorld(GetScreenCoordinate(vPosWorld.xyz));</span><br>  <span class="hljs-comment">// test_dir = reflect(-wo,normal);</span><br>  <span class="hljs-comment">// vec3 test_hit;</span><br>  <span class="hljs-comment">// if(RayMarch(vPosWorld.xyz, test_dir, test_hit)) &#123;</span><br>  <span class="hljs-comment">//   L = GetGBufferDiffuse(GetScreenCoordinate(test_hit));</span><br>  <span class="hljs-comment">// &#125;</span><br><br>  L += EvalIndirectLight(s, vPosWorld.xyz);<br><br>  <span class="hljs-type">vec3</span> color = <span class="hljs-built_in">pow</span>(<span class="hljs-built_in">clamp</span>(L, <span class="hljs-type">vec3</span>(<span class="hljs-number">0.0</span>), <span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>)), <span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span> / <span class="hljs-number">2.2</span>));<br>  <span class="hljs-built_in">gl_FragColor</span> = <span class="hljs-type">vec4</span>(<span class="hljs-type">vec3</span>(color.rgb), <span class="hljs-number">1.0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h2><div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/GAMES202/df.png" srcset="/img/loading.gif" lazyload alt="Diffuse Albedo"></div><div class="group-image-wrap"><img src="/img/GAMES202/ssr.png" srcset="/img/loading.gif" lazyload alt="SSR"></div></div><div class="group-image-row"><div class="group-image-wrap"><img src="/img/GAMES202/di.png" srcset="/img/loading.gif" lazyload alt="Direct Light"></div><div class="group-image-wrap"><img src="/img/GAMES202/dis.png" srcset="/img/loading.gif" lazyload alt="结合"></div></div></div>
+
+<h1 id="Kulla-Conty-微表面模型能量补偿"><a href="#Kulla-Conty-微表面模型能量补偿" class="headerlink" title="Kulla-Conty 微表面模型能量补偿"></a>Kulla-Conty 微表面模型能量补偿</h1><p>&emsp;&emsp;微表面模型的 BRDF(Microfacet BRDF) 存在一个根本问题，就是其中的 G 项认为被微表面遮挡的反射光会直接消失，从而忽略了微表面间的多次弹射，这就导致了能量的损失。并且当材质的粗糙度越高时，能量的损失会越严重。Kulla-Conty 近似模型通过引入一个微表面 BRDF 的补偿项，来补偿光线的多次弹射，使得材质的渲染结果可以近似保持能量守恒。</p>
+<h2 id="BRDF"><a href="#BRDF" class="headerlink" title="BRDF"></a>BRDF</h2><ul>
+<li>$f_r(i,o)&#x3D;\frac{F(i,h)G(i,o,h)D(h)}{4(n,i)(n,o)}$</li>
+</ul>
+<p><strong>F 项，选用 Schlick 近似：</strong></p>
+<ul>
+<li>$F&#x3D;R_0+(1-R_0)(1-\cos \theta)^5$</li>
+</ul>
+<p><strong>D 项，选用 GGX 分布：</strong></p>
+<ul>
+<li>$D_{GGX}(h)&#x3D;\frac{\alpha ^2}{\pi ((n\cdot h)^2(\alpha ^2-1)+1)^2}$</li>
+</ul>
+<p><strong>G 项，选用 Smith 模型：</strong></p>
+<ul>
+<li>$G_{Smith}(i,o,h)&#x3D;G_{Schlick}(l,h)G_{Schlick}(v,h)$</li>
+<li>$G_{Schlick}(v,n)+\frac{n\cdot v}{n\cdot v(1-k)+k}$</li>
+<li>$k&#x3D;\frac{(roughness+1)^2}{8}$</li>
+</ul>
+<h2 id="Precompute-部分-1"><a href="#Precompute-部分-1" class="headerlink" title="Precompute 部分"></a>Precompute 部分</h2><h3 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h3><p>Kulla-Conty 模型假设 Li 为 1，并试图积分出在给定 BRDF 下一着色点辐射出的所有能量 E，那么在考虑光线只发生一次弹射的情况下，所损失的、需要补充的能量自然就是 (1 - E) 了。<br>接下来我们希望能得到一个 BRDF，并且该公式在半球上的积分值为 (1 - E)，在实时计算时将该 BRDF 补充至原 BRDF 上便能得到正确的结果。</p>
+<h3 id="GGX-E"><a href="#GGX-E" class="headerlink" title="GGX_E"></a>GGX_E</h3><ul>
+<li>$E(\mu _o)&#x3D;\int _0^{2\pi}\int _0 ^1f_r(\mu _o,\mu _i,\phi)\mu _id\mu _id\phi$</li>
+</ul>
+<p>注：$\mu &#x3D;\sin \theta$，该公式本质上仍然是渲染方程的一种变形，将该积分换元便可得到一个在半球上对 $\omega$ 积分的公式。</p>
+<h4 id="预计算实现"><a href="#预计算实现" class="headerlink" title="预计算实现"></a>预计算实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;algorithm&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cmath&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sstream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fstream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;random&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;vec.h&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> STB_IMAGE_WRITE_IMPLEMENTATION</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stb_image_write.h&quot;</span></span><br><br><span class="hljs-type">const</span> <span class="hljs-type">int</span> resolution = <span class="hljs-number">128</span>;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">samplePoints</span> &#123;<br>    std::vector&lt;Vec3f&gt; directions;<br>    std::vector&lt;<span class="hljs-type">float</span>&gt; PDFs;<br>&#125;samplePoints;<br><br><span class="hljs-comment">// 返回半球上 sample_count 个采样点</span><br><span class="hljs-function">samplePoints <span class="hljs-title">squareToCosineHemisphere</span><span class="hljs-params">(<span class="hljs-type">int</span> sample_count)</span></span>&#123;<br>    samplePoints samlpeList;<br>    <span class="hljs-type">const</span> <span class="hljs-type">int</span> sample_side = <span class="hljs-built_in">static_cast</span>&lt;<span class="hljs-type">int</span>&gt;(<span class="hljs-built_in">floor</span>(<span class="hljs-built_in">sqrt</span>(sample_count)));<br><br>    std::random_device rd;<br>    <span class="hljs-function">std::mt19937 <span class="hljs-title">gen</span><span class="hljs-params">(rd())</span></span>;<br>    std::uniform_real_distribution&lt;&gt; <span class="hljs-built_in">rng</span>(<span class="hljs-number">0.f</span>, <span class="hljs-number">1.f</span>);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> t = <span class="hljs-number">0</span>; t &lt; sample_side; t++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> p = <span class="hljs-number">0</span>; p &lt; sample_side; p++) &#123;<br>            <span class="hljs-type">double</span> samplex = (t + <span class="hljs-built_in">rng</span>(gen)) / sample_side;<br>            <span class="hljs-type">double</span> sampley = (p + <span class="hljs-built_in">rng</span>(gen)) / sample_side;<br>            <br>            <span class="hljs-type">double</span> theta = <span class="hljs-number">0.5f</span> * <span class="hljs-built_in">acos</span>(<span class="hljs-number">1</span> - <span class="hljs-number">2</span> * samplex);<br>            <span class="hljs-type">double</span> phi =  <span class="hljs-number">2</span> * PI * sampley;<br>            Vec3f wi = <span class="hljs-built_in">Vec3f</span>(<span class="hljs-built_in">sin</span>(theta) * <span class="hljs-built_in">cos</span>(phi), <span class="hljs-built_in">sin</span>(theta) * <span class="hljs-built_in">sin</span>(phi), <span class="hljs-built_in">cos</span>(theta));<br>            <span class="hljs-type">float</span> pdf = wi.z / PI;<br>            <br>            samlpeList.directions.<span class="hljs-built_in">push_back</span>(wi);<br>            samlpeList.PDFs.<span class="hljs-built_in">push_back</span>(pdf);<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> samlpeList;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">FresnelSchlick</span><span class="hljs-params">(<span class="hljs-type">float</span> HdotV, <span class="hljs-type">float</span> R0)</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> R0 + (<span class="hljs-number">1.f</span> - R0) * <span class="hljs-built_in">pow</span>(<span class="hljs-number">1.f</span> - HdotV, <span class="hljs-number">5.f</span>);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">DistributionGGX</span><span class="hljs-params">(<span class="hljs-type">float</span> NdotH, <span class="hljs-type">float</span> roughness)</span> </span>&#123;<br>    <span class="hljs-type">float</span> a = roughness*roughness;<br>    <span class="hljs-type">float</span> a2 = a*a;<br>    <span class="hljs-type">float</span> NdotH2 = NdotH*NdotH;<br><br>    <span class="hljs-type">float</span> nom   = a2;<br>    <span class="hljs-type">float</span> denom = (NdotH2 * (a2 - <span class="hljs-number">1.f</span>) + <span class="hljs-number">1.f</span>);<br>    denom = PI * denom * denom;<br><br>    <span class="hljs-keyword">return</span> nom / denom;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">GeometrySchlickGGX</span><span class="hljs-params">(<span class="hljs-type">float</span> cosTerm, <span class="hljs-type">float</span> roughness)</span> </span>&#123;<br>    <span class="hljs-type">float</span> a = roughness;<br>    <span class="hljs-type">float</span> k = (a * a) / <span class="hljs-number">2.f</span>;<br><br>    <span class="hljs-type">float</span> nom = cosTerm;<br>    <span class="hljs-type">float</span> denom = cosTerm * (<span class="hljs-number">1.f</span> - k) + k;<br><br>    <span class="hljs-keyword">return</span> nom / denom;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">GeometrySmith</span><span class="hljs-params">(<span class="hljs-type">float</span> roughness, <span class="hljs-type">float</span> NdotV, <span class="hljs-type">float</span> NdotL)</span> </span>&#123;<br>    <span class="hljs-type">float</span> ggx2 = <span class="hljs-built_in">GeometrySchlickGGX</span>(NdotV, roughness);<br>    <span class="hljs-type">float</span> ggx1 = <span class="hljs-built_in">GeometrySchlickGGX</span>(NdotL, roughness);<br><br>    <span class="hljs-keyword">return</span> ggx1 * ggx2;<br>&#125;<br><br><span class="hljs-function">Vec3f <span class="hljs-title">IntegrateBRDF</span><span class="hljs-params">(<span class="hljs-type">float</span> roughness, <span class="hljs-type">float</span> NdotV)</span> </span>&#123;<br>    <span class="hljs-type">float</span> A = <span class="hljs-number">0.f</span>, B = <span class="hljs-number">0.f</span>, C = <span class="hljs-number">0.f</span>;<br>    <span class="hljs-type">const</span> <span class="hljs-type">int</span> sample_count = <span class="hljs-number">1024</span>;<br><br>    Vec3f N = <span class="hljs-built_in">Vec3f</span>(<span class="hljs-number">0.f</span>, <span class="hljs-number">0.f</span>, <span class="hljs-number">1.f</span>);<br>    Vec3f V = <span class="hljs-built_in">Vec3f</span>(std::<span class="hljs-built_in">sqrt</span>(<span class="hljs-number">1.f</span> - NdotV * NdotV), <span class="hljs-number">0.f</span>, NdotV);<br>    <br>    samplePoints sampleList = <span class="hljs-built_in">squareToCosineHemisphere</span>(sample_count);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; sample_count; i++) &#123;<br>        Vec3f L = <span class="hljs-built_in">normalize</span>(sampleList.directions[i]);<br>        Vec3f H = <span class="hljs-built_in">normalize</span>(V + L);<br><br>        <span class="hljs-type">float</span> HdotV = std::<span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(H, V), <span class="hljs-number">0.f</span>);<br>        <span class="hljs-type">float</span> NdotL = std::<span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N, L), <span class="hljs-number">0.f</span>);<br>        <span class="hljs-type">float</span> NdotH = std::<span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N, H), <span class="hljs-number">0.f</span>);<br><br>        <span class="hljs-type">float</span> R0 = <span class="hljs-number">1.f</span>;<br>        <span class="hljs-type">float</span> F = <span class="hljs-built_in">FresnelSchlick</span>(HdotV, R0);<br>        <span class="hljs-type">float</span> G = <span class="hljs-built_in">GeometrySmith</span>(roughness, NdotV, NdotL);<br>        <span class="hljs-type">float</span> D = <span class="hljs-built_in">DistributionGGX</span>(NdotH, roughness);<br><br>        <span class="hljs-type">float</span> numerator = F * G * D;<br>        <span class="hljs-type">float</span> denominator = <span class="hljs-number">4.f</span> * NdotV * NdotL;<br>        <span class="hljs-type">float</span> micro = numerator / std::<span class="hljs-built_in">max</span>(denominator, <span class="hljs-number">1e-10f</span>);<br><br>        <span class="hljs-type">float</span> pdf = sampleList.PDFs[i];<br>        A += micro * NdotL / pdf;<br>    &#125;<br>    C = B = A;<br><br>    <span class="hljs-keyword">return</span> &#123;A / sample_count, B / sample_count, C / sample_count&#125;;<br>&#125;<br><br><span class="hljs-type">uint8_t</span> data[resolution * resolution * <span class="hljs-number">3</span>];<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">float</span> step = <span class="hljs-number">1.f</span> / resolution;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; resolution; i++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; resolution; j++) &#123;<br>            <span class="hljs-type">float</span> roughness = step * (<span class="hljs-built_in">static_cast</span>&lt;<span class="hljs-type">float</span>&gt;(i) + <span class="hljs-number">0.5f</span>);<br>            <span class="hljs-type">float</span> NdotV = step * (<span class="hljs-built_in">static_cast</span>&lt;<span class="hljs-type">float</span>&gt;(j) + <span class="hljs-number">0.5f</span>);<br><br>            Vec3f irr = <span class="hljs-built_in">IntegrateBRDF</span>(roughness, NdotV);<br><br>            data[(i * resolution + j) * <span class="hljs-number">3</span> + <span class="hljs-number">0</span>] = <span class="hljs-built_in">uint8_t</span>(irr.x * <span class="hljs-number">255.0</span>);<br>            data[(i * resolution + j) * <span class="hljs-number">3</span> + <span class="hljs-number">1</span>] = <span class="hljs-built_in">uint8_t</span>(irr.y * <span class="hljs-number">255.0</span>);<br>            data[(i * resolution + j) * <span class="hljs-number">3</span> + <span class="hljs-number">2</span>] = <span class="hljs-built_in">uint8_t</span>(irr.z * <span class="hljs-number">255.0</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-built_in">stbi_flip_vertically_on_write</span>(<span class="hljs-literal">true</span>);<br>    <span class="hljs-built_in">stbi_write_png</span>(<span class="hljs-string">&quot;GGX_E_MC_LUT.png&quot;</span>, resolution, resolution, <span class="hljs-number">3</span>, data, resolution * <span class="hljs-number">3</span>);<br>    <br>    std::cout &lt;&lt; <span class="hljs-string">&quot;Finished precomputed!&quot;</span> &lt;&lt; std::endl;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="结果-3"><a href="#结果-3" class="headerlink" title="结果"></a>结果</h4><p><img src="/img/GAMES202/GGX_E_LUT.png" srcset="/img/loading.gif" lazyload alt="GGX_E_LUT 其中纵轴为粗糙度，横轴为观察角度"></p>
+<p><strong>随机采样的问题</strong>：粗糙度从下向上增加，可以看到粗糙度较低时结果有很多噪声，这是因为低粗糙度的微表面材质接近镜面反射材质，该点接收到的光线只会被反射向一个很小的立体角。而均匀随机采样的蒙特卡洛积分很难处理这种高频信息，因此积分值的方差就会很大。<br><strong>解决方法</strong>：重要性采样。</p>
+<h3 id="GGX-E-IS"><a href="#GGX-E-IS" class="headerlink" title="GGX_E_IS"></a>GGX_E_IS</h3><p>对于给定出射方向 o 的情况，目的是重要性采样生成入射方向 i，那么有两个核心问题需要解决：如何采样和对应的概率 pdf 是什么。</p>
+<h4 id="采样"><a href="#采样" class="headerlink" title="采样"></a>采样</h4><p>我们首先根据选用的 NDF 模型，重要性采样微表面法向 m（也就是 i, o 的半程向量 h），随后利用反射关系来计算入射方向 i。</p>
+<ul>
+<li>$i&#x3D;2(m\cdot o)m-o$</li>
+</ul>
+<p>同时对于任意 NDF 下，采样 m 对应的概率密度 $pdf_m(m)$，有</p>
+<ul>
+<li>$pdf_m(m)&#x3D;D(m)(m\cdot n)$</li>
+</ul>
+<p>GGX NDF 对应的采样点应该为</p>
+<ul>
+<li>$\theta &#x3D;\arctan (\frac{\alpha \sqrt{\xi_ 1}}{\sqrt{1-\xi _1}})$</li>
+<li>$\phi &#x3D;2\pi \xi _2$</li>
+</ul>
+<p>其中 $\xi _1$ 与 $\xi _2$ 由 Hammersley 采样得到。</p>
+<h4 id="pdf"><a href="#pdf" class="headerlink" title="pdf"></a>pdf</h4><p>因为最后生成的采样方向是入射方向 i, 所以最后结果的权重应该是：</p>
+<ul>
+<li>$weight(i)&#x3D;\frac{f_r(i,o,h)(i,n)}{pdf_i(i)}$</li>
+</ul>
+<p>将之前采样微表面法线的概率密度 $pdf_m(m)$ 转换成采样入射的概率密度 $pdf_i(i)$，两者之间的转换只需要乘上一个 Jacobian 项：</p>
+<ul>
+<li>$pdf_i(i)&#x3D;pdf_m(m)|\frac{\partial \omega _m}{\partial \omega _i}|$</li>
+</ul>
+<p>对于反射有：</p>
+<ul>
+<li>$|\frac{\partial \omega _m}{\partial \omega _i}|&#x3D;\frac{1}{4(i\cdot m)}$</li>
+</ul>
+<p>所以：</p>
+<ul>
+<li>$weight(i)&#x3D;\frac{(o\cdot m)G(i,o,h)}{(o\cdot n)(m\cdot n)}$</li>
+</ul>
+<h4 id="预计算实现-1"><a href="#预计算实现-1" class="headerlink" title="预计算实现"></a>预计算实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 省略一些重复的代码</span><br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">FresnelSchlick</span><span class="hljs-params">(<span class="hljs-type">float</span> HdotV, <span class="hljs-type">float</span> R0)</span></span>;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">GeometrySchlickGGX</span><span class="hljs-params">(<span class="hljs-type">float</span> cosTerm, <span class="hljs-type">float</span> roughness)</span></span>;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">GeometrySmith</span><span class="hljs-params">(<span class="hljs-type">float</span> roughness, <span class="hljs-type">float</span> NoV, <span class="hljs-type">float</span> NoL)</span></span>;<br><br><span class="hljs-comment">// 球面上的均匀分布</span><br><span class="hljs-function">Vec2f <span class="hljs-title">Hammersley</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> i, <span class="hljs-type">uint32_t</span> N)</span> </span>&#123; <span class="hljs-comment">// 0-1</span><br>    <span class="hljs-type">uint32_t</span> bits = (i &lt;&lt; <span class="hljs-number">16u</span>) | (i &gt;&gt; <span class="hljs-number">16u</span>);<br>    bits = ((bits &amp; <span class="hljs-number">0x55555555u</span>) &lt;&lt; <span class="hljs-number">1u</span>) | ((bits &amp; <span class="hljs-number">0xAAAAAAAAu</span>) &gt;&gt; <span class="hljs-number">1u</span>);<br>    bits = ((bits &amp; <span class="hljs-number">0x33333333u</span>) &lt;&lt; <span class="hljs-number">2u</span>) | ((bits &amp; <span class="hljs-number">0xCCCCCCCCu</span>) &gt;&gt; <span class="hljs-number">2u</span>);<br>    bits = ((bits &amp; <span class="hljs-number">0x0F0F0F0Fu</span>) &lt;&lt; <span class="hljs-number">4u</span>) | ((bits &amp; <span class="hljs-number">0xF0F0F0F0u</span>) &gt;&gt; <span class="hljs-number">4u</span>);<br>    bits = ((bits &amp; <span class="hljs-number">0x00FF00FFu</span>) &lt;&lt; <span class="hljs-number">8u</span>) | ((bits &amp; <span class="hljs-number">0xFF00FF00u</span>) &gt;&gt; <span class="hljs-number">8u</span>);<br>    <span class="hljs-type">float</span> rdi = <span class="hljs-built_in">float</span>(bits) * <span class="hljs-number">2.3283064365386963e-10</span>;<br><br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-built_in">float</span>(i) / <span class="hljs-built_in">float</span>(N), rdi&#125;;<br>&#125;<br><br><span class="hljs-comment">// 重要性采样法线方向，即 H</span><br><span class="hljs-function">Vec3f <span class="hljs-title">ImportanceSampleGGX</span><span class="hljs-params">(Vec2f Xi, Vec3f N, <span class="hljs-type">float</span> roughness)</span> </span>&#123;<br>    <span class="hljs-type">float</span> a = roughness * roughness;<br><br>    <span class="hljs-comment">// 定义球面坐标系</span><br>    <span class="hljs-type">float</span> sinTheta = a * <span class="hljs-built_in">sqrt</span>(Xi.x);<br>    <span class="hljs-type">float</span> cosTheta = <span class="hljs-built_in">sqrt</span>(<span class="hljs-number">1.f</span> - Xi.x);<br>    <span class="hljs-type">float</span> phi = <span class="hljs-number">2</span> * PI * Xi.y;<br><br>    <span class="hljs-comment">// 球面坐标系转换为笛卡尔坐标系，单位球上半径为 1</span><br>    <span class="hljs-type">float</span> carX = sinTheta * <span class="hljs-built_in">cos</span>(phi);<br>    <span class="hljs-type">float</span> carY = sinTheta * <span class="hljs-built_in">sin</span>(phi);<br>    <span class="hljs-type">float</span> carZ = cosTheta;<br><br>    Vec3f result = <span class="hljs-built_in">Vec3f</span>(carX, carY, carZ);<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">normalize</span>(result);<br>&#125;<br><br><span class="hljs-function">Vec3f <span class="hljs-title">IntegrateBRDF</span><span class="hljs-params">(<span class="hljs-type">float</span> roughness, <span class="hljs-type">float</span> NoV)</span> </span>&#123;<br>    <span class="hljs-type">float</span> A = <span class="hljs-number">0.f</span>, B = <span class="hljs-number">0.f</span>, C = <span class="hljs-number">0.f</span>;<br>    <span class="hljs-type">const</span> <span class="hljs-type">int</span> sample_count = <span class="hljs-number">1024</span>;<br><br>    Vec3f N = <span class="hljs-built_in">Vec3f</span>(<span class="hljs-number">0.f</span>, <span class="hljs-number">0.f</span>, <span class="hljs-number">1.f</span>);<br>    Vec3f V = <span class="hljs-built_in">Vec3f</span>(std::<span class="hljs-built_in">sqrt</span>(<span class="hljs-number">1.f</span> - NoV * NoV), <span class="hljs-number">0.f</span>, NoV);<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; sample_count; i++) &#123;<br>        Vec2f Xi = <span class="hljs-built_in">Hammersley</span>(i, sample_count);<br>        Vec3f H = <span class="hljs-built_in">ImportanceSampleGGX</span>(Xi, N, roughness);<br>        Vec3f L = <span class="hljs-built_in">normalize</span>(H * <span class="hljs-number">2.f</span> * <span class="hljs-built_in">dot</span>(H, V) - V);<br><br>        <span class="hljs-type">float</span> NoL = std::<span class="hljs-built_in">max</span>(L.z, <span class="hljs-number">0.f</span>);<br>        <span class="hljs-type">float</span> NoH = std::<span class="hljs-built_in">max</span>(H.z, <span class="hljs-number">0.f</span>);<br>        <span class="hljs-type">float</span> VoH = std::<span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(V, H), <span class="hljs-number">0.f</span>);<br>        <br>        <span class="hljs-type">float</span> R0 = <span class="hljs-number">1.f</span>;<br>        <span class="hljs-type">float</span> F = <span class="hljs-built_in">FresnelSchlick</span>(VoH, R0);<br>        <span class="hljs-type">float</span> G = <span class="hljs-built_in">GeometrySmith</span>(roughness, NoV, NoL);<br><br>        A += F * G * VoH / (NoV * NoH);<br>    &#125;<br>    C = B = A;<br><br>    <span class="hljs-keyword">return</span> &#123;A / sample_count, B / sample_count, C / sample_count&#125;;<br>&#125;<br><br><span class="hljs-type">uint8_t</span> data[resolution * resolution * <span class="hljs-number">3</span>];<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">float</span> step = <span class="hljs-number">1.f</span> / resolution;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; resolution; i++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; resolution; j++) &#123;<br>            <span class="hljs-type">float</span> roughness = step * (<span class="hljs-built_in">static_cast</span>&lt;<span class="hljs-type">float</span>&gt;(i) + <span class="hljs-number">0.5f</span>);<br>            <span class="hljs-type">float</span> NdotV = step * (<span class="hljs-built_in">static_cast</span>&lt;<span class="hljs-type">float</span>&gt;(j) + <span class="hljs-number">0.5f</span>);<br><br>            Vec3f irr = <span class="hljs-built_in">IntegrateBRDF</span>(roughness, NdotV);<br>            <span class="hljs-comment">//Vec3f irr = Vec3f(1.f) - IntegrateBRDF(roughness, NdotV);</span><br><br>            data[(i * resolution + j) * <span class="hljs-number">3</span> + <span class="hljs-number">0</span>] = <span class="hljs-built_in">uint8_t</span>(irr.x * <span class="hljs-number">255.0</span>);<br>            data[(i * resolution + j) * <span class="hljs-number">3</span> + <span class="hljs-number">1</span>] = <span class="hljs-built_in">uint8_t</span>(irr.y * <span class="hljs-number">255.0</span>);<br>            data[(i * resolution + j) * <span class="hljs-number">3</span> + <span class="hljs-number">2</span>] = <span class="hljs-built_in">uint8_t</span>(irr.z * <span class="hljs-number">255.0</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-built_in">stbi_flip_vertically_on_write</span>(<span class="hljs-literal">true</span>);<br>    <span class="hljs-built_in">stbi_write_png</span>(<span class="hljs-string">&quot;GGX_E_LUT_IS.png&quot;</span>, resolution, resolution, <span class="hljs-number">3</span>, data, resolution * <span class="hljs-number">3</span>);<br>    <br>    std::cout &lt;&lt; <span class="hljs-string">&quot;Finished precomputed!&quot;</span> &lt;&lt; std::endl;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="结果-4"><a href="#结果-4" class="headerlink" title="结果"></a>结果</h4><p>既然已经得到了一着色点在各种条件下的出射能量 E（左图），那么需要补偿的能量便是 (1 - E)（右图）。</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/GAMES202/GGX_E_LUT_IS.png" srcset="/img/loading.gif" lazyload alt="GGX_E_LUT_IS"></div><div class="group-image-wrap"><img src="/img/GAMES202/GGX_E_LUT_IS_ANTI.png" srcset="/img/loading.gif" lazyload alt="GGX_E_LUT_IS_ANTI"></div></div></div>
+
+<h3 id="GGX-Eavg"><a href="#GGX-Eavg" class="headerlink" title="GGX_Eavg"></a>GGX_Eavg</h3><p>上面说到我们希望能得到一个 BRDF，并且该公式在半球上的积分值为 (1 - E)，即：</p>
+<ul>
+<li>$\int f_{ms}(\mu _o,\mu _i)&#x3D;\int \frac{(1-E(\mu _o))(1-E(\mu <em>i))}{\pi (1-E</em>{avg})}&#x3D;1-E(\mu _o)$</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li>$E_{avg}(\mu _o)&#x3D;2\int _o^1E(\mu _i)\mu _id\mu _i$</li>
+</ul>
+<p>推导：</p>
+<ul>
+<li>$E_{ms}(\mu _o)&#x3D;\int _0^{2\pi}\int <em>0^1f</em>{ms}(\mu _o,\mu _1,\phi)$</li>
+<li>&emsp;&emsp;&emsp;&emsp;&nbsp;$&#x3D;2\pi \int _0^1\frac{(1-E(\mu _o))(1-E(\mu <em>i))}{\pi (1-E</em>{avg})}\mu _id\mu _i$</li>
+<li>&emsp;&emsp;&emsp;&emsp;&nbsp;$&#x3D;2\frac{1-E(\mu <em>o)}{1-E</em>{avg}}\int _0^1(1-E(\mu _i))\mu _id\mu _i$</li>
+<li>&emsp;&emsp;&emsp;&emsp;&nbsp;$&#x3D;\frac{1-E(\mu <em>o)}{1-E</em>{avg}}(1-E_{avg})$</li>
+<li>&emsp;&emsp;&emsp;&emsp;&nbsp;$&#x3D;(1-E_{avg})$</li>
+</ul>
+<p>也就是说只要再给$E_{avg}$打一张表，就可以实时地查询预计算的信息得到$f_{ms}$了。</p>
+<h4 id="结果-5"><a href="#结果-5" class="headerlink" title="结果"></a>结果</h4><p>使用重要性采样（左图），使用均匀采样（右图）</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/GAMES202/GGX_Eavg_LUT_IS.png" srcset="/img/loading.gif" lazyload alt="GGX_Eavg_LUT_IS"></div><div class="group-image-wrap"><img src="/img/GAMES202/GGX_Eavg_LUT.png" srcset="/img/loading.gif" lazyload alt="GGX_Eavg_LUT"></div></div></div>
+<p>这是一张一维的表，纵轴为粗糙度从下向上增加，而同一行上的存储值是相同的。</p>
+<h2 id="Real-Time-部分-1"><a href="#Real-Time-部分-1" class="headerlink" title="Real Time 部分"></a>Real Time 部分</h2><h3 id="颜色"><a href="#颜色" class="headerlink" title="颜色"></a>颜色</h3><p>当材质拥有颜色时，颜色的性质会自然地、正确地带来能量的损失。那么在实现无色的 $f_{ms}$ 的基础上，将一考虑颜色带来的能量损失的颜色项 $f_{add}$（三通道）与$f_{ms}$ 相乘便能得到最终需要补充的 BRDF。<br>先引入一个概念：平均菲涅尔项 $F_{avg}$（三通道）<br><a target="_blank" rel="noopener" href="https://blog.selfshadow.com/publications/s2017-shading-course/imageworks/s2017_pbs_imageworks_slides_v2.pdf">Favg 的实现</a><br>那么一次反射后出射的能量为：$F_{avg}E_{avg}$<br>两次反射后出射的能量为：$F_{avg}(1-E_{avg})F_{avg}E_{avg}$<br>K 次反射后出射的能量为：$F_{avg}^k(1-E_{avg})^kF_{avg}E_{avg}$<br>上述能量全部叠加即可得到颜色项：</p>
+<ul>
+<li>$f_{add}&#x3D;\frac{F_{avg}E_{avg}}{1-F_{avg}(1-E_{avg})}$</li>
+</ul>
+<h3 id="最终的-BRDF"><a href="#最终的-BRDF" class="headerlink" title="最终的 BRDF"></a>最终的 BRDF</h3><p>之前我们得到了补偿的 BRDF 项：</p>
+<ul>
+<li>$f_{ms}(\mu _o,\mu _i)&#x3D;\frac{(1-E(\mu _o))(1-E(\mu <em>i))}{\pi (1-E</em>{avg})}$</li>
+</ul>
+<p>最终的 BRDF 便是：</p>
+<ul>
+<li>$f_r&#x3D;f_{micro}+f_{add}f_{ms}$</li>
+</ul>
+<h3 id="KullaContyFragmentShader"><a href="#KullaContyFragmentShader" class="headerlink" title="KullaContyFragmentShader"></a>KullaContyFragmentShader</h3><figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><code class="hljs glsl"><span class="hljs-meta">#ifdef GL_ES</span><br><span class="hljs-keyword">precision</span> <span class="hljs-keyword">mediump</span> <span class="hljs-type">float</span>;<br><span class="hljs-meta">#endif</span><br><br><span class="hljs-keyword">uniform</span> <span class="hljs-type">vec3</span> uLightPos;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">vec3</span> uCameraPos;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">vec3</span> uLightRadiance;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">vec3</span> uLightDir;<br><br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uAlbedoMap;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">float</span> uMetallic;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">float</span> uRoughness;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uBRDFLut;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> uEavgLut;<br><span class="hljs-keyword">uniform</span> <span class="hljs-type">samplerCube</span> uCubeTexture;<br><br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec2</span> vTextureCoord;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec3</span> vFragPos;<br><span class="hljs-keyword">varying</span> <span class="hljs-keyword">highp</span> <span class="hljs-type">vec3</span> vNormal;<br><br><span class="hljs-keyword">const</span> <span class="hljs-type">float</span> PI = <span class="hljs-number">3.14159265359</span>;<br><br><span class="hljs-type">float</span> DistributionGGX(<span class="hljs-type">vec3</span> N, <span class="hljs-type">vec3</span> H, <span class="hljs-type">float</span> roughness) &#123;<br>    <span class="hljs-type">float</span> a = roughness * roughness;<br>    <span class="hljs-type">float</span> a2 = a * a;<br>    <span class="hljs-type">float</span> NdotH = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N, H), <span class="hljs-number">0.0</span>);<br>    <span class="hljs-type">float</span> NdotH2 = NdotH * NdotH;<br><br>    <span class="hljs-type">float</span> nom = a2;<br>    <span class="hljs-type">float</span> denom = (NdotH2 * (a2 - <span class="hljs-number">1.0</span>) + <span class="hljs-number">1.0</span>);<br>    denom = PI * denom * denom;<br><br>    <span class="hljs-keyword">return</span> nom / denom;<br>&#125;<br><br><span class="hljs-type">float</span> GeometrySchlickGGX(<span class="hljs-type">float</span> cosTerm, <span class="hljs-type">float</span> roughness) &#123;<br>    <span class="hljs-type">float</span> a = roughness;<br>    <span class="hljs-type">float</span> k = (a * a) / <span class="hljs-number">2.0</span>;<br><br>    <span class="hljs-type">float</span> nom = cosTerm;<br>    <span class="hljs-type">float</span> denom = cosTerm * (<span class="hljs-number">1.0</span> - k) + k;<br><br>    <span class="hljs-keyword">return</span> nom / denom;<br>&#125;<br><br><span class="hljs-type">float</span> GeometrySmith(<span class="hljs-type">vec3</span> N, <span class="hljs-type">vec3</span> V, <span class="hljs-type">vec3</span> L, <span class="hljs-type">float</span> roughness) &#123;<br>    <span class="hljs-type">float</span> NdotL = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N,L), <span class="hljs-number">0.0</span>);<br>    <span class="hljs-type">float</span> NdotV = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N,V), <span class="hljs-number">0.0</span>);<br><br>    <span class="hljs-type">float</span> ggx2 = GeometrySchlickGGX(NdotV, roughness);<br>    <span class="hljs-type">float</span> ggx1 = GeometrySchlickGGX(NdotL, roughness);<br><br>    <span class="hljs-keyword">return</span> ggx1 * ggx2;<br>&#125;<br><br><span class="hljs-type">vec3</span> fresnelSchlick(<span class="hljs-type">vec3</span> F0, <span class="hljs-type">vec3</span> V, <span class="hljs-type">vec3</span> H) &#123;<br>    <span class="hljs-type">float</span> HdotV = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(H, V), <span class="hljs-number">0.0</span>);<br><br>    <span class="hljs-keyword">return</span> F0 + (<span class="hljs-number">1.0</span> - F0) * <span class="hljs-built_in">pow</span>(<span class="hljs-number">1.0</span> - HdotV, <span class="hljs-number">5.0</span>);<br>&#125;<br><br><br><span class="hljs-comment">/* https://blog.selfshadow.com/publications/s2017-shading-course/imageworks/</span><br><span class="hljs-comment">   s2017_pbs_imageworks_slides_v2.pdf */</span><br><span class="hljs-type">vec3</span> AverageFresnel(<span class="hljs-type">vec3</span> r, <span class="hljs-type">vec3</span> g) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-type">vec3</span>(<span class="hljs-number">0.087237</span>) + <span class="hljs-number">0.0230685</span>*g - <span class="hljs-number">0.0864902</span>*g*g + <span class="hljs-number">0.0774594</span>*g*g*g<br>           + <span class="hljs-number">0.782654</span>*r - <span class="hljs-number">0.136432</span>*r*r + <span class="hljs-number">0.278708</span>*r*r*r<br>           + <span class="hljs-number">0.19744</span>*g*r + <span class="hljs-number">0.0360605</span>*g*g*r - <span class="hljs-number">0.2586</span>*g*r*r;<br>&#125;<br><br><span class="hljs-type">vec3</span> MultiScatterBRDF(<span class="hljs-type">float</span> NdotL, <span class="hljs-type">float</span> NdotV) &#123;<br>  <span class="hljs-type">vec3</span> albedo = <span class="hljs-built_in">pow</span>(<span class="hljs-built_in">texture2D</span>(uAlbedoMap, vTextureCoord).rgb, <span class="hljs-type">vec3</span>(<span class="hljs-number">2.2</span>));<br><br>  <span class="hljs-type">vec3</span> E_o = <span class="hljs-built_in">texture2D</span>(uBRDFLut, <span class="hljs-type">vec2</span>(NdotL, uRoughness)).xyz;<br>  <span class="hljs-type">vec3</span> E_i = <span class="hljs-built_in">texture2D</span>(uBRDFLut, <span class="hljs-type">vec2</span>(NdotV, uRoughness)).xyz;<br><br>  <span class="hljs-type">vec3</span> E_avg = <span class="hljs-built_in">texture2D</span>(uEavgLut, <span class="hljs-type">vec2</span>(<span class="hljs-number">0</span>, uRoughness)).xyz;<br>  <span class="hljs-comment">// copper</span><br>  <span class="hljs-type">vec3</span> edgetint = <span class="hljs-type">vec3</span>(<span class="hljs-number">0.827</span>, <span class="hljs-number">0.792</span>, <span class="hljs-number">0.678</span>);<br>  <span class="hljs-type">vec3</span> F_avg = AverageFresnel(albedo, edgetint);<br>  <br>  <span class="hljs-type">vec3</span> fms = (<span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>) - E_o) * (<span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>) - E_i) / (PI * (<span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>) - E_avg));<br>  <span class="hljs-type">vec3</span> F_add = F_avg * E_avg / (<span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>) - F_avg * (<span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>) - E_avg));<br><br>  <span class="hljs-keyword">return</span> F_add*fms;<br>&#125;<br><br><span class="hljs-type">void</span> main(<span class="hljs-type">void</span>) &#123;<br>  <span class="hljs-type">vec3</span> albedo = <span class="hljs-built_in">pow</span>(<span class="hljs-built_in">texture2D</span>(uAlbedoMap, vTextureCoord).rgb, <span class="hljs-type">vec3</span>(<span class="hljs-number">2.2</span>));<br><br>  <span class="hljs-type">vec3</span> N = <span class="hljs-built_in">normalize</span>(vNormal);<br>  <span class="hljs-type">vec3</span> V = <span class="hljs-built_in">normalize</span>(uCameraPos - vFragPos);<br>  <span class="hljs-type">float</span> NdotV = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N, V), <span class="hljs-number">0.0</span>);<br><br>  <span class="hljs-type">vec3</span> F0 = <span class="hljs-type">vec3</span>(<span class="hljs-number">0.04</span>); <br>  F0 = <span class="hljs-built_in">mix</span>(F0, albedo, uMetallic);<br><br>  <span class="hljs-type">vec3</span> Lo = <span class="hljs-type">vec3</span>(<span class="hljs-number">0.0</span>);<br><br>  <span class="hljs-comment">// calculate per-light radiance</span><br>  <span class="hljs-type">vec3</span> L = <span class="hljs-built_in">normalize</span>(uLightDir);<br>  <span class="hljs-type">vec3</span> H = <span class="hljs-built_in">normalize</span>(V + L);<br>  <span class="hljs-type">float</span> <span class="hljs-built_in">distance</span> = <span class="hljs-built_in">length</span>(uLightPos - vFragPos);<br>  <span class="hljs-type">float</span> attenuation = <span class="hljs-number">1.0</span> / (<span class="hljs-built_in">distance</span> * <span class="hljs-built_in">distance</span>);<br>  <span class="hljs-type">vec3</span> radiance = uLightRadiance;<br><br>  <span class="hljs-type">float</span> NDF = DistributionGGX(N, H, uRoughness);   <br>  <span class="hljs-type">float</span> G   = GeometrySmith(N, V, L, uRoughness);<br>  <span class="hljs-type">vec3</span> F = fresnelSchlick(F0, V, H);<br>      <br>  <span class="hljs-type">vec3</span> numerator    = NDF * G * F; <br>  <span class="hljs-type">float</span> denominator = <span class="hljs-number">4.0</span> * <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N, V), <span class="hljs-number">0.0</span>) * <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N, L), <span class="hljs-number">0.0</span>);<br>  <span class="hljs-type">vec3</span> Fmicro = numerator / <span class="hljs-built_in">max</span>(denominator, <span class="hljs-number">0.001</span>); <br>  <br>  <span class="hljs-type">float</span> NdotL = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(N, L), <span class="hljs-number">0.0</span>);        <br><br>  <span class="hljs-type">vec3</span> Fms = MultiScatterBRDF(NdotL, NdotV);<br>  <span class="hljs-type">vec3</span> BRDF = Fmicro + Fms;<br>  <br>  Lo += BRDF * radiance * NdotL;<br>  <span class="hljs-type">vec3</span> color = Lo;<br>  <br>  color = color / (color + <span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>));<br>  color = <span class="hljs-built_in">pow</span>(color, <span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>/<span class="hljs-number">2.2</span>)); <br>  <br>  <span class="hljs-built_in">gl_FragColor</span> = <span class="hljs-type">vec4</span>(color, <span class="hljs-number">1.0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="结果-6"><a href="#结果-6" class="headerlink" title="结果"></a>结果</h2><p><img src="/img/GAMES202/01.png" srcset="/img/loading.gif" lazyload><br>粗糙度从右至左依次增加，上排是正确实现了 Kulla-Conty 近似的结果，下排是微表面模型不使用 Kulla-Conty 近似时造成的能量损失。</p>
+<h1 id="实时光线追踪"><a href="#实时光线追踪" class="headerlink" title="实时光线追踪"></a>实时光线追踪</h1><p>&emsp;&emsp;如果认为，以路径追踪的方式，计算一次<strong>一着色点的直接光照和一次弹射的间接光照</strong>为 1 sample per pixel (1 SPP)。那么对于一帧，即使是 RTX 系列的 GPU 也只能做到 1 SPP，此时的噪声会非常夸张。但是路径追踪依旧为我们提供了非常宝贵的间接光照信息，那么接下来工作的重心就在如何降噪上了。降噪分为两个部分，单帧降噪与像素在时间上的复用。</p>
+<h2 id="单帧降噪"><a href="#单帧降噪" class="headerlink" title="单帧降噪"></a>单帧降噪</h2><h3 id="双边滤波"><a href="#双边滤波" class="headerlink" title="双边滤波"></a>双边滤波</h3><p>与其他滤波方式类似，双边滤波也使用周围像素的加权平均值代替中心像素值。重要的是双边滤波的权重不仅考虑了像素的欧氏距离（比如高斯滤波只考虑距离对权值的影响），还考虑了滤波范围域中的辐射差异。<br>假设 (i, j) 为中心像素 (k, l) 为周围一像素，如果我们希望两像素之间的差异（距离，颜色）越大贡献越小：</p>
+<ul>
+<li>$w(i,j,k,l)&#x3D;exp(-\frac{(i-k)^2+(j-l)^2}{2\sigma _d^2}-\frac{|I(i,j)-I(k,l)|^2}{2\sigma _r^2})$</li>
+</ul>
+<h3 id="联合双边滤波"><a href="#联合双边滤波" class="headerlink" title="联合双边滤波"></a>联合双边滤波</h3><p>既然现在是在图形学中进行滤波，那么我们可以很轻易地从渲染管线中扒拉出更多有参考价值的信息，比如说任意像素的深度信息、世界坐标、法线方向等，甚至为不同的物体进行编号，只要将这些信息存在一张 Buffer 中即可。<br>联合双边滤波便是将这些属性的差异也考虑进权重的计算内，滤波核以任何一种会向 0 衰减的函数描述即可。<br>假设 i 为中心像素 j 为周围一像素，这次用到的滤波核：</p>
+<ul>
+<li>$J(i,j)&#x3D;exp(-\frac{|i-j|^2}{2\sigma _p^2}-\frac{|\widetilde{C}[i]-\widetilde{C}[j]|^2}{2\sigma <em>c^2}-\frac{D</em>{normal}(i,j)^2}{2\sigma <em>n^2}-\frac{D</em>{plane}(i,j)^2}{2\sigma _d^2})$</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li>$\widetilde{C}$：有噪声的输入图像。</li>
+<li>$D_{normal}(i,j)&#x3D;arccos(Normal[i]\cdot Normal[j])$：<br>某一夹角左右两平面上的像素不应当有太多贡献。</li>
+<li>$D_{plane}(i,j)&#x3D;Normal[i]\cdot \frac{Position[i]-Position[i]}{|Position[j]-Position[i]}$：<br>法线相似但是有高低差的两平面上的像素不应当有太多贡献。</li>
+</ul>
+<h3 id="a-trous-wavelet-transform"><a href="#a-trous-wavelet-transform" class="headerlink" title="a-trous wavelet transform"></a>a-trous wavelet transform</h3><p>假如要遍历完 NxN 个像素会是一个较大的性能开销，这里使用 a-trous wavelet transform 的方式加速采样滤波核内的像素。每一趟固定采样 5x5 个像素，第 i 趟时采样点之间的距离为 $2^{i-1}$。<br>时间复杂度从$o(n^2)$降低为$o(log _2n)$。<br><img src="/img/GAMES202/at.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">DistanceDifPow</span><span class="hljs-params">(<span class="hljs-type">int</span> i_x, <span class="hljs-type">int</span> i_y, <span class="hljs-type">int</span> j_x, <span class="hljs-type">int</span> j_y)</span> </span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">float</span>(<span class="hljs-built_in">pow</span>((i_x - j_x), <span class="hljs-number">2</span>) + <span class="hljs-built_in">pow</span>((i_y - j_y), <span class="hljs-number">2</span>));<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">CloorDifPow</span><span class="hljs-params">(Float3 color_i, Float3 color_j)</span> </span>&#123;<br>    Float3 dif = color_i - color_j;<br>    <span class="hljs-keyword">return</span> dif.x * dif.x + dif.y * dif.y + dif.z * dif.z;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">DnormalPow</span><span class="hljs-params">(Float3 normal_i, Float3 normal_j)</span> </span>&#123;<br>    <span class="hljs-type">float</span> cosTerm = std::<span class="hljs-built_in">clamp</span>(<span class="hljs-built_in">Dot</span>(normal_i, normal_j), <span class="hljs-number">0.f</span>, <span class="hljs-number">1.f</span>);<br>    <span class="hljs-type">float</span> acos = std::<span class="hljs-built_in">acos</span>(cosTerm);<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">pow</span>(acos, <span class="hljs-number">2</span>);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">DplanePow</span><span class="hljs-params">(Float3 normal_i, Float3 position_i, Float3 position_j)</span> </span>&#123;<br>    Float3 nor = <span class="hljs-built_in">Normalize</span>(position_j - position_i);<br>    <span class="hljs-keyword">return</span> std::<span class="hljs-built_in">clamp</span>((<span class="hljs-type">float</span>)<span class="hljs-built_in">pow</span>(<span class="hljs-built_in">Dot</span>(normal_i, nor), <span class="hljs-number">2</span>), <span class="hljs-number">1e-5f</span>, <span class="hljs-number">1.f</span>);<br>&#125;<br><br><span class="hljs-comment">// 联合双边滤波核</span><br><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">JointBilateralFilteringKernel</span><span class="hljs-params">(<span class="hljs-type">float</span> distanceDifPow, <span class="hljs-type">float</span> colorDifPow,</span></span><br><span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-type">float</span> normalDifPow, <span class="hljs-type">float</span> positionDifPow,</span></span><br><span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-type">float</span> sigma_p, <span class="hljs-type">float</span> sigma_c,</span></span><br><span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-type">float</span> sigma_n, <span class="hljs-type">float</span> sigma_d)</span> </span>&#123;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">exp</span>(-(distanceDifPow / (<span class="hljs-number">2</span> * <span class="hljs-built_in">pow</span>(sigma_p, <span class="hljs-number">2</span>))) -<br>            (colorDifPow / (<span class="hljs-number">2</span> * <span class="hljs-built_in">pow</span>(sigma_c, <span class="hljs-number">2</span>))) -<br>            (normalDifPow / (<span class="hljs-number">2</span> * <span class="hljs-built_in">pow</span>(sigma_n, <span class="hljs-number">2</span>))) -<br>            (positionDifPow / (<span class="hljs-number">2</span> * <span class="hljs-built_in">pow</span>(sigma_d, <span class="hljs-number">2</span>))));<br>&#125;<br><br><span class="hljs-function">Buffer2D&lt;Float3&gt; <span class="hljs-title">Denoiser::Filter</span><span class="hljs-params">(<span class="hljs-type">const</span> FrameInfo &amp;frameInfo)</span> </span>&#123;<br>    <span class="hljs-type">int</span> height = frameInfo.m_beauty.m_height;<br>    <span class="hljs-type">int</span> width = frameInfo.m_beauty.m_width;<br>    <span class="hljs-type">int</span> kernelRadius = <span class="hljs-number">16</span>;<br><br>    Buffer2D&lt;Float3&gt; filteredImage = <span class="hljs-built_in">CreateBuffer2D</span>&lt;Float3&gt;(width, height);<br>    Buffer2D&lt;Float3&gt; imageBuffer = <span class="hljs-built_in">CreateBuffer2D</span>&lt;Float3&gt;(width, height);<br>    Buffer2D&lt;Float3&gt; normalBuffer = <span class="hljs-built_in">CreateBuffer2D</span>&lt;Float3&gt;(width, height);<br>    Buffer2D&lt;Float3&gt; positionBuffer = <span class="hljs-built_in">CreateBuffer2D</span>&lt;Float3&gt;(width, height);<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel for</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> y = <span class="hljs-number">0</span>; y &lt; height; y++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x = <span class="hljs-number">0</span>; x &lt; width; x++) &#123;<br>            <span class="hljs-built_in">filteredImage</span>(x, y) = frameInfo.<span class="hljs-built_in">m_beauty</span>(x, y);<br>            <span class="hljs-built_in">imageBuffer</span>(x, y) = frameInfo.<span class="hljs-built_in">m_beauty</span>(x, y);<br>            <span class="hljs-built_in">normalBuffer</span>(x, y) = frameInfo.<span class="hljs-built_in">m_normal</span>(x, y);<br>            <span class="hljs-built_in">positionBuffer</span>(x, y) = frameInfo.<span class="hljs-built_in">m_position</span>(x, y);<br><br>            <span class="hljs-comment">// 权重</span><br>            <span class="hljs-type">float</span> weight = <span class="hljs-number">0.f</span>;<br>            <span class="hljs-comment">// a-trous wavelet 的步长</span><br>            <span class="hljs-type">int</span> step = <span class="hljs-number">1</span>;<br><br>            <span class="hljs-type">bool</span> useA_trou = <span class="hljs-literal">true</span>;<br>            <span class="hljs-keyword">if</span> (useA_trou) &#123;<br>                <span class="hljs-comment">// 第一个循环确定 filter 大小，第二第三个循环的内容固定地循环 25 次。</span><br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> num = <span class="hljs-number">0</span>; <span class="hljs-number">2</span> * step &lt;= kernelRadius; num++) &#123;<br>                    step = <span class="hljs-built_in">pow</span>(<span class="hljs-number">2</span>, num);<br>                    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j_y = y - <span class="hljs-number">2</span> * step; j_y &lt;= y + <span class="hljs-number">2</span> * step; j_y += step) &#123;<br>                        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j_x = x - <span class="hljs-number">2</span> * step; j_x &lt;= x + <span class="hljs-number">2</span> * step; j_x += step) &#123;<br><br>                            <span class="hljs-keyword">if</span> (j_y &lt; <span class="hljs-number">0</span> || j_y &gt;= height || j_x &lt; <span class="hljs-number">0</span> || j_x &gt;= width) &#123;<br>                                <span class="hljs-comment">// 超出图像范围时返回</span><br>                                <span class="hljs-keyword">continue</span>;<br>                            &#125;<br><br>                            <span class="hljs-built_in">imageBuffer</span>(j_x, j_y) = frameInfo.<span class="hljs-built_in">m_beauty</span>(j_x, j_y);<br>                            <span class="hljs-built_in">normalBuffer</span>(j_x, j_y) = frameInfo.<span class="hljs-built_in">m_normal</span>(j_x, j_y);<br>                            <span class="hljs-built_in">positionBuffer</span>(j_x, j_y) = frameInfo.<span class="hljs-built_in">m_position</span>(j_x, j_y);<br><br>                            <span class="hljs-type">float</span> distanceTerm = <span class="hljs-built_in">DistanceDifPow</span>(x, y, j_x, j_y);<br>                            <span class="hljs-type">float</span> colorTerm =<br>                                <span class="hljs-built_in">CloorDifPow</span>(<span class="hljs-built_in">imageBuffer</span>(x, y), <span class="hljs-built_in">imageBuffer</span>(j_x, j_y));<br>                            <span class="hljs-type">float</span> normalTerm =<br>                                <span class="hljs-built_in">DnormalPow</span>(<span class="hljs-built_in">normalBuffer</span>(x, y), <span class="hljs-built_in">normalBuffer</span>(j_x, j_y));<br>                            <span class="hljs-type">float</span> planeTerm =<br>                                <span class="hljs-built_in">DplanePow</span>(<span class="hljs-built_in">normalBuffer</span>(x, y),<br>                                    <span class="hljs-built_in">positionBuffer</span>(x, y), <span class="hljs-built_in">positionBuffer</span>(j_x, j_y));<br><br>                            <span class="hljs-keyword">if</span> (width &gt;= <span class="hljs-number">1280</span>) &#123;<br>                                <span class="hljs-comment">// pink-room</span><br>                                m_sigmaColor = <span class="hljs-number">20</span>;<br>                            &#125;<br><br>                            <span class="hljs-type">float</span> exp = <span class="hljs-built_in">JointBilateralFilteringKernel</span>(<br>                                distanceTerm, colorTerm, normalTerm, planeTerm,<br>                                m_sigmaCoord, m_sigmaColor, m_sigmaNormal, m_sigmaPlane);<br><br>                            <span class="hljs-built_in">filteredImage</span>(x, y) += <span class="hljs-built_in">imageBuffer</span>(j_x, j_y) * exp;<br>                            weight += exp;<br>                        &#125;<br>                    &#125;<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">else</span> &#123;<span class="hljs-comment">// useA_trou == false</span><br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j_y = y - kernelRadius; j_y &lt;= y + kernelRadius; ++j_y) &#123;<br>                    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j_x = x - kernelRadius; j_x &lt;= x + kernelRadius; ++j_x) &#123;<br>                        <span class="hljs-keyword">if</span> (j_y &lt; <span class="hljs-number">0</span> || j_y &gt;= height || j_x &lt; <span class="hljs-number">0</span> || j_x &gt;= width) &#123;<br>                            <span class="hljs-keyword">continue</span>;<br>                        &#125;<br>                        <span class="hljs-built_in">imageBuffer</span>(j_x, j_y) = frameInfo.<span class="hljs-built_in">m_beauty</span>(j_x, j_y);<br>                        <span class="hljs-built_in">normalBuffer</span>(j_x, j_y) = frameInfo.<span class="hljs-built_in">m_normal</span>(j_x, j_y);<br>                        <span class="hljs-built_in">positionBuffer</span>(j_x, j_y) = frameInfo.<span class="hljs-built_in">m_position</span>(j_x, j_y);<br>                        <span class="hljs-type">float</span> distanceTerm = <span class="hljs-built_in">DistanceDifPow</span>(x, y, j_x, j_y);<br>                        <span class="hljs-type">float</span> colorTerm =<br>                            <span class="hljs-built_in">CloorDifPow</span>(<span class="hljs-built_in">imageBuffer</span>(x, y), <span class="hljs-built_in">imageBuffer</span>(j_x, j_y));<br>                        <span class="hljs-type">float</span> normalTerm =<br>                            <span class="hljs-built_in">DnormalPow</span>(<span class="hljs-built_in">normalBuffer</span>(x, y), <span class="hljs-built_in">normalBuffer</span>(j_x, j_y));<br>                        <span class="hljs-type">float</span> planeTerm =<br>                            <span class="hljs-built_in">DplanePow</span>(<span class="hljs-built_in">normalBuffer</span>(x, y),<br>                                <span class="hljs-built_in">positionBuffer</span>(x, y), <span class="hljs-built_in">positionBuffer</span>(j_x, j_y));<br>                        <span class="hljs-keyword">if</span> (width &gt;= <span class="hljs-number">1280</span>) &#123; <span class="hljs-comment">// for pink-room</span><br>                            m_sigmaColor = <span class="hljs-number">30</span>;<br>                        &#125;<br>                        <span class="hljs-type">float</span> exp = <span class="hljs-built_in">JointBilateralFilteringKernel</span>(<br>                            distanceTerm, colorTerm, normalTerm, planeTerm,<br>                            m_sigmaCoord, m_sigmaColor, m_sigmaNormal, m_sigmaPlane);<br>                        <span class="hljs-built_in">filteredImage</span>(x, y) += <span class="hljs-built_in">imageBuffer</span>(j_x, j_y) * exp;<br>                        weight += exp;<br>                    &#125;<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">if</span> (weight &gt; <span class="hljs-number">0.f</span>) &#123;<br>                <span class="hljs-built_in">filteredImage</span>(x, y) /= weight;<br>            &#125;<br>            <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-built_in">filteredImage</span>(x, y) = <span class="hljs-number">0.f</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> filteredImage;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="结果-7"><a href="#结果-7" class="headerlink" title="结果"></a>结果</h3><div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/GAMES202/n.gif" srcset="/img/loading.gif" lazyload alt="1 SPP"></div><div class="group-image-wrap"><img src="/img/GAMES202/f.gif" srcset="/img/loading.gif" lazyload alt="单帧降噪"></div></div></div>
+<div class="note note-secondary">
+            <p><strong>滤波之后亮度提高的原因</strong>：事实上第二张图的亮度并没有提高，第一张图的辐射期望也是正确的。第一张图的亮度看起来偏暗是由于路径追踪的方差过大，以至于有大量超过 RGB 色域显示范围的 Irradiance 被直接 Clamp 至 255，产生了能量损失。在第二张图中进行滤波便是将无法显示的数值分配给了周围的像素，使得这部分数值可以正常地被显示出来。</p>
+          </div>
+
+<h2 id="时间上的累积"><a href="#时间上的累积" class="headerlink" title="时间上的累积"></a>时间上的累积</h2><p>先将当前帧做单帧滤波，然后把一像素点在上一帧所在位置的像素值按一定权值混合入当前帧。如果说每一帧都能做 1 SPP，那么便几乎相当于一秒内将 30 SPP 的采样结果累积了下来。</p>
+<h3 id="投影到上一帧"><a href="#投影到上一帧" class="headerlink" title="投影到上一帧"></a>投影到上一帧</h3><p>第一个问题，如何找到一像素点在上一帧所对应的位置，准确来说是：一像素点对应世界坐标变换回上一帧的世界坐标，然后变换至上一帧的屏幕空间的坐标。<br>公式如下： </p>
+<ul>
+<li>$Screen_{i-1}&#x3D;P_{i-1}V_{i-1}M_{i-1}M_i^{-1}World_i$</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li>下角标的 i 代表第 i 帧</li>
+<li>M 代表物体坐标系到世界坐标系的矩阵</li>
+<li>V 代表世界坐标系到摄像机坐标系的矩阵</li>
+<li>P 代表摄像机坐标系到屏幕坐标系的矩阵</li>
+</ul>
+<p>得到上一帧的屏幕空间坐标后需要检查：</p>
+<ol>
+<li>上一帧是否在屏幕内。（该点第一次出现于屏幕内，没有时间上的信息）</li>
+<li>上一帧和当前帧的物体的标号。（该点上一帧被另一物体遮挡，不应当使用时间上的信息）</li>
+</ol>
+<p>若坐标非法便不使用上一帧的数据，100% 使用当前帧的数据。投影坐标的合法性保存在 m_valid 中供下一步参考。</p>
+<h4 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">Denoiser::Reprojection</span><span class="hljs-params">(<span class="hljs-type">const</span> FrameInfo&amp; frameInfo)</span> </span>&#123;<br>    <span class="hljs-type">int</span> height = m_accColor.m_height;<br>    <span class="hljs-type">int</span> width = m_accColor.m_width;<br>    Matrix4x4 preWorldToScreen =<br>        m_preFrameInfo.m_matrix[m_preFrameInfo.m_matrix.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>];<br><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel for</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> y = <span class="hljs-number">0</span>; y &lt; height; y++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x = <span class="hljs-number">0</span>; x &lt; width; x++) &#123;<br><br>            <span class="hljs-type">int</span> id = (<span class="hljs-type">int</span>)frameInfo.<span class="hljs-built_in">m_id</span>(x, y);<br>            <span class="hljs-keyword">if</span> (<span class="hljs-number">-1</span> != id) &#123;<br>                Matrix4x4 invModel = <span class="hljs-built_in">Inverse</span>(frameInfo.m_matrix[id]);<br>                Matrix4x4 preModel = m_preFrameInfo.m_matrix[id];<br>                Matrix4x4 PVMM_1 = preWorldToScreen * preModel * invModel;<br>                Float3 projPos = <span class="hljs-built_in">PVMM_1</span>(frameInfo.<span class="hljs-built_in">m_position</span>(x, y), Float3::Point);<br><br>                <span class="hljs-comment">//Float3 invPos = invModel(frameInfo.m_position(x, y), Float3::Point);</span><br>                <span class="hljs-comment">//Float3 prePos = preModel(invPos, Float3::Point);</span><br>                <span class="hljs-comment">//Float3 projPos = preWorldToScreen(prePos, Float3::Point);</span><br><br>                <span class="hljs-type">int</span> pre_x = (<span class="hljs-type">int</span>)projPos.x;<br>                <span class="hljs-type">int</span> pre_y = (<span class="hljs-type">int</span>)projPos.y;<br>                <span class="hljs-keyword">if</span> (pre_x &lt; <span class="hljs-number">0</span> || pre_x &gt;= width || pre_y &lt; <span class="hljs-number">0</span> || pre_y &gt;= height) &#123;<br>                    <span class="hljs-built_in">m_valid</span>(x, y) = <span class="hljs-literal">false</span>;<br>                    <span class="hljs-keyword">continue</span>;<br>                &#125;<br><br>                <span class="hljs-comment">// 在 pre_x 或 pre_y 超出屏幕时 m_id(pre_x, pre_y) 属于违法操作。</span><br>                <span class="hljs-type">int</span> pre_id = (<span class="hljs-type">int</span>)m_preFrameInfo.<span class="hljs-built_in">m_id</span>(pre_x, pre_y);<br>                <span class="hljs-keyword">if</span> (pre_id != id) &#123;<br>                    <span class="hljs-built_in">m_valid</span>(x, y) = <span class="hljs-literal">false</span>;<br>                    <span class="hljs-keyword">continue</span>;<br>                &#125;<br><br>                <span class="hljs-built_in">m_misc</span>(x, y) = <span class="hljs-built_in">m_accColor</span>(pre_x, pre_y);<br>                <span class="hljs-built_in">m_valid</span>(x, y) = <span class="hljs-literal">true</span>;<br>            &#125;<br>            <span class="hljs-comment">//m_valid(x, y) = false;</span><br>            <span class="hljs-comment">//m_misc(x, y) = Float3(0.f);</span><br>        &#125;<br>    &#125;<br>    std::<span class="hljs-built_in">swap</span>(m_misc, m_accColor);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="混合入当前帧"><a href="#混合入当前帧" class="headerlink" title="混合入当前帧"></a>混合入当前帧</h3><p>将已降噪的当前帧$\overline{C}<em>i$与上一帧的结果$\overline{C}</em>{i-1}$进行融合，公式如下：</p>
+<ul>
+<li>$\overline{C}_i&#x3D;\alpha \overline{C}<em>i+(1-\alpha)Clamp(\overline{C}</em>{i-1})$</li>
+</ul>
+<p>如果上一帧的坐标非法，$\alpha$ 便为 1。</p>
+<h4 id="Clamp"><a href="#Clamp" class="headerlink" title="Clamp"></a>Clamp</h4><p>计算 $\overline{C}_i$ 在 5x5 领域内的均值 $\mu$ 与方差 $\sigma$，然后将上一帧的颜色值 Clapm 进 $(\mu -k\sigma,\mu +k\sigma)$ 内。</p>
+<h4 id="实现-2"><a href="#实现-2" class="headerlink" title="实现"></a>实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">Denoiser::TemporalAccumulation</span><span class="hljs-params">(<span class="hljs-type">const</span> Buffer2D&lt;Float3&gt; &amp;curFilteredColor)</span> </span>&#123;<br>    <span class="hljs-type">int</span> height = m_accColor.m_height;<br>    <span class="hljs-type">int</span> width = m_accColor.m_width;<br>    <span class="hljs-type">int</span> range = <span class="hljs-number">2</span>;<br><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> omp parallel for</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> y = <span class="hljs-number">0</span>; y &lt; height; y++) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x = <span class="hljs-number">0</span>; x &lt; width; x++) &#123;<br>            <span class="hljs-comment">/* TemporalAccumulation 在 Reprojection 之后被调用，</span><br><span class="hljs-comment">            所以这里的 m_accColor 是上一帧的结果。*/</span><br>            Float3 preColor = <span class="hljs-built_in">m_accColor</span>(x, y);<br><br>            <span class="hljs-function">Float3 <span class="hljs-title">mu</span><span class="hljs-params">(<span class="hljs-number">0.f</span>)</span></span>;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = x - range; i &lt;= x + range; i++) &#123;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = y - range; j &lt;= y + range; j++) &#123;<br>                    mu += <span class="hljs-built_in">curFilteredColor</span>(i, j);<br>                &#125;<br>            &#125;<br>            mu /= (<span class="hljs-type">float</span>)<span class="hljs-built_in">pow</span>(<span class="hljs-number">2.f</span> * range + <span class="hljs-number">1.f</span>, <span class="hljs-number">2</span>);<br><br>            <span class="hljs-function">Float3 <span class="hljs-title">sigma</span><span class="hljs-params">(<span class="hljs-number">0.f</span>)</span></span>;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = x - range; i &lt;= x + range; i++) &#123;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = y - range; j &lt;= y + range; j++) &#123;<br>                    sigma += <span class="hljs-built_in">Sqr</span>(<span class="hljs-built_in">curFilteredColor</span>(i, j) - mu);<br>                &#125;<br>            &#125;<br>            sigma /= (<span class="hljs-type">float</span>)<span class="hljs-built_in">pow</span>(<span class="hljs-number">2.f</span> * range + <span class="hljs-number">1.f</span>, <span class="hljs-number">2</span>);<br><br>            <span class="hljs-keyword">if</span> (width &gt;= <span class="hljs-number">1280</span>) &#123;<br>                <span class="hljs-comment">// pink-room</span><br>                m_colorBoxK = <span class="hljs-number">0.1f</span>;<br>            &#125;<br><br>            <span class="hljs-comment">// 将上一帧对应的像素的值拉近当前帧像素</span><br>            preColor = <span class="hljs-built_in">Clamp</span>(preColor,<br>                mu - sigma * m_colorBoxK, mu + sigma * m_colorBoxK);<br><br>            <span class="hljs-type">float</span> alpha = <span class="hljs-number">1.0f</span>;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-built_in">m_valid</span>(x, y)) &#123;<br>                alpha = m_alpha;<br>            &#125;<br>            <span class="hljs-built_in">m_misc</span>(x, y) = <span class="hljs-built_in">Lerp</span>(preColor, <span class="hljs-built_in">curFilteredColor</span>(x, y), alpha);<br>            <span class="hljs-comment">//m_misc(x, y) = Lerp(preColor, curFilteredColor(x, y), 1.0f);</span><br>        &#125;<br>    &#125;<br>    std::<span class="hljs-built_in">swap</span>(m_misc, m_accColor);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="结果-8"><a href="#结果-8" class="headerlink" title="结果"></a>结果</h4><p><img src="/img/GAMES202/t.gif" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GlobalIllumination/" class="print-no-link">#GlobalIllumination</a>
+      
+        <a href="/tags/Math/" class="print-no-link">#Math</a>
+      
+        <a href="/tags/Rendering/" class="print-no-link">#Rendering</a>
+      
+        <a href="/tags/RayTracing/" class="print-no-link">#RayTracing</a>
+      
+        <a href="/tags/GLSL/" class="print-no-link">#GLSL</a>
+      
+        <a href="/tags/JavaScript/" class="print-no-link">#JavaScript</a>
+      
+        <a href="/tags/Reflection/" class="print-no-link">#Reflection</a>
+      
+        <a href="/tags/Shadow/" class="print-no-link">#Shadow</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/08/SimpleRenderer/" title="光栅化软渲 Simple Renderer">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">光栅化软渲 Simple Renderer</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/14/Radiometry/" title="辐射度量学基础">
+                        <span class="hidden-mobile">辐射度量学基础</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '58ab3bf59cb48e725f447127ac517c50'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  var relativeDate = function() {
+    var updatedTime = document.getElementById('updated-time');
+    if (updatedTime) {
+      var text = updatedTime.textContent;
+      var reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})/;
+      var matchs = text.match(reg);
+      if (matchs) {
+        var relativeTime = moment(matchs[0]).fromNow();
+        updatedTime.textContent = text.replace(reg, relativeTime);
+      }
+      updatedTime.style.display = '';
+    }
+  };
+  Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/moment.min.js', function() {
+    if (!'zh-cn'.startsWith('en')) {
+      Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/locale/zh-cn.min.js', function() {
+        relativeDate();
+      });
+    } else {
+      relativeDate();
+    }
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

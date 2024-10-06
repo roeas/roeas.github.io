@@ -1,0 +1,809 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Hinageshi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Eigen纯头文件库，包含路径即可。https:&#x2F;&#x2F;eigen.tuxfamily.org&#x2F;index.php?title&#x3D;Main_PageGitLab：https:&#x2F;&#x2F;gitlab.com&#x2F;libeigen&#x2F;eigenGitHub:https:&#x2F;&#x2F;github.com&#x2F;PX4&#x2F;eigen .gitignore3.4.0 release 的 .gitignore 相比 GitLab 最新的主分支">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一些第三方库的构建与集成记录">
+<meta property="og:url" content="http://example.com/2023/10/14/ThirdParty/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Eigen纯头文件库，包含路径即可。https:&#x2F;&#x2F;eigen.tuxfamily.org&#x2F;index.php?title&#x3D;Main_PageGitLab：https:&#x2F;&#x2F;gitlab.com&#x2F;libeigen&#x2F;eigenGitHub:https:&#x2F;&#x2F;github.com&#x2F;PX4&#x2F;eigen .gitignore3.4.0 release 的 .gitignore 相比 GitLab 最新的主分支">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/ThirdParty/img.png">
+<meta property="article:published_time" content="2023-10-14T07:25:12.000Z">
+<meta property="article:modified_time" content="2024-07-18T04:01:23.765Z">
+<meta property="article:author" content="Hinageshi">
+<meta property="article:tag" content="Engineering">
+<meta property="article:tag" content="CMake">
+<meta property="article:tag" content="Eigen">
+<meta property="article:tag" content="fswatch">
+<meta property="article:tag" content="GLEW">
+<meta property="article:tag" content="OpenCV">
+<meta property="article:tag" content="Premake">
+<meta property="article:tag" content="shaderc">
+<meta property="article:tag" content="spdlog">
+<meta property="article:tag" content="SPIRV-Cross">
+<meta property="article:tag" content="yaml-cpp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/ThirdParty/img.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>一些第三方库的构建与集成记录 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":32,"cursorChar":"","loop":false,"scope":"home"},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Hinageshi 的駄菓子屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Background.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">一些第三方库的构建与集成记录</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-14 15:25" pubdate>
+          2023年10月14日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">一些第三方库的构建与集成记录</h1>
+            
+              <p id="updated-time" class="note note-info" style="display: none">
+                
+                  
+                    本文最后更新于 2024-07-18T12:01:23+08:00
+                  
+                  
+
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="Eigen"><a href="#Eigen" class="headerlink" title="Eigen"></a>Eigen</h2><p>纯头文件库，包含路径即可。<br><a target="_blank" rel="noopener" href="https://eigen.tuxfamily.org/index.php?title=Main_Page">https://eigen.tuxfamily.org/index.php?title=Main_Page</a><br>GitLab：<br><a target="_blank" rel="noopener" href="https://gitlab.com/libeigen/eigen">https://gitlab.com/libeigen/eigen</a><br>GitHub:<br><a target="_blank" rel="noopener" href="https://github.com/PX4/eigen">https://github.com/PX4/eigen</a></p>
+<h3 id="gitignore"><a href="#gitignore" class="headerlink" title=".gitignore"></a>.gitignore</h3><p>3.4.0 release 的 .gitignore 相比 GitLab 最新的主分支少两行：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs diff"><span class="hljs-addition">!Eigen/Core</span><br><span class="hljs-addition">!Eigen/src/Core</span><br></code></pre></td></tr></table></figure>
+<p>直接集成的话 Core 文件会错误地被忽略。</p>
+<h2 id="OpenCV"><a href="#OpenCV" class="headerlink" title="OpenCV"></a>OpenCV</h2><p><a target="_blank" rel="noopener" href="https://github.com/opencv/opencv">https://github.com/opencv/opencv</a></p>
+<h3 id="下载依赖"><a href="#下载依赖" class="headerlink" title="下载依赖"></a>下载依赖</h3><p><em>万恶的 GFW</em></p>
+<ol>
+<li><p>最无脑的解决方案，通过配置<br><code>-DOPENCV_DOWNLOAD_MIRROR_ID=gitcode</code><br>将下载源改为 GitCode，一个国内代码托管网站。比较依赖于 OpenCV 中国团队和 GitCode 对镜像仓库的维护。<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/QhtEjXn126bitN9AQ3_s6w">下载不再卡顿，OpenCV 中国镜像启用</a><br>ps:<br>他们说从 <a target="_blank" rel="noopener" href="https://gitcode.net/opencv/opencv">https://gitcode.net/opencv/opencv</a> 下载的代码是不用这条配置的，但是我尝试 clone 下来后看到了 <code>Package ADE from mirror gitcode.net is outdated and will be downloaded from github.com instead.</code> 的警告。提了 Issue 也没反应。<br>然后 GitCode 上的 Release 实际上又是需要这条配置的（意思是 GitCode Release 和 GitHub Release 是一模一样的，而且下载源都是外网。）<br>总之有点抽象，好在 GitHub Latest Release + -DOPENCV_DOWNLOAD_MIRROR_ID&#x3D;gitcode 的组合是没什么问题的。</p>
+</li>
+<li><p>开启代理并配置环境变量<br><a target="_blank" rel="noopener" href="https://docs.opencv.org/4.x/db/d05/tutorial_config_reference.html#tutorial_config_reference_general_download">Downloaded dependencies</a></p>
+</li>
+<li><p>手动下载依赖<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/344036896">Visual Studio + OpenCV + OpenCV_contrib 源代码编译流程</a></p>
+</li>
+</ol>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p><a target="_blank" rel="noopener" href="https://docs.opencv.org/4.x/db/d05/tutorial_config_reference.html">DOC</a></p>
+<ul>
+<li><p>静态 &#x2F; 动态：<code>BUILD_SHARED_LIBS</code></p>
+</li>
+<li><p>运行时库：<code>BUILD_WITH_STATIC_CRT</code></p>
+</li>
+<li><p>只生单个库文件：<code>BUILD_opencv_world</code></p>
+</li>
+</ul>
+<h2 id="fswatch"><a href="#fswatch" class="headerlink" title="fswatch"></a>fswatch</h2><p><a target="_blank" rel="noopener" href="https://github.com/emcrisostomo/fswatch">https://github.com/emcrisostomo/fswatch</a><br>一个使用 GCC 编译的跨平台文件监视器，开发者不太关心 Windows 上的编译体验，深感麻烦。</p>
+<h3 id="安装-MinGW"><a href="#安装-MinGW" class="headerlink" title="安装 MinGW"></a>安装 MinGW</h3><p>我们需要一个 Windows GCC，自然是先装 MinGW-W64。<br>比起直接解压 MinGW 再配置环境变量，更方便的是先安装一个 MSYS2。MSYS2 自带一个包管理器 packman，可以很方便的下载 MinGW 以及更多乱七八糟的依赖。以 <code>Windows</code> <code>MSYS2</code> <code>MinGW</code>  <code>GCC</code> 为关键词搜索应该就能找到不错的教程。</p>
+<h3 id="配置-CMake-生成器"><a href="#配置-CMake-生成器" class="headerlink" title="配置 CMake 生成器"></a>配置 CMake 生成器</h3><p>在指定生成器的阶段我们需要选择 <code>MinGW Makefiles</code> + <code>Specify native compilers</code>，然后将 C 与 C++ 的编译器配置为 MSYS2 安装的 gcc.exe 与 g++.exe 路径。</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/ThirdParty/generator.png" srcset="/img/loading.gif" lazyload alt="指定生成器"></div><div class="group-image-wrap"><img src="/img/ThirdParty/compiler.png" srcset="/img/loading.gif" lazyload alt="指定本地编译器"></div></div></div>
+<p>路径大概是 <code>C:/msys64/mingw64/bin</code> 之类的。</p>
+<h3 id="配置-CMake-依赖"><a href="#配置-CMake-依赖" class="headerlink" title="配置 CMake 依赖"></a>配置 CMake 依赖</h3><p>Makefile 生成依赖于 MSGFMT，MSGMERGE 与 PTHREAD，前两个都属于 Gettext。<br>如果看到任何 <code>NOTFOUND</code> 字眼，用 MSYS2 搜索并安装对应的库，然后配置对应路径。</p>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>回到根目录执行 <code>cmake --build build</code>，出现如下报错：<br><code>error: &#39;realpath&#39; was not declared in this scope</code><br><code>error: &#39;lstat&#39; was not declared in this scope; did you mean &#39;wstat&#39;?</code><br>结果这似乎是一个遗留 bug，七年没修：<br><a target="_blank" rel="noopener" href="https://github.com/emcrisostomo/fswatch/issues/121">https://github.com/emcrisostomo/fswatch/issues/121</a><br>最终是放弃了这个库的集成转而使用了 <a target="_blank" rel="noopener" href="https://github.com/septag/dmon">dmon</a>。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/401188789">给萌新的 C&#x2F;C++ 环境搭建攻略（VSCode 和 MSYS2）</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/448884264">捋一捋 gcc &#x2F; g++ &#x2F; MingW &#x2F; MSVC 与 make &#x2F; CMake 的关系</a><br><a target="_blank" rel="noopener" href="https://github.com/FrankHB/pl-docs/blob/master/zh-CN/mingw-vs-mingw-v64.md">[科普][FAQ] MinGW vs MinGW-W64 及其它</a></p>
+<h2 id="GLEW"><a href="#GLEW" class="headerlink" title="GLEW"></a>GLEW</h2><p><a target="_blank" rel="noopener" href="https://glew.sourceforge.net/index.html">https://glew.sourceforge.net/index.html</a><br>OpenGL 扩展库。</p>
+<h3 id="静态-动态"><a href="#静态-动态" class="headerlink" title="静态 &#x2F; 动态"></a>静态 &#x2F; 动态</h3><p>CMake 会生成 <code>glew</code> 和 <code>glew_s</code> 两个项目，分别对应了动态与静态的生成目标。<br>然后使用静态库时，要在包含 GLEW 头文件之前定义 <code>GLEW_STATIC</code> 这个宏，写在项目配置里比较好。</p>
+<h3 id="gitignore-1"><a href="#gitignore-1" class="headerlink" title=".gitignore"></a>.gitignore</h3><p>要注意一下 glew 仓库里就有一个 <code>build</code> 文件夹，CMakeLists 也在里面，总觉得不太合理，你叫个什么 <code>builds</code> 都比这好。<br>如果你的仓库忽略了所有叫做 <code>build</code> 的文件夹的，小心这个文件夹也被忽略掉。</p>
+<h2 id="spdlog"><a href="#spdlog" class="headerlink" title="spdlog"></a>spdlog</h2><p><a target="_blank" rel="noopener" href="https://github.com/gabime/spdlog">https://github.com/gabime/spdlog</a><br>支持纯头文件 &#x2F; 编译两种方式。</p>
+<h3 id="fmt"><a href="#fmt" class="headerlink" title="fmt"></a>fmt</h3><p>最近 MSVC 将 <code>stdext::checked_array_iterator</code> 标记为了已弃用，fmt 用到了这个函数，而 spdlog 默认用到了 fmt。这里有几个解决方案：</p>
+<h4 id="1-屏蔽这个警告"><a href="#1-屏蔽这个警告" class="headerlink" title="1. 屏蔽这个警告"></a>1. 屏蔽这个警告</h4><p>为项目设置 <code>_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING</code> 宏。</p>
+<h4 id="2-将-spdlog-更新至-v2-x"><a href="#2-将-spdlog-更新至-v2-x" class="headerlink" title="2. 将 spdlog 更新至 v2.x"></a>2. 将 spdlog 更新至 v2.x</h4><p>fmt 已经修复了这个 bug，但 spdlog 作者说为了向后兼容，spdlog v1.x 无法更新 fmt。<br>v2.x 似乎仍在开发中。</p>
+<h4 id="3-为-spdlog-指定外部的-fmt"><a href="#3-为-spdlog-指定外部的-fmt" class="headerlink" title="3. 为 spdlog 指定外部的 fmt"></a>3. 为 spdlog 指定外部的 fmt</h4><p>开启 <code>SPDLOG_FMT_EXTERNAL</code> 或 <code>SPDLOG_FMT_EXTERNAL_HO</code> 宏，手动更新 fmt。<br>spdlog 使用 <code>find_package</code> 查找 fmt，我们需要先生成 fmt，得到 <code>fmt-config.cmake</code> 文件，然后将其所在路径添加至 <code>CMAKE_PREFIX_PATH</code> 或 <code>fmt_DIR</code>，两者都可以用 -D 指令添加。<br>项目中要包含 fmt 的头文件，记得不要把 spdlog bundled 的 fmt 文件包含进项目。<br>在项目内还要手动定义 <code>SPDLOG_FMT_EXTERNAL</code> 和 <code>SPDLOG_COMPILED_LIB</code> 两个宏。<br>如果编译 spdlog 时用的是 <code>SPDLOG_FMT_EXTERNAL_HO</code>，项目中要定义 <code>FMT_HEADER_ONLY</code> 宏。</p>
+<h4 id="4-使用-std-format-代替-fmt"><a href="#4-使用-std-format-代替-fmt" class="headerlink" title="4. 使用 std::format 代替 fmt"></a>4. 使用 <code>std::format</code> 代替 fmt</h4><p>开启 <code>SPDLOG_USE_STD_FORMAT</code> 宏即可。</p>
+<h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><p><code>SPDLOG_NO_EXCEPTIONS</code></p>
+<h2 id="yaml-cpp"><a href="#yaml-cpp" class="headerlink" title="yaml-cpp"></a>yaml-cpp</h2><p><a target="_blank" rel="noopener" href="https://github.com/jbeder/yaml-cpp">https://github.com/jbeder/yaml-cpp</a><br>YAML 解析库</p>
+<h3 id="配置-2"><a href="#配置-2" class="headerlink" title="配置"></a>配置</h3><ul>
+<li>运行时库：<code>YAML_MSVC_SHARED_RT</code></li>
+<li>静态库需要的宏定义 <code>YAML_CPP_STATIC_DEFINE</code></li>
+</ul>
+<h2 id="shaderc"><a href="#shaderc" class="headerlink" title="shaderc"></a>shaderc</h2><p>集成了 glslang, SPIRV-Tools 和一些其他小功能。<br><a target="_blank" rel="noopener" href="https://github.com/google/shaderc">https://github.com/google/shaderc</a></p>
+<h3 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h3><p>没有 Release，但是有 Tag，commit message 也有写 <code>Finalize Shaderc v2024.2</code> 之类的。</p>
+<h3 id="下载依赖-1"><a href="#下载依赖-1" class="headerlink" title="下载依赖"></a>下载依赖</h3><p>执行 python 脚本下载依赖 <code>/utils/git-sync-deps</code></p>
+<h3 id="配置-3"><a href="#配置-3" class="headerlink" title="配置"></a>配置</h3><ul>
+<li>静态 &#x2F; 动态：<code>BUILD_SHARED_LIBS</code></li>
+<li>运行时库：<code>SHADERC_ENABLE_SHARED_CRT</code></li>
+</ul>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>包含了所有功能的静态库 build&#x2F;libshaderc&#x2F;libshaderc_combined.lib</p>
+<h2 id="SPIRV-Cross"><a href="#SPIRV-Cross" class="headerlink" title="SPIRV-Cross"></a>SPIRV-Cross</h2><p>SPIRV 反编译库<br><a target="_blank" rel="noopener" href="https://github.com/KhronosGroup/SPIRV-Cross">https://github.com/KhronosGroup/SPIRV-Cross</a></p>
+<h3 id="版本-1"><a href="#版本-1" class="headerlink" title="版本"></a>版本</h3><p>没有 Release，只有 Tag</p>
+<h3 id="配置-4"><a href="#配置-4" class="headerlink" title="配置"></a>配置</h3><ul>
+<li>静态 &#x2F; 动态：<code>SPIRV_CROSS_SHARED</code>, <code>SPIRV_CROSS_STATIC</code></li>
+<li>运行时库：没有 Cmake 配置，只能改 CMakeLists</li>
+</ul>
+<h3 id="链接-1"><a href="#链接-1" class="headerlink" title="链接"></a>链接</h3><p><code>spirv-cross-core</code>, <code>spirv-cross-glsl</code>, <code>spirv-cross-hlsl</code>, <code>spirv-cross-msl</code></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Engineering/" class="print-no-link">#Engineering</a>
+      
+        <a href="/tags/CMake/" class="print-no-link">#CMake</a>
+      
+        <a href="/tags/Eigen/" class="print-no-link">#Eigen</a>
+      
+        <a href="/tags/fswatch/" class="print-no-link">#fswatch</a>
+      
+        <a href="/tags/GLEW/" class="print-no-link">#GLEW</a>
+      
+        <a href="/tags/OpenCV/" class="print-no-link">#OpenCV</a>
+      
+        <a href="/tags/Premake/" class="print-no-link">#Premake</a>
+      
+        <a href="/tags/shaderc/" class="print-no-link">#shaderc</a>
+      
+        <a href="/tags/spdlog/" class="print-no-link">#spdlog</a>
+      
+        <a href="/tags/SPIRV-Cross/" class="print-no-link">#SPIRV-Cross</a>
+      
+        <a href="/tags/yaml-cpp/" class="print-no-link">#yaml-cpp</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/30/CMakeAndMSBuild/" title="命令行调用 CMake 与 MSBuild">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">命令行调用 CMake 与 MSBuild</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/13/GAMES101Review/" title="GAMES101 拾遗">
+                        <span class="hidden-mobile">GAMES101 拾遗</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '73c477bf6559b64f62cbb1797b739f43'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  var relativeDate = function() {
+    var updatedTime = document.getElementById('updated-time');
+    if (updatedTime) {
+      var text = updatedTime.textContent;
+      var reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})/;
+      var matchs = text.match(reg);
+      if (matchs) {
+        var relativeTime = moment(matchs[0]).fromNow();
+        updatedTime.textContent = text.replace(reg, relativeTime);
+      }
+      updatedTime.style.display = '';
+    }
+  };
+  Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/moment.min.js', function() {
+    if (!'zh-cn'.startsWith('en')) {
+      Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/locale/zh-cn.min.js', function() {
+        relativeDate();
+      });
+    } else {
+      relativeDate();
+    }
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

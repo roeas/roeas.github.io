@@ -1,0 +1,751 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Hinageshi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="角色控制，包括移动与多段跳朝向1234float forward &#x3D; Input.GetAxisRaw(&quot;Horizontal&quot;);&#x2F;&#x2F; 返回-1,0,1if (forward !&#x3D; 0) &#123; transform.localScale &#x3D; new Vector3(forward, 1, 1);&#125;  移动1234567891011public float sp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Archive】Make Your First Game">
+<meta property="og:url" content="http://example.com/2021/08/12/MakeYourFirstGame/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="角色控制，包括移动与多段跳朝向1234float forward &#x3D; Input.GetAxisRaw(&quot;Horizontal&quot;);&#x2F;&#x2F; 返回-1,0,1if (forward !&#x3D; 0) &#123; transform.localScale &#x3D; new Vector3(forward, 1, 1);&#125;  移动1234567891011public float sp">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/MakeYourFirstGame/img.png">
+<meta property="article:published_time" content="2021-08-12T14:15:58.000Z">
+<meta property="article:modified_time" content="2024-07-13T09:49:49.223Z">
+<meta property="article:author" content="Hinageshi">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/MakeYourFirstGame/img.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【Archive】Make Your First Game - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":32,"cursorChar":"","loop":false,"scope":"home"},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Hinageshi 的駄菓子屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Background.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【Archive】Make Your First Game</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-12 22:15" pubdate>
+          2021年8月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【Archive】Make Your First Game</h1>
+            
+              <p id="updated-time" class="note note-info" style="display: none">
+                
+                  
+                    本文最后更新于 2024-07-13T17:49:49+08:00
+                  
+                  
+
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="角色控制，包括移动与多段跳"><a href="#角色控制，包括移动与多段跳" class="headerlink" title="角色控制，包括移动与多段跳"></a>角色控制，包括移动与多段跳</h2><h3 id="朝向"><a href="#朝向" class="headerlink" title="朝向"></a>朝向</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-built_in">float</span> forward = Input.GetAxisRaw(<span class="hljs-string">&quot;Horizontal&quot;</span>);<span class="hljs-comment">// 返回-1,0,1</span><br><span class="hljs-keyword">if</span> (forward != <span class="hljs-number">0</span>) &#123;<br> transform.localScale = <span class="hljs-keyword">new</span> Vector3(forward, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> speed;<br><span class="hljs-keyword">private</span> Rigidbody2D body;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span>&#123;<br> body = GetComponent&lt;Rigidbody2D&gt;();<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">FixedUpDate</span>()</span>&#123;<br> <span class="hljs-built_in">float</span> horizontalMove = Input.GetAxis(<span class="hljs-string">&quot;Horizontal&quot;</span>);<br> body.velocity =<br>        <span class="hljs-keyword">new</span> Vector2(horizontalMove * speed * Time.fixedDeltaTime, body.velocity.y);<br> <span class="hljs-comment">// Input.GetAxis()返回-1f至1f的浮点，这么做会使角色移动产生“脚滑”的现象</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="跳跃"><a href="#跳跃" class="headerlink" title="跳跃"></a>跳跃</h3><p>以跳跃作为核心玩法。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> jumpForce;<br><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> finalJumpCount;<span class="hljs-comment">// 用于重置jumpCount</span><br><span class="hljs-keyword">public</span> Transform footPoint;<span class="hljs-comment">// 用于检测脚是否与地面接触</span><br><span class="hljs-keyword">public</span> LayerMask ground;<span class="hljs-comment">// 代表地面Layer</span><br><br><span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> jumpCount;<span class="hljs-comment">// 代表玩家当前可跳跃的次数</span><br><span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> jumpPressed = <span class="hljs-literal">false</span>, isJumped = <span class="hljs-literal">false</span>;<br><span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> time = <span class="hljs-number">-1f</span>;<span class="hljs-comment">// 用于确保jumpPressed随时处于正确状态的计时器</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span> &#123;<br>    <span class="hljs-comment">// 在Update中确保能敏感地接收到起跳请求，再去FixedUpDate中进行Rigidbody相关的运算</span><br>    <span class="hljs-keyword">if</span> (Input.GetButtonDown(<span class="hljs-string">&quot;Jump&quot;</span>) &amp;&amp; jumpCount &gt; <span class="hljs-number">0</span>) &#123;<br>        jumpPressed = <span class="hljs-literal">true</span>;<br>        time = Time.time + <span class="hljs-number">0.05f</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (time &gt;= <span class="hljs-number">0</span> &amp;&amp; time &lt; Time.time) &#123;<br>        <span class="hljs-comment">// 经过一个短暂的计时后重置jumpPressed</span><br>        jumpPressed = <span class="hljs-literal">false</span>;<br>        time = <span class="hljs-number">-1f</span>;<br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">FixedUpdate</span>()</span>&#123;<br>    <span class="hljs-keyword">if</span> (Physics2D.OverlapCircle(footPoint.position, <span class="hljs-number">0.1f</span>, ground)) &#123;<br>        <span class="hljs-comment">// 落地时重置跳跃相关的参数，而且要避免刚起跳时OverlapCircle检测到地面</span><br>        jumpCount = finalJumpCount;<br>        isJumped = <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (jumpPressed) &#123;<br>        <span class="hljs-comment">// 跳跃</span><br>        <span class="hljs-keyword">if</span> (Physics2D.OverlapCircle(footPoint.position, <span class="hljs-number">0.3f</span>, ground)) &#123;<br>            <span class="hljs-comment">// 地面起跳</span><br>            body.velocity = <span class="hljs-keyword">new</span> Vector2(body.velocity.x, jumpForce);<br>            jumpCount--;<br>            jumpPressed = <span class="hljs-literal">false</span>;<br>            isJumped = <span class="hljs-literal">true</span>;<span class="hljs-comment">// 代表经过跳跃离开地面</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (isJumped) &#123;<br>            <span class="hljs-comment">// 空中起跳</span><br>            body.velocity = <span class="hljs-keyword">new</span> Vector2(body.velocity.x, jumpForce);<br>            jumpCount--;<br>            jumpPressed = <span class="hljs-literal">false</span>;<br>        &#125;<br>        <span class="hljs-comment">// 剩余情况为不经跳跃离开地面且没有消灭敌人/吃到樱桃时请求跳跃，不予起跳</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="玩家与收集物的交互，与敌人的交互。"><a href="#玩家与收集物的交互，与敌人的交互。" class="headerlink" title="玩家与收集物的交互，与敌人的交互。"></a>玩家与收集物的交互，与敌人的交互。</h2><h3 id="收集品、简单的UI"><a href="#收集品、简单的UI" class="headerlink" title="收集品、简单的UI"></a>收集品、简单的UI</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">using</span> UnityEngine.UI;<br><br><span class="hljs-keyword">public</span> Text diamondCount;<br><span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> diamond = <span class="hljs-number">0</span>;<br><br><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnTriggerEnter2D</span>(<span class="hljs-params">Collider2D collision</span>)</span> &#123;<br>    <span class="hljs-keyword">if</span> (collision.CompareTag(<span class="hljs-string">&quot;Cherry&quot;</span>)) &#123;<br>        Destroy(collision.gameObject);<br>        jumpCount++;<br>        isJumped = <span class="hljs-literal">true</span>;<br>        <span class="hljs-comment">// 无论怎样离开地面，吃到樱桃后解锁跳跃条件</span><br>    &#125;<br>    <span class="hljs-keyword">if</span> (collision.CompareTag(<span class="hljs-string">&quot;Diamond&quot;</span>)) &#123;;<br>        Destroy(collision.gameObject);<br>        diamond++;<br>        diamondCount.text = diamond.ToString();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="敌人"><a href="#敌人" class="headerlink" title="敌人"></a>敌人</h3><h4 id="父类"><a href="#父类" class="headerlink" title="父类"></a>父类</h4><p>首先创建所有敌人类的父类 Enemy，其中播放死亡动画和摧毁对象的方法对所有敌人来说都是通用的。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Enemy</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">protected</span> Animator animator;<br>    <span class="hljs-keyword">protected</span> Rigidbody2D rb;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> deathID;<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        animator = GetComponent&lt;Animator&gt;();<br>        rb = GetComponent&lt;Rigidbody2D&gt;();<br>        deathID = Animator.StringToHash(<span class="hljs-string">&quot;Death&quot;</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Death</span>()</span> &#123;<br>        GetComponent&lt;Collider2D&gt;().enabled = <span class="hljs-literal">false</span>;<br>        rb.constraints = RigidbodyConstraints2D.FreezeAll;<br>        <span class="hljs-comment">// 沿所有轴冻结旋转和移动，保证Enemy不至于一边被玩家一脚踹飞一边播放死亡动画</span><br>        animator.SetTrigger(deathID);<br>    &#125;<br><br>    <span class="hljs-comment">// 在Death动画的结尾调用</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Disappear</span>()</span> &#123;<br>        Destroy(gameObject);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Frog类"><a href="#Frog类" class="headerlink" title="Frog类"></a>Frog类</h4><p>Frog 需要在一定范围内以跳跃的方式移动，这个坐标由他的两个子物体 leftPoint 和 rightPoint 提供。使用动画事件方便地使函数在正确的时机被调用。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">EnemyFrog</span> : <span class="hljs-title">Enemy</span><br>&#123;<br>    <span class="hljs-keyword">public</span> Transform leftPoint, rightPoint;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> speed;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> jumpForce;<br>    <span class="hljs-keyword">public</span> LayerMask ground;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> forwardLeft;<br><br>    <span class="hljs-keyword">private</span> Rigidbody2D body;<br>    <span class="hljs-keyword">private</span> Collider2D collisionBox;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> leftX, rightX;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> jumpingID, fallingID;<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">override</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        <span class="hljs-keyword">base</span>.Start();<br>        body = GetComponent&lt;Rigidbody2D&gt;();<br>        collisionBox = GetComponent&lt;Collider2D&gt;();<br>        leftX = leftPoint.position.x;<br>        rightX = rightPoint.position.x;<br>        Destroy(leftPoint.gameObject);<br>        Destroy(rightPoint.gameObject);<br>        <span class="hljs-comment">// 获取移动范围坐标后即可摧毁标志对象</span><br>        jumpingID = Animator.StringToHash(<span class="hljs-string">&quot;Jumping&quot;</span>);<br>        fallingID = Animator.StringToHash(<span class="hljs-string">&quot;Falling&quot;</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span> (animator.GetBool(jumpingID) &amp;&amp; body.velocity.y &lt;= <span class="hljs-number">0</span>) &#123;<br>            animator.SetBool(jumpingID, <span class="hljs-literal">false</span>);<br>            animator.SetBool(fallingID, <span class="hljs-literal">true</span>);<br>        &#125;<br>        <span class="hljs-keyword">if</span> (animator.GetBool(fallingID) &amp;&amp; collisionBox.IsTouchingLayers(ground)) &#123;<br>            animator.SetBool(fallingID, <span class="hljs-literal">false</span>);<br>            body.velocity = <span class="hljs-keyword">new</span> Vector2(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">movement</span>()</span> &#123;<span class="hljs-comment">// 在Idel动画的结尾调用</span><br>        <span class="hljs-keyword">if</span> (forwardLeft) &#123;<span class="hljs-comment">// 朝左</span><br>            <span class="hljs-keyword">if</span> (transform.position.x &lt;= leftX) &#123;<span class="hljs-comment">// 需要转身</span><br>                forwardLeft = <span class="hljs-literal">false</span>;<br>                transform.localScale = <span class="hljs-keyword">new</span> Vector3(<span class="hljs-number">-1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>);<br>            &#125;<br>            body.velocity = <span class="hljs-keyword">new</span> Vector2(-transform.localScale.x * speed, jumpForce);<br>            animator.SetBool(jumpingID, <span class="hljs-literal">true</span>);<br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<span class="hljs-comment">// 朝右</span><br>            <span class="hljs-keyword">if</span> (transform.position.x &gt;= rightX) &#123;<span class="hljs-comment">// 需要转身</span><br>                forwardLeft = <span class="hljs-literal">true</span>;<br>                transform.localScale = <span class="hljs-keyword">new</span> Vector3(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>);<br>            &#125;<br>            body.velocity = <span class="hljs-keyword">new</span> Vector2(-transform.localScale.x * speed, jumpForce);<br>            animator.SetBool(jumpingID, <span class="hljs-literal">true</span>);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="PlayerController类"><a href="#PlayerController类" class="headerlink" title="PlayerController类"></a>PlayerController类</h4><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnCollisionEnter2D</span>(<span class="hljs-params">Collision2D collision</span>)</span> &#123;<br>    <span class="hljs-keyword">if</span> (collision.gameObject.CompareTag(<span class="hljs-string">&quot;Enemy&quot;</span>)) &#123;<span class="hljs-comment">// 触敌</span><br>        <span class="hljs-keyword">if</span> (animator.GetBool(fallingID) &amp;&amp;<br>            transform.position.y - collision.transform.position.y &gt; <span class="hljs-number">0.35f</span>) &#123;<br><br>            <span class="hljs-comment">// 保证触敌时两者处于一个相对垂直的位置</span><br>            Enemy enemy = collision.gameObject.GetComponent&lt;Enemy&gt;();<br>            enemy.Death();<br>            body.velocity = <span class="hljs-keyword">new</span> Vector2(body.velocity.x, jumpForce);<br>            jumpCount = finalJumpCount;<br>            isJumped = <span class="hljs-literal">true</span>;<br>            <span class="hljs-comment">// 无论怎样离开地面，消灭敌人后解锁跳跃条件</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<span class="hljs-comment">// 受伤</span><br>            isHurt = <span class="hljs-literal">true</span>;<span class="hljs-comment">// 用于切换动画以及屏蔽受伤状态下移动相关的输入</span><br>            <span class="hljs-keyword">if</span> (transform.position.x &lt;= collision.transform.position.x) &#123;<span class="hljs-comment">// 右侧触敌</span><br>                body.velocity = <span class="hljs-keyword">new</span> Vector2(<span class="hljs-number">-10f</span>, body.velocity.y + jumpForce * <span class="hljs-number">0.7f</span>);<br>            &#125;<br>            <span class="hljs-keyword">else</span> &#123;<span class="hljs-comment">// 左侧接敌</span><br>                body.velocity = <span class="hljs-keyword">new</span> Vector2(<span class="hljs-number">10f</span>, body.velocity.y + jumpForce * <span class="hljs-number">0.7f</span>);<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="对话框、运动透视、菜单中调节音量。"><a href="#对话框、运动透视、菜单中调节音量。" class="headerlink" title="对话框、运动透视、菜单中调节音量。"></a>对话框、运动透视、菜单中调节音量。</h2><h3 id="对话框提示"><a href="#对话框提示" class="headerlink" title="对话框提示"></a>对话框提示</h3><p>对话框的渐入渐出和移动由录制动画实现，通用的 Dialog 类挂载在一个 Trigger 上，负责动画的切换。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Dialog</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> GameObject dialog;<br><br>    <span class="hljs-keyword">private</span> Animator animator;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> enterID,exitID;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        animator = dialog.GetComponent&lt;Animator&gt;();<br>        enterID = Animator.StringToHash(<span class="hljs-string">&quot;Enter&quot;</span>);<br>        exitID = Animator.StringToHash(<span class="hljs-string">&quot;Exit&quot;</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnTriggerStay2D</span>(<span class="hljs-params">Collider2D collision</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span> (collision.CompareTag(<span class="hljs-string">&quot;Player&quot;</span>) &amp;&amp; !dialog.activeSelf) &#123;<br>            dialog.SetActive(<span class="hljs-literal">true</span>);<br>            animator.SetBool(enterID, <span class="hljs-literal">true</span>);<br>            animator.SetBool(exitID, <span class="hljs-literal">false</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnTriggerExit2D</span>(<span class="hljs-params">Collider2D collision</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span> (collision.CompareTag(<span class="hljs-string">&quot;Player&quot;</span>)) &#123;<br>            animator.SetBool(enterID, <span class="hljs-literal">false</span>);<br>            animator.SetBool(exitID, <span class="hljs-literal">true</span>);<br>            Invoke(<span class="hljs-string">&quot;setActiceFalse&quot;</span>, <span class="hljs-number">0.1f</span>);<span class="hljs-comment">//等待退出动画结束</span><br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setActiceFalse</span>()</span> &#123;<br>        dialog.SetActive(<span class="hljs-literal">false</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="运动透视"><a href="#运动透视" class="headerlink" title="运动透视"></a>运动透视</h3><p>将这个脚本挂载在某一层背景上。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Parallax</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">new</span> Transform camera;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> moveRate;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> lockY;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> bgStartX, bgStartY;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> cmStartX, cmStartY;<br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span>&#123;<br>        bgStartX = transform.position.x;<br>        bgStartY = transform.position.y;<br><br>        cmStartX = camera.position.x;<br>        cmStartY = camera.position.y;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span>&#123;<br>        <span class="hljs-built_in">float</span> difX = camera.position.x - cmStartX;<br>        <span class="hljs-built_in">float</span> difY = camera.position.y - cmStartY;<br><br>        <span class="hljs-keyword">if</span> (lockY) &#123;<br>            transform.position = <span class="hljs-keyword">new</span> Vector2(bgStartX + difX * moveRate,<br>                transform.position.y);<br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<br>            transform.position =<br>                <span class="hljs-keyword">new</span> Vector2(bgStartX + difX, bgStartY + difY) * moveRate;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="音量调节"><a href="#音量调节" class="headerlink" title="音量调节"></a>音量调节</h3><p>将所有 Source 输出到一个 Mixer 内，若想更新 Mixer 的属性（比如音量），需先将音频组检视面板中的属性暴露出来再 Set。再将该函数交由一 SliderUI 调用，动态地传入值即可。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetAudioVolume</span>(<span class="hljs-params"><span class="hljs-built_in">float</span> volume</span>)</span> &#123;<br>    audioMixer.SetFloat(<span class="hljs-string">&quot;MainVolume&quot;</span>, volume);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><p><a target="_blank" rel="noopener" href="https://space.bilibili.com/370283072/channel/seriesdetail?sid=212003">M_Studio</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Input.html">Input</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Rigidbody2D.html">Rigidbody2D</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Physics2D.html">Physics2D</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/RigidbodyConstraints2D.html">RigidbodyConstraints2D</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Time-timeScale.html">timeScale</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/C/" class="print-no-link">#C#</a>
+      
+        <a href="/tags/Unity/" class="print-no-link">#Unity</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/19/SunnyLand/" title="【Archive】Sunny Land, a platformmer game">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【Archive】Sunny Land, a platformmer game</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/07/SoulForging/" title="【Archive】Soul Forging, a Minecraft mod">
+                        <span class="hidden-mobile">【Archive】Soul Forging, a Minecraft mod</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'c69f0b1a4fee5178652e49e1b6b17682'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  var relativeDate = function() {
+    var updatedTime = document.getElementById('updated-time');
+    if (updatedTime) {
+      var text = updatedTime.textContent;
+      var reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})/;
+      var matchs = text.match(reg);
+      if (matchs) {
+        var relativeTime = moment(matchs[0]).fromNow();
+        updatedTime.textContent = text.replace(reg, relativeTime);
+      }
+      updatedTime.style.display = '';
+    }
+  };
+  Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/moment.min.js', function() {
+    if (!'zh-cn'.startsWith('en')) {
+      Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/locale/zh-cn.min.js', function() {
+        relativeDate();
+      });
+    } else {
+      relativeDate();
+    }
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

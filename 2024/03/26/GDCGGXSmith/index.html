@@ -1,0 +1,942 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Hinageshi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="原标题PBR Diffuse Lighting for GGX+Smith Microsurfaces 通用的微表面 BRDF通用形式宏观表面的 BRDF 只是许多微表面的平均。  通用形式$\int_\Omega\rho_m(L,V,m)D(m)G_2(L,V,m)\frac{m\cdot L}{|N\cdot L|}\frac{m\cdot V}{|N\cdot V|}dm$  $\int_\">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GGX+Smith 微表面 PBR 漫反射光照">
+<meta property="og:url" content="http://example.com/2024/03/26/GDCGGXSmith/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="原标题PBR Diffuse Lighting for GGX+Smith Microsurfaces 通用的微表面 BRDF通用形式宏观表面的 BRDF 只是许多微表面的平均。  通用形式$\int_\Omega\rho_m(L,V,m)D(m)G_2(L,V,m)\frac{m\cdot L}{|N\cdot L|}\frac{m\cdot V}{|N\cdot V|}dm$  $\int_\">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/GDCGGXSmith/img.png">
+<meta property="article:published_time" content="2024-03-26T08:59:27.000Z">
+<meta property="article:modified_time" content="2024-07-18T04:08:16.609Z">
+<meta property="article:author" content="Hinageshi">
+<meta property="article:tag" content="Math">
+<meta property="article:tag" content="Rendering">
+<meta property="article:tag" content="PBR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/GDCGGXSmith/img.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>GGX+Smith 微表面 PBR 漫反射光照 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":32,"cursorChar":"","loop":false,"scope":"home"},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Hinageshi 的駄菓子屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Background.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">GGX+Smith 微表面 PBR 漫反射光照</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-26 16:59" pubdate>
+          2024年3月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="GDC"
+        id="heading-339858e00bf6afd7ef35f791be09d802" role="tab" data-toggle="collapse" href="#collapse-339858e00bf6afd7ef35f791be09d802"
+        aria-expanded="true"
+      >
+        GDC
+        <span class="list-group-count">(4)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-339858e00bf6afd7ef35f791be09d802"
+           role="tabpanel" aria-labelledby="heading-339858e00bf6afd7ef35f791be09d802">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/03/26/GDCGGXSmith/" title="GGX+Smith 微表面 PBR 漫反射光照"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">GGX+Smith 微表面 PBR 漫反射光照</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/23/GDCTheRenderingofInside/" title="低复杂，高保真：INSIDE 中的渲染"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">低复杂，高保真：INSIDE 中的渲染</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/01/18/GDCOverwatchECS/" title="守望先锋中的 ECS 系统"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">守望先锋中的 ECS 系统</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/11/21/GDCSpiderManLighting/" title="漫威蜘蛛侠中的程序化光照"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">漫威蜘蛛侠中的程序化光照</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">GGX+Smith 微表面 PBR 漫反射光照</h1>
+            
+              <p id="updated-time" class="note note-info" style="display: none">
+                
+                  
+                    本文最后更新于 2024-07-18T12:08:16+08:00
+                  
+                  
+
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="原标题"><a href="#原标题" class="headerlink" title="原标题"></a>原标题</h2><p><em>PBR Diffuse Lighting for GGX+Smith Microsurfaces</em></p>
+<h2 id="通用的微表面-BRDF"><a href="#通用的微表面-BRDF" class="headerlink" title="通用的微表面 BRDF"></a>通用的微表面 BRDF</h2><h3 id="通用形式"><a href="#通用形式" class="headerlink" title="通用形式"></a>通用形式</h3><p>宏观表面的 BRDF 只是许多微表面的平均。</p>
+<ul>
+<li><p><strong>通用形式</strong><br>$\int_\Omega\rho_m(L,V,m)D(m)G_2(L,V,m)\frac{m\cdot L}{|N\cdot L|}\frac{m\cdot V}{|N\cdot V|}dm$</p>
+</li>
+<li><p>$\int_\Omega dm$<br>对半球面上所有微表面法线积分。</p>
+</li>
+<li><p>$\rho_m(L,V,m)$<br>单个微表面如何响应，即法线方向的 BRDF，通常为理想镜面或理想漫反射。</p>
+</li>
+<li><p>$D(m)$<br>法线分布概率密度函数。</p>
+</li>
+<li><p>$G_2(L,V,m)$<br>微表面 m 同时看到光源和观察者的概率。</p>
+</li>
+<li><p>$D(m)G_2(L,V,m)$<br>同时被光源和观察者可见的表面的概率密度函数。<br>$G_2$ 由两个方向（光源、观察者）的可视性 $G_1$ 推出。</p>
+</li>
+<li><p>$\frac{\lang m\cdot L\rang}{|N\cdot L|}\frac{\lang m\cdot V\rang}{|N\cdot V|}$<br>表面对光源来说有多大，表面对观察者来说有多大。</p>
+</li>
+<li><p>$D(m)G_2(L,V,m)\frac{\lang m\cdot L\rang}{|N\cdot L|}\frac{\lang m\cdot V\rang}{|N\cdot V|}$<br>从 L 出发，经过单次反射，到达 V 的概率密度函数。<br>$\int_\Omega D(m)G_2(L,V,m)\frac{\lang m\cdot L\rang}{|N\cdot L|}\frac{\lang m\cdot V\rang}{|N\cdot V|}dm\leq 1$</p>
+</li>
+</ul>
+<h3 id="如何获得-specular"><a href="#如何获得-specular" class="headerlink" title="如何获得 specular"></a>如何获得 specular</h3><ul>
+<li><p>微表面 BRDF 是完美镜面</p>
+</li>
+<li><p>光线只在 m &#x3D; H，的情况下反射</p>
+</li>
+<li><p>在数学上，BRDF 是经过缩放的狄拉克函数$\delta_m(H,m)$</p>
+</li>
+<li><p>一般情况：<br>$\int_\Omega\rho(L,V,N)cos\Theta_VdV&#x3D;1$</p>
+</li>
+<li><p><strong>更改积分域以计算 $\delta$：</strong><br>$\int_\Omega k\delta_m(H,m)cos\Theta_V\frac{dV}{dm}dm&#x3D;1$</p>
+</li>
+<li><p>$k\delta_m(H,m)$ 是纯镜面 BRDF</p>
+</li>
+<li><p>k 是缩放参数</p>
+</li>
+<li><p>$\frac{dV}{dm}$ 是 V 相对于 m 的变化速度</p>
+</li>
+</ul>
+<p><strong>就结论而言，$\frac{dV}{dm}&#x3D;4H\cdot V$</strong><br>这是通过将 dv 从单位球投影至半径为 |L + V| 的球面上得到的。<br><img src="/img/GDCGGXSmith/dVdm.png" srcset="/img/loading.gif" lazyload alt="dVdm"></p>
+<p>由于 m &#x3D; H 以及 $H\cdot V&#x3D;H\cdot L$</p>
+<ul>
+<li>$\int_\Omega k\delta_m(H,m)cos\Theta_V\frac{dV}{dm}dm&#x3D;1$</li>
+<li>$\int_\Omega k\delta_m(H,m)(m\cdot V)(4H\cdot V)dm&#x3D;1$</li>
+<li>$k&#x3D;\frac{1}{4(H\cdot L)(H\cdot V)}$</li>
+</ul>
+<p><em>狄拉克函数在其定义域上的积分为 1</em><br><em>为什么 $(m\cdot V)(H\cdot V)$ 要以 $(H\cdot L)(H\cdot V)$ 的形式保留下来？</em></p>
+<ul>
+<li><p><strong>故，完美镜面 BRDF：</strong><br>$\frac{\delta_m(H,m)}{4(H\cdot L)(H\cdot V)}$</p>
+</li>
+<li><p>加上菲涅尔项<br>$\rho_m(L,Vm)&#x3D;F(L,m)\frac{\delta_H(m)}{4|H\cdot L||H\cdot V|}$</p>
+</li>
+<li><p>整合<br>$\int_\Omega\rho_m(L,V,m)D(m)G_2(L,V,m)\frac{\lang m\cdot L\rang}{|N\cdot L|}\frac{\lang m\cdot V\rang}{|N\cdot V|}dm$</p>
+</li>
+<li><p>代入得：<br>$\int_\Omega\frac{F(L,m)\delta_m(H,m)}{4|H\cdot L||H\cdot V|}D(m)G_2(L,V,m)\frac{\lang m\cdot L\rang}{|N\cdot L|}\frac{\lang m\cdot V\rang}{|N\cdot V|}dm$</p>
+</li>
+<li><p>由于狄拉克函数在积分中被消掉，以及 m &#x3D; H 得：<br>Specular BRDF &#x3D; $\frac{F(L,H)D(H)G_2(L,V,H)}{4|H\cdot L||H\cdot V|}$</p>
+</li>
+</ul>
+<h3 id="扩展至-diffuse"><a href="#扩展至-diffuse" class="headerlink" title="扩展至 diffuse"></a>扩展至 diffuse</h3><ul>
+<li>兰伯特漫反射：<br>$\rho_m(L,V,m)&#x3D;\frac{1}{\pi}$</li>
+<li>无闭合解。<br><em>闭合指的是一个表达式包含有限个标准运算，极限、差分、积分都不算标准运算。</em></li>
+</ul>
+<h2 id="GGX-Smith-微表面模型的漫反射模拟"><a href="#GGX-Smith-微表面模型的漫反射模拟" class="headerlink" title="GGX+Smith 微表面模型的漫反射模拟"></a>GGX+Smith 微表面模型的漫反射模拟</h2><h3 id="Shadowing-masking-函数"><a href="#Shadowing-masking-函数" class="headerlink" title="Shadowing &#x2F; masking 函数"></a>Shadowing &#x2F; masking 函数</h3><h4 id="不相关-vs-高度相关的-G"><a href="#不相关-vs-高度相关的-G" class="headerlink" title="不相关 vs 高度相关的 G"></a>不相关 vs 高度相关的 G</h4><p>$G_2(L,V,m)&#x3D;G_1(L,m)G_1(V,m)$<br>不太现实，但是在实践中的效果很好。</p>
+<blockquote>
+<p> Higher points more likely visible to both 𝐿 and 𝑉 (and lower points less likely)</p>
+</blockquote>
+<ul>
+<li><p>高度不相关的 G 会使镜面反射变暗</p>
+<ul>
+<li>越粗糙误差越大</li>
+<li>越接近掠射角误差越大</li>
+<li><img src="/img/GDCGGXSmith/vs.png" srcset="/img/loading.gif" lazyload></li>
+</ul>
+</li>
+<li><p>角度相关性</p>
+<ul>
+<li>当 L &#x3D; V，应有 $G_2(V,V,m)&#x3D;G_1(V,m)$</li>
+<li>不相关：$G_2(V,V,m)&#x3D;G_1(V,m)^2$</li>
+<li>相关：$G_2$ 介于两者之间</li>
+</ul>
+</li>
+</ul>
+<h4 id="Smith-shadowing-masking"><a href="#Smith-shadowing-masking" class="headerlink" title="Smith shadowing &#x2F; masking"></a>Smith shadowing &#x2F; masking</h4><ul>
+<li><p>前面没看懂，中间没看懂，但是：</p>
+</li>
+<li><p>$\Lambda(V)&#x3D;\frac{1}{2}(\frac{\sqrt{\alpha^2+(1-\alpha^2)(N\cdot V)^2}}{N\cdot V}-1)$</p>
+</li>
+<li><p>$G_1(V)&#x3D;\frac{1}{1+\Lambda(V)}$</p>
+</li>
+<li><p>$G_2(L,V)&#x3D;\frac{1}{1+\Lambda(L)+\Lambda(V)}$</p>
+</li>
+<li><p>$G_1(L)G_1(V)&#x3D;\frac{1}{1+\Lambda(L)+\Lambda(V)+\Lambda(L)\Lambda(V)}$</p>
+</li>
+<li><p>$G_1(V)&#x3D;$<br>$\frac{2N\cdot V}{\sqrt{\alpha^2+(1-\alpha^2)(N\cdot V)^2}+N\cdot V}$</p>
+</li>
+<li><p>$G_2(L,V)&#x3D;$<br>$\frac{2(N\cdot L)(N\cdot V)}{N\cdot V\sqrt{\alpha^2+(1-\alpha^2)(N\cdot L)^2}+N\cdot L\sqrt{\alpha^2+(1-\alpha^2)(N\cdot V)^2}}$</p>
+</li>
+</ul>
+<h4 id="新的-Smith-GGX-G-2-近似"><a href="#新的-Smith-GGX-G-2-近似" class="headerlink" title="新的 Smith + GGX $G_2$ 近似"></a>新的 Smith + GGX $G_2$ 近似</h4><ul>
+<li>$G_1$ 的分母<ul>
+<li>$\sqrt{\alpha^2+(1-\alpha^2)(N\cdot V)^2}+N\cdot V$</li>
+<li>$\sqrt{lerp((N\cdot V)^2,1,\alpha^2)}+N\cdot V$</li>
+<li><strong>近似：</strong></li>
+<li>$\sqrt{lerp((N\cdot V)^2,1,\alpha^2)}\approx lerp(N\cdot V,1,\alpha)$</li>
+</ul>
+</li>
+<li>故，$G_1(V)\approx\frac{2N\cdot V}{N\cdot V(2-\alpha)+\alpha}$<ul>
+<li>和 Unreal 一致：</li>
+<li>$G_1(V)\approx\frac{N\cdot V}{N\cdot V(1-k)+k}$, $k&#x3D;\frac{\alpha}{2}$</li>
+</ul>
+</li>
+<li>通过近似的 $G_1$ 近似来求得 $G_2$<ul>
+<li>$G_2(L,V)&#x3D;\frac{2|N\cdot L||N\cdot V|}{lerp(2|N\cdot L||N\cdot V|,|N\cdot L|+|N\cdot V|,\alpha)}$</li>
+<li>代入 BRDF，约分：</li>
+<li>$BRDF&#x3D;\frac{F(L,H)D(H)}{2lerp(2|N\cdot L||N\cdot V|,|N\cdot L|+|N\cdot V|,\alpha)}$</li>
+</ul>
+</li>
+<li>开销：<ul>
+<li>$G_1(L)G_1(V)$：$\frac{F(L,H)D(H)}{(|N\cdot L|(2-\alpha)+\alpha)(|N\cdot V|(2-\alpha)+\alpha)}$（**~4 cycles**）</li>
+<li>$G_2(L,V)$：**~6 cycles**</li>
+<li>高度相关产生的额外成本可以忽略不计。</li>
+</ul>
+</li>
+<li>质量：<ul>
+<li>在粗糙材质的掠射角上效果更好。</li>
+<li><img src="/img/GDCGGXSmith/quality.png" srcset="/img/loading.gif" lazyload></li>
+<li><img src="/img/GDCGGXSmith/diff1.png" srcset="/img/loading.gif" lazyload alt="高度相关近似 VS 不相关近似"></li>
+<li><img src="/img/GDCGGXSmith/diff1.png" srcset="/img/loading.gif" lazyload alt="高度相关准确 VS 高度相关近似"></li>
+<li>感觉是否相关带来的差异比是否准确要大一些。</li>
+</ul>
+</li>
+</ul>
+<h3 id="路径追踪"><a href="#路径追踪" class="headerlink" title="路径追踪"></a>路径追踪</h3><p>讨论了一些光追中，BRDF 中菲涅尔项对漫反射以及高光部分的权重问题，先略过。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/GDC/" class="category-chain-item">GDC</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Math/" class="print-no-link">#Math</a>
+      
+        <a href="/tags/Rendering/" class="print-no-link">#Rendering</a>
+      
+        <a href="/tags/PBR/" class="print-no-link">#PBR</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/02/CPP/" title="现代 C++ 随记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">现代 C++ 随记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/01/18/GDCOverwatchECS/" title="守望先锋中的 ECS 系统">
+                        <span class="hidden-mobile">守望先锋中的 ECS 系统</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '511bd16be73432476b3ef5fe00d34405'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  var relativeDate = function() {
+    var updatedTime = document.getElementById('updated-time');
+    if (updatedTime) {
+      var text = updatedTime.textContent;
+      var reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})/;
+      var matchs = text.match(reg);
+      if (matchs) {
+        var relativeTime = moment(matchs[0]).fromNow();
+        updatedTime.textContent = text.replace(reg, relativeTime);
+      }
+      updatedTime.style.display = '';
+    }
+  };
+  Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/moment.min.js', function() {
+    if (!'zh-cn'.startsWith('en')) {
+      Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/locale/zh-cn.min.js', function() {
+        relativeDate();
+      });
+    } else {
+      relativeDate();
+    }
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

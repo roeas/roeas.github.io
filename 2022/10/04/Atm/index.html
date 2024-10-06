@@ -1,0 +1,840 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Hinageshi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="资料原理总览：06.游戏中地形大气和云的渲染(下) | GAMES104-现代游戏引擎：从入门到实践一个简短的公式推导：[Rendering] 基于物理的大气渲染一个详细的推导和最暴力且直观的实现：【实战】从零实现一套完整单次大气散射$I&#x3D;I_S\beta(\lambda)\gamma(\theta)\sum_{P\in\overline{AB}}T(\overline{CP})T(\o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大气散射">
+<meta property="og:url" content="http://example.com/2022/10/04/Atm/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="资料原理总览：06.游戏中地形大气和云的渲染(下) | GAMES104-现代游戏引擎：从入门到实践一个简短的公式推导：[Rendering] 基于物理的大气渲染一个详细的推导和最暴力且直观的实现：【实战】从零实现一套完整单次大气散射$I&#x3D;I_S\beta(\lambda)\gamma(\theta)\sum_{P\in\overline{AB}}T(\overline{CP})T(\o">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Atm/img.png">
+<meta property="article:published_time" content="2022-10-03T16:52:58.000Z">
+<meta property="article:modified_time" content="2024-07-17T10:19:03.974Z">
+<meta property="article:author" content="Hinageshi">
+<meta property="article:tag" content="AtmosphericScattering">
+<meta property="article:tag" content="GlobalIllumination">
+<meta property="article:tag" content="Math">
+<meta property="article:tag" content="Rendering">
+<meta property="article:tag" content="VolumeRendering">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/Atm/img.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>大气散射 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":32,"cursorChar":"","loop":false,"scope":"home"},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Hinageshi 的駄菓子屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Background.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">大气散射</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-04 00:52" pubdate>
+          2022年10月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">大气散射</h1>
+            
+              <p id="updated-time" class="note note-info" style="display: none">
+                
+                  
+                    本文最后更新于 2024-07-17T18:19:03+08:00
+                  
+                  
+
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="资料"><a href="#资料" class="headerlink" title="资料"></a>资料</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>总览：<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1i3411T7QL/">06.游戏中地形大气和云的渲染(下) | GAMES104-现代游戏引擎：从入门到实践</a><br>一个简短的公式推导：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/36498679">[Rendering] 基于物理的大气渲染</a><br>一个详细的推导和最暴力且直观的实现：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/237502022">【实战】从零实现一套完整单次大气散射</a><br>$I&#x3D;I_S\beta(\lambda)\gamma(\theta)\sum_{P\in\overline{AB}}T(\overline{CP})T(\overline{PA})\rho(h)ds$<br>$T(\overline{CP})T(\overline{PA})&#x3D;exp\lbrace-\beta(\lambda)(D(\overline{CP})+D(\overline{PA}))\rbrace$<br>这篇文章也不错：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/559466624">基于物理的大气体渲染从理论到实践（一）</a><br>天空为什么白天是蓝的，黄昏是红的：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/210745877">更通俗易懂之天空为啥那么蓝——瑞利散射</a><br>一个有趣的实验：<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Te411A76j/">麻省理工教授：答应我，如果不是为瑞利散射，永远不要同时抽四根烟！！！</a><br>一篇详尽过头的文章，我的建议是当小说看：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/548799663">游戏魔法编程：unity 实现完整大气散射</a></p>
+<h3 id="Accurate-Atmospheric-Scattering"><a href="#Accurate-Atmospheric-Scattering" class="headerlink" title="Accurate Atmospheric Scattering"></a>Accurate Atmospheric Scattering</h3><p>只考虑单次散射，预计算并拟合了任意两点间的光学距离：<br><a target="_blank" rel="noopener" href="https://developer.nvidia.com/gpugems/gpugems2/part-ii-shading-lighting-and-shadows/chapter-16-accurate-atmospheric-scattering">GPU Gems 2 Chapter 16. Accurate Atmospheric Scattering</a><br>这也是 Unity 的做法：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/448521659">在 Unity 中制作 Procedural Sky</a><br>解除了 Sean O’Neil 实现中标准海拔、大气高度和地球半径之间比例的限制。<br><a target="_blank" rel="noopener" href="https://atomworld.wordpress.com/2014/12/22/flexible-physical-accurate-atmosphere-scattering-part-1/">Flexible Physical Accurate Atmosphere Scattering</a></p>
+<h3 id="Precomputed-Atmospheric-Scattering"><a href="#Precomputed-Atmospheric-Scattering" class="headerlink" title="Precomputed Atmospheric Scattering"></a>Precomputed Atmospheric Scattering</h3><p>预计算了<strong>多重散射</strong>，考虑了相机在太空的情况，考虑了臭氧层对光线的吸收，考虑了太阳对着色点 Direct Irradiance 的贡献，考虑了大气对着色点 Indirect Irradiance 的贡献，考虑了看向着色点时视线光路上发生的散射，考虑了位于阴影中的大气部分产生的 LightShafts:<br><a target="_blank" rel="noopener" href="https://ebruneton.github.io/precomputed_atmospheric_scattering/">Precomputed Atmospheric Scattering</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/76844937">Precomputed Atmospheric Scattering</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/380531599">Precomputed Atmosphere Scaterring</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/410000571">【Unreal 从 0 到 1】【第四章：天气系统】4.2，从零开始的物理大气散射</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/344296264">解读 GLSL 的大气散射函数学习笔记</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/498287539">Precomputed Atmospheric Scattering Shader 代码笔记</a><br><a target="_blank" rel="noopener" href="https://ebruneton.github.io/precomputed_atmospheric_scattering/atmosphere/reference/test_report.html">CPU 精确计算与 GPU 近似的对比</a><br><a target="_blank" rel="noopener" href="https://ebruneton.github.io/precomputed_atmospheric_scattering/atmosphere/reference/model_test.cc.html">对不同近似的对比的描述</a> Test cases 部分</p>
+<h4 id="如何在-win-VS2022-编译该工程"><a href="#如何在-win-VS2022-编译该工程" class="headerlink" title="如何在 win + VS2022 编译该工程"></a>如何在 win + VS2022 编译该工程</h4><p><a target="_blank" rel="noopener" href="https://github.com/ebruneton/precomputed_atmospheric_scattering">ebruneton&#x2F;precomputed_atmospheric_scattering</a><br>文档中的 <code>make demo</code> 是 linux 的编译方式，windows 的编译方式藏在：<br> <code>precomputed_atmospheric_scattering/platform/windows/</code>。<br><code>download_build_run.bat</code> 会依次运行 <code>download_dependencies.bat</code>，<code>generate_project.bat</code>，<code>build.bat</code>，<code>run.bat</code>。中间如果出错会直接关闭命令提示符窗口，手动一个个试才能知道具体报错。<br><strong>generate_project.bat</strong><br>报错：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">CMake Error at CMakeLists.txt:<span class="hljs-number">78</span> (project):<br>Failed to run MSBuild command:<br>    MSBuild.exe<br>to get the value of VCTargetsPath:<br>-- Configuring incomplete, errors occurred!<br></code></pre></td></tr></table></figure>
+<p>将 MSBuild.exe 加入环境变量即可，我的在 <code>C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin</code>。<br>报错：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">无法找到 Visual Studio <span class="hljs-number">2017</span> 的生成工具(平台工具集 =“v141”)。若要使用 v141 生成工具进行生成，<br>请安装 Visual Studio <span class="hljs-number">2017</span> 生成工具。或者，可以升级到当前 Visual Studio 工具，方式是通过选择<br>“项目”菜单或右键单击该解决方案，然后选择“重定解决方案目标”。<br></code></pre></td></tr></table></figure>
+<p>VisualStudio Installer，修改，单个组件，搜索 2017，勾选 <code>MSVC v141 - VS2017 C++ x64/x86 生成工具(v14.16)</code>。<br>报错：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">无法启动程序 /ALL_BUILD 拒绝访问<br></code></pre></td></tr></table></figure>
+<p>右键项目设为启动项目。</p>
+<h3 id="A-Scalable-and-Production-Ready-Sky-and-Atmosphere-Rendering-Technique"><a href="#A-Scalable-and-Production-Ready-Sky-and-Atmosphere-Rendering-Technique" class="headerlink" title="A Scalable and Production Ready Sky and Atmosphere Rendering Technique"></a>A Scalable and Production Ready Sky and Atmosphere Rendering Technique</h3><p>UE 的新做法，更少的预计算开销，更少的 LUT 存储开销，可实时更新的大气参数。<br><a target="_blank" rel="noopener" href="https://sebh.github.io/publications/">A Scalable and Production Ready Sky and Atmosphere Rendering Technique</a> 2020 那两篇<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/150963038">UE4 新版大气实时渲染-论文导读</a><br>功能演示视频：<br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1hv411z7c5/">[功能介绍]深度探索新天空大气系统 | Exploring the depths of the new Sky&amp;Atmosphere system</a></p>
+<h3 id="大镖客中的天气"><a href="#大镖客中的天气" class="headerlink" title="大镖客中的天气"></a>大镖客中的天气</h3><p><a target="_blank" rel="noopener" href="http://advances.realtimerendering.com/s2019/index.htm">Siggraph 2019</a> 最下面一篇<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/91359071">[siggraph19]《荒野大镖客2》的大气云雾技术</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/76273445">【SIGGRAPH2019】荒野大镖客 救赎 2 中的天气系统</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/337895373">图形学研究：《荒野大镖客2》</a></p>
+<h3 id="其他资料"><a href="#其他资料" class="headerlink" title="其他资料"></a>其他资料</h3><p>关于渲染方程：<br><a target="_blank" rel="noopener" href="http://mathinfo.univ-reims.fr/IMG/pdf/PreethamSig2003CourseNotes.pdf">Modeling Skylight and Aerial Perspective</a><br><a target="_blank" rel="noopener" href="http://developer.amd.com/wordpress/media/2012/10/ATI-LightScattering.pdf">Rendering Outdoor Light Scattering in Real Time</a></p>
+<p>关于几种新做法的系列文章：<br><a target="_blank" rel="noopener" href="https://www.zhihu.com/column/c_1366713442364088320">大气散射相关</a></p>
+<p>这篇是 Eric Bruneton 那篇的进一步改进：<br><a target="_blank" rel="noopener" href="http://www.cescg.org/CESCG-2009/papers/PragueCUNI-Elek-Oskar09.pdf">Rendering Parametrizable Planetary Atmospheres with Multiple Scattering in Real-Time</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/345916725">【译】【大气散射】[Elek09] 实时渲染参数化的、有多次散射的行星大气</a></p>
+<p>寒霜引擎的实现，Oskar Elek 那篇进一步改进：<br><a target="_blank" rel="noopener" href="https://sebh.github.io/publications/">Physically Based Sky, Atmosphere &amp; Cloud Rendering in Frostbite</a> 2016 那篇<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/349472710">【译】【寒霜引擎】【大气渲染】基于物理的天空、大气和云的渲染（上）</a></p>
+<p>英特尔的实现，包括完整的大气+地形+阴影+后处理。<br><a target="_blank" rel="noopener" href="https://www.intel.com/content/dam/develop/external/us/en/documents/outdoor-light-scattering-update.pdf">Outdoor Light Scattering Update</a><br><a target="_blank" rel="noopener" href="https://github.com/GameTechDev/OutdoorLightScattering">GameTechDev&#x2F;OutdoorLightScattering</a></p>
+<p>纯拟合：<br><a target="_blank" rel="noopener" href="https://cgg.mff.cuni.cz/projects/SkylightModelling/">An Analytic Model for Full Spectral Sky-Dome Radiance</a> 最后一篇</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="Single-Scattering"><a href="#Single-Scattering" class="headerlink" title="Single Scattering"></a>Single Scattering</h3><p>$I&#x3D;I_S\beta(\lambda)\gamma(\theta)\sum_{P\in\overline{AB}}T(\overline{CP})T(\overline{PA})\rho(h)ds$<br>$T(\overline{CP})T(\overline{PA})&#x3D;exp\lbrace-\beta(\lambda)(D(\overline{CP})+D(\overline{PA}))\rbrace$<br>单个 Fragment Shader 即可实现，LightDir 和 CameraPos 由 uniform 传入，viewDir 由 skyBox 的坐标得到。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br></pre></td><td class="code"><pre><code class="hljs c">$input v_worldPos<br><br>uniform vec4 u_cameraPos[<span class="hljs-number">1</span>];<br>uniform vec4 u_LightDir[<span class="hljs-number">1</span>];<br><br><span class="hljs-comment">// 单位：km</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _PlanetRadius 6371.0</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _AtmosphereHeight 80.0</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _DensityScaleHeight vec2(7.994, 1.2)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _PlanetCenter vec3(0.0, -_PlanetRadius, 0.0)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _ExtinctionR vec3(0.0058, 0.0135, 0.0331)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _ExtinctionM vec3(0.0200, 0.0200, 0.0200)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _MieG 0.98</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _IncomingLight vec3(12.0, 12.0, 12.0)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _PI 3.1415926</span><br><br><span class="hljs-type">float</span> <span class="hljs-title function_">GetAltitude</span><span class="hljs-params">(vec3 position)</span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">abs</span>(length(position - _PlanetCenter) - _PlanetRadius);<br>&#125;<br><br><span class="hljs-comment">// 射线球面相交函数</span><br>vec2 <span class="hljs-title function_">RaySphereIntersection</span><span class="hljs-params">(vec3 rayOrigin, vec3 rayDir,</span><br><span class="hljs-params">    vec3 sphereCenter, <span class="hljs-type">float</span> sphereRadius)</span> &#123;<br>    rayOrigin -= sphereCenter;<br>    <span class="hljs-type">float</span> a = dot(rayDir, rayDir);<br>    <span class="hljs-type">float</span> b = <span class="hljs-number">2.0</span> * dot(rayOrigin, rayDir);<br>    <span class="hljs-type">float</span> c = dot(rayOrigin, rayOrigin) - (sphereRadius * sphereRadius);<br>    <span class="hljs-type">float</span> d = b * b - <span class="hljs-number">4.0</span> * a * c;<br>    <span class="hljs-keyword">if</span> (d &lt; <span class="hljs-number">0.0</span>) &#123;<br>    	<span class="hljs-keyword">return</span> vec2(<span class="hljs-number">-1.0</span>, <span class="hljs-number">-1.0</span>);<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>    	d = <span class="hljs-built_in">sqrt</span>(d);<br>    	<span class="hljs-keyword">return</span> vec2(-b - d, -b + d) / (<span class="hljs-number">2.0</span> * a);<br>    &#125;<br>&#125;<br><br>vec2 <span class="hljs-title function_">RayEarthIntersection</span><span class="hljs-params">(vec3 rayOrigin, vec3 rayDir)</span> &#123;<br>    <span class="hljs-keyword">return</span> RaySphereIntersection(rayOrigin, rayDir, _PlanetCenter, _PlanetRadius);<br>&#125;<br><br>vec2 <span class="hljs-title function_">RayAtmosphereIntersection</span><span class="hljs-params">(vec3 rayOrigin, vec3 rayDir)</span> &#123;<br>    <span class="hljs-keyword">return</span> RaySphereIntersection(rayOrigin, rayDir, _PlanetCenter,  <br>        _PlanetRadius + _AtmosphereHeight);<br>&#125;<br><br><span class="hljs-comment">// 采样得到两点之间的光学深度。</span><br>vec2 <span class="hljs-title function_">DensitySampling</span><span class="hljs-params">(vec3 startPos, vec3 endPos)</span> &#123;<br>	vec2 opticalDepth = vec2_splat(<span class="hljs-number">0.0</span>);<br>	<br>	<span class="hljs-type">const</span> <span class="hljs-type">int</span> stepCount = <span class="hljs-number">16</span>;<br>	vec3 step = (endPos - startPos) / stepCount;<br>	<span class="hljs-type">float</span> stepSize = length(step);<br>	<br>	<span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> s = <span class="hljs-number">0</span>; s &lt;= stepCount; ++s) &#123;<br>		vec3 position = startPos + step * s;<br>		<span class="hljs-type">float</span> height = GetAltitude(position);<br>		vec2 localDensity = <span class="hljs-built_in">exp</span>(-vec2_splat(height) / _DensityScaleHeight.xy);<br>		<br>		<span class="hljs-comment">// 梯形法则</span><br>		<span class="hljs-type">float</span> weight = (s == <span class="hljs-number">0</span> || s == stepCount) ? <span class="hljs-number">0.5</span> : <span class="hljs-number">1.0</span>;<br>		opticalDepth += localDensity * stepSize * weight;<br>	&#125;<br>	<br>	<span class="hljs-keyword">return</span> opticalDepth;<br>&#125;<br><br><span class="hljs-comment">// 射线起点到射线与大气顶部交点之间的光学深度。</span><br>vec2 <span class="hljs-title function_">LightDensitySampleing</span><span class="hljs-params">(vec3 position, vec3 lightDir)</span> &#123;<br>    <span class="hljs-comment">// 在这里假设射线一定不与地表相交。</span><br>	vec2 atmIntersection = RayAtmosphereIntersection(position, lightDir);<br>	vec3 rayEnd = position + lightDir * atmIntersection.y;<br>	<span class="hljs-keyword">return</span> DensitySampling(position, rayEnd);<br>&#125;<br><br><span class="hljs-comment">// T(PC) * T(PA) * rho(h)</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">ComputeLocalInscattering</span><span class="hljs-params">(vec2 rho, vec2 densityCP, vec2 densityPA,</span><br><span class="hljs-params">    out vec3 localInscatterR, out vec3 localInscatterM)</span> &#123;<br>	vec2 densityCPA = densityCP + densityPA;<br>	<br>	vec3 Tr = densityCPA.x * _ExtinctionR;<br>	vec3 Tm = densityCPA.y * _ExtinctionM;<br><br>	vec3 extinction = <span class="hljs-built_in">exp</span>(-(Tr + Tm));<br>		<br>	localInscatterR = extinction * rho.x;<br>	localInscatterM = extinction * rho.y;<br>&#125;<br><br><span class="hljs-comment">// 相函数。</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">ApplyPhaseFunction</span><span class="hljs-params">(inout vec3 scatterR, inout vec3 scatterM, <span class="hljs-type">float</span> cosAngle)</span> &#123;<br>	<span class="hljs-type">float</span> cosAngle2  = cosAngle * cosAngle;<br>	<span class="hljs-type">float</span> g = _MieG;<br>	<span class="hljs-type">float</span> g2 = g * g;<br>	<br>	<span class="hljs-type">float</span> phase = (<span class="hljs-number">3.0</span> / (<span class="hljs-number">16.0</span> * _PI)) * (<span class="hljs-number">1.0</span> + cosAngle2);<br>	scatterR *= phase;<br><br>	phase = (<span class="hljs-number">1.0</span> / (<span class="hljs-number">4.0</span> * _PI)) *<br>        ((<span class="hljs-number">3.0</span> * (<span class="hljs-number">1.0</span> - g2)) / (<span class="hljs-number">2.0</span> * (<span class="hljs-number">2.0</span> + g2))) *<br>        ((<span class="hljs-number">1.0</span> + cosAngle2) / (<span class="hljs-built_in">pow</span>(<span class="hljs-built_in">abs</span>((<span class="hljs-number">1.0</span> + g2 - <span class="hljs-number">2.0</span> * g * cosAngle)), <span class="hljs-number">1.5</span>)));<br>	scatterM *= phase;<br>&#125;<br><br>vec3 <span class="hljs-title function_">IntegrateInscattering</span><span class="hljs-params">(vec3 rayStart, vec3 rayDir, <span class="hljs-type">float</span> rayLength, vec3 lightDir)</span> &#123;<br>	<span class="hljs-comment">// 在循环中累加</span><br>	vec3 scatterR  = vec3_splat(<span class="hljs-number">0.0</span>);<br>	vec3 scatterM  = vec3_splat(<span class="hljs-number">0.0</span>);<br>	vec2 densityPA = vec2_splat(<span class="hljs-number">0.0</span>);<br>	vec2 densityCP = vec2_splat(<span class="hljs-number">0.0</span>);<br>	<br>	<span class="hljs-comment">// P - 当前发生散射的位置</span><br>	<span class="hljs-comment">// A - 相机位置</span><br>	<span class="hljs-comment">// C - 与大气顶部的交点</span><br>	<span class="hljs-type">const</span> <span class="hljs-type">int</span> sampleCount = <span class="hljs-number">256</span>;<br>	vec3 step = rayDir * (rayLength / sampleCount);<br>	<span class="hljs-type">float</span> stepSize = length(step);<br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> s = <span class="hljs-number">0</span>; s &lt;= sampleCount; ++s) &#123;<br>		vec3 samplePos = rayStart + step * s;<br>		<br>        <span class="hljs-comment">// 这里只考虑单次散射，所以如果一个采样点对太阳不可见</span><br>        <span class="hljs-comment">// 他不会收到任何 Radiance 自然也不会散射出任何 Radiance。</span><br>		vec2 crtEarthIntersection = RayEarthIntersection(samplePos, lightDir);<br>		<span class="hljs-type">bool</span> vis = (crtEarthIntersection.x &gt; <span class="hljs-number">0.0</span> || crtEarthIntersection.y &gt; <span class="hljs-number">0.0</span>)<br>            ? <span class="hljs-literal">false</span> : <span class="hljs-literal">true</span>;<br>		<br>		<span class="hljs-keyword">if</span>(vis) &#123;<br>			densityCP = LightDensitySampleing(samplePos, lightDir);<br>			<br>            <span class="hljs-comment">// DensityPA 可以在每一次采样点 P 步进的时候累加，这样可以省下 PA 之间的积分。</span><br>			<span class="hljs-type">float</span> height = GetAltitude(samplePos);<br>			vec2 localDensityPA = <span class="hljs-built_in">exp</span>(-vec2_splat(height) / _DensityScaleHeight.xy);<br>			densityPA += localDensityPA * stepSize;<br>			<br>			<span class="hljs-comment">// localDensityPA 便是 rho(h)。</span><br>			vec3 localInscatterR;<br>			vec3 localInscatterM;<br>			ComputeLocalInscattering(localDensityPA, densityCP, densityPA,<br>            localInscatterR, localInscatterM);<br>			<br>			<span class="hljs-comment">// 梯形法则</span><br>			<span class="hljs-type">float</span> weight = (s == <span class="hljs-number">0</span> || s == sampleCount) ? <span class="hljs-number">0.5</span> : <span class="hljs-number">1.0</span>;<br>			scatterR += localInscatterR * stepSize * weight;<br>			scatterM += localInscatterM * stepSize * weight;<br>		&#125;<br>	&#125;<br>	ApplyPhaseFunction(scatterR, scatterM, dot(rayDir, lightDir));<br>	<span class="hljs-keyword">return</span> (scatterR * _ExtinctionR + scatterM * _ExtinctionM) * _IncomingLight.xyz;<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>	vec3 rayStart = u_cameraPos[<span class="hljs-number">0</span>].xyz;<br>	vec3 rayDir = normalize(v_worldPos.xyz);<br>	<br>    <span class="hljs-comment">// 当相机位于太空时，沿着视线方向将相机移动至大气顶部。</span><br>	vec2 atmIntersection = RayAtmosphereIntersection(rayStart, rayDir);<br>	<span class="hljs-keyword">if</span>(atmIntersection.x &gt; <span class="hljs-number">0.0</span>) &#123;<br>		rayStart +=  rayDir * atmIntersection.x;<br>		atmIntersection = RayAtmosphereIntersection(rayStart, rayDir);<br>	&#125;<br>	<span class="hljs-type">float</span> rayLength = atmIntersection.y;<br>	<br>	<span class="hljs-comment">// 如果射线与地表相交，更新射线的长度。</span><br>	vec2 earthIntersection = RayEarthIntersection(rayStart, rayDir);<br>	<span class="hljs-keyword">if</span> (earthIntersection.x &gt; <span class="hljs-number">0.0</span> || earthIntersection.y &gt; <span class="hljs-number">0.0</span>) &#123;<br>		rayLength = earthIntersection.x;<br>	&#125;<br>	<br>	vec3 lightDir = -normalize(u_LightDir[<span class="hljs-number">0</span>].xyz);<br>	vec3 radiance = IntegrateInscattering(rayStart, rayDir, rayLength, lightDir);<br>	<br>	gl_FragColor = vec4(radiance, <span class="hljs-number">1.0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Accurate-Atmospheric-Scattering-1"><a href="#Accurate-Atmospheric-Scattering-1" class="headerlink" title="Accurate Atmospheric Scattering"></a>Accurate Atmospheric Scattering</h3><p><a target="_blank" rel="noopener" href="https://developer.nvidia.com/gpugems/gpugems2/part-ii-shading-lighting-and-shadows/chapter-16-accurate-atmospheric-scattering">GPU Gems 2 Chapter 16. Accurate Atmospheric Scattering</a><br>提出了预计算光学深度的做法，高度视线天顶角夹角作为参数得到一张二维的 LUT，代表了任意一点到大气顶部的光学深度。如果要计算 AB 两点之间的光学深度，假设射线 AB 与大气顶部的交点为 C，Density(AB) 即 Density(AC) - Density(BC)。如果射线 AB 指向地表，因为 Density(AB) &#x3D;&#x3D; Density(BA)，这时计算 BA 两点之间的光学深度即可。<br>然后作者又将该 LUT 进行了拟合，公式如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">float</span> <span class="hljs-title">GetDensityFit</span><span class="hljs-params">(<span class="hljs-type">float</span> height, <span class="hljs-type">float</span> cosine)</span> </span>&#123;<br>    <span class="hljs-type">float</span> heightTerm = <span class="hljs-built_in">exp</span>(<span class="hljs-number">-4.0</span> * height);<br>    <span class="hljs-type">float</span> c = <span class="hljs-number">1.0</span> - cosine;<br>    <span class="hljs-type">float</span> cosineTerm =<br>        <span class="hljs-number">0.25</span> * <span class="hljs-built_in">exp</span>(<span class="hljs-number">-0.00287</span> + c * (<span class="hljs-number">0.459</span> + c * (<span class="hljs-number">3.38</span> + c * (<span class="hljs-number">-6.8</span> + c * <span class="hljs-number">5.25</span>))));<br>    <span class="hljs-keyword">return</span> heightTerm * cosineTerm;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Precomputed-Atmospheric-Scattering-1"><a href="#Precomputed-Atmospheric-Scattering-1" class="headerlink" title="Precomputed Atmospheric Scattering"></a>Precomputed Atmospheric Scattering</h3><p>内容比较多，建议直接看 <a target="_blank" rel="noopener" href="https://ebruneton.github.io/precomputed_atmospheric_scattering/">Precomputed Atmospheric Scattering</a>，这里只有一些笔记。<br>如果仅仅要实现大气散射，这篇文档包含了不少冗余的内容：</p>
+<ol>
+<li>额外提供了全光谱的渲染模式，而非只使用 RGB 对应的三种波长。</li>
+<li>为防止不合理的类型转换，自定义了所有物理量，但是 glsl 没有静态类型检查，所以所有物理量实际上都是 <code>float</code> 或 <code>vec3</code>。</li>
+<li>为验证各个 trick 的效果，额外提供了 CPU 版本的渲染模式，通过 <code>#include &quot;atmosphere/functions.glsl&quot;</code> 和一些宏定义，使得 CPU、GPU 共用同一份代码。</li>
+</ol>
+<p>所以 demo 和 reference 下的文件是基本不用看的。<br>还有一些：</p>
+<ol>
+<li>没有实际的 Shader 文件，所有 Shader 代码是在 model 类里用 string 拼出来的。</li>
+<li>model 类的初始化包括了最重要的 <code>AtmosphereParameters</code> 结构体的初始化。<br><a target="_blank" rel="noopener" href="https://github.com/roeas/PrecomputedAtmosphereTexture">roeas&#x2F;PrecomputedAtmosphereTexture</a> 是一个用来验证预计算贴图可行性的小工程，只计算了 Transmittance 并将其保存为图片，其中还包括了如何生成定义 <code>AtmosphereParameters</code> 对象的 GLSL 代码。</li>
+<li>Sharer 里同一张 Texture 名有时代表的是最终存储的 LUT，有时代表的是临时的 delta LUT，具体要看 CUP 端绑的是哪张。为防止混淆我做了一点整理：</li>
+</ol>
+<h4 id="存储并使用的贴图"><a href="#存储并使用的贴图" class="headerlink" title="存储并使用的贴图"></a>存储并使用的贴图</h4><ol>
+<li>transmittance_texture_</li>
+<li>scattering_texture_</li>
+<li>irradiance_texture_</li>
+<li>optional_single_mie_scattering_texture_（可选项）</li>
+</ol>
+<h4 id="临时贴图"><a href="#临时贴图" class="headerlink" title="临时贴图"></a>临时贴图</h4><ol>
+<li>delta_irradiance_texture</li>
+<li>delta_rayleigh_scattering_texture（仅用于计算二阶散射）</li>
+<li>delta_mie_scattering_texture（仅用于计算二阶散射）</li>
+<li>delta_scattering_density_texture</li>
+<li>delta_multiple_scattering_texture &#x3D; delta_rayleigh_scattering_texture（复用，仅用于计算三阶及以上的散射）</li>
+</ol>
+<h4 id="Transmittance"><a href="#Transmittance" class="headerlink" title="Transmittance"></a>Transmittance</h4><p><strong>输入</strong></p>
+<ol>
+<li>无</li>
+</ol>
+<p><strong>输出</strong></p>
+<ol>
+<li>transmittance_texture_</li>
+</ol>
+<h4 id="direct-Irradiance"><a href="#direct-Irradiance" class="headerlink" title="direct Irradiance"></a>direct Irradiance</h4><p><strong>输入</strong></p>
+<ol>
+<li>transmittance_texture_</li>
+</ol>
+<p><strong>输出</strong></p>
+<ol>
+<li>delta_irradiance_texture</li>
+<li>irradiance_texture_ &#x3D; 0.0</li>
+</ol>
+<h4 id="single-Scattering"><a href="#single-Scattering" class="headerlink" title="single Scattering"></a>single Scattering</h4><p><strong>输入</strong></p>
+<ol>
+<li>transmittance_texture_</li>
+</ol>
+<p><strong>输出</strong></p>
+<ol>
+<li>delta_rayleigh_scattering_texture</li>
+<li>delta_mie_scattering_texture</li>
+<li>scattering_texture_ &#x3D; rayleigh.rgb + mie.r</li>
+<li>optional_single_mie_scattering_texture_ &#x3D; mie（可选项）</li>
+</ol>
+<h4 id="Scattering-Density"><a href="#Scattering-Density" class="headerlink" title="Scattering Density"></a>Scattering Density</h4><p><strong>输入</strong></p>
+<ol>
+<li>transmittance_texture_</li>
+<li>delta_rayleigh_scattering_texture</li>
+<li>delta_mie_scattering_texture</li>
+<li>delta_multiple_scattering_texture</li>
+<li>delta_irradiance_texture</li>
+</ol>
+<p><strong>输出</strong></p>
+<ol>
+<li>delta_scattering_density_texture</li>
+</ol>
+<h4 id="indirect-Irradiance"><a href="#indirect-Irradiance" class="headerlink" title="indirect Irradiance"></a>indirect Irradiance</h4><p><strong>输入</strong></p>
+<ol>
+<li>delta_rayleigh_scattering_texture</li>
+<li>delta_mie_scattering_texture</li>
+<li>delta_multiple_scattering_texture</li>
+</ol>
+<p><strong>输出</strong></p>
+<ol>
+<li>delta_irradiance_texture</li>
+<li>irradiance_texture_</li>
+</ol>
+<h4 id="multiple-Scattering"><a href="#multiple-Scattering" class="headerlink" title="multiple Scattering"></a>multiple Scattering</h4><p><strong>输入</strong></p>
+<ol>
+<li>transmittance_texture_</li>
+<li>delta_scattering_density_texture</li>
+</ol>
+<p><strong>输出</strong></p>
+<ol>
+<li>delta_multiple_scattering_texture</li>
+<li>scattering_texture_</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AtmosphericScattering/" class="print-no-link">#AtmosphericScattering</a>
+      
+        <a href="/tags/GlobalIllumination/" class="print-no-link">#GlobalIllumination</a>
+      
+        <a href="/tags/Math/" class="print-no-link">#Math</a>
+      
+        <a href="/tags/Rendering/" class="print-no-link">#Rendering</a>
+      
+        <a href="/tags/VolumeRendering/" class="print-no-link">#VolumeRendering</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/06/Assimp/" title="Assimp">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Assimp</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/01/EStar/" title="【Archive】笔记 E 星计划">
+                        <span class="hidden-mobile">【Archive】笔记 E 星计划</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '830c04f293eb93f5b68e30fdb526f937'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  var relativeDate = function() {
+    var updatedTime = document.getElementById('updated-time');
+    if (updatedTime) {
+      var text = updatedTime.textContent;
+      var reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})/;
+      var matchs = text.match(reg);
+      if (matchs) {
+        var relativeTime = moment(matchs[0]).fromNow();
+        updatedTime.textContent = text.replace(reg, relativeTime);
+      }
+      updatedTime.style.display = '';
+    }
+  };
+  Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/moment.min.js', function() {
+    if (!'zh-cn'.startsWith('en')) {
+      Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/locale/zh-cn.min.js', function() {
+        relativeDate();
+      });
+    } else {
+      relativeDate();
+    }
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

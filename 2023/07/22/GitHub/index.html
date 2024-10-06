@@ -1,0 +1,854 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Hinageshi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="序言&emsp;&emsp;一些工作中常用的 git &#x2F; GitHub 概念整理。 License如何为自己的 Github 项目选择开源许可证？ 分支与开发对于正规一点的仓库，main branch 通常是受保护的，而我们的提交与推送都在单独的 branch 上进行。 查看分支 git branch 查看本地分支 git branch -r 查看远程分支 git branch -a 查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitHub 工作流">
+<meta property="og:url" content="http://example.com/2023/07/22/GitHub/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="序言&emsp;&emsp;一些工作中常用的 git &#x2F; GitHub 概念整理。 License如何为自己的 Github 项目选择开源许可证？ 分支与开发对于正规一点的仓库，main branch 通常是受保护的，而我们的提交与推送都在单独的 branch 上进行。 查看分支 git branch 查看本地分支 git branch -r 查看远程分支 git branch -a 查">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/GitHub/img.png">
+<meta property="article:published_time" content="2023-07-22T06:39:56.000Z">
+<meta property="article:modified_time" content="2024-07-17T10:13:11.697Z">
+<meta property="article:author" content="Hinageshi">
+<meta property="article:tag" content="Engineering">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="GitHub">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/GitHub/img.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>GitHub 工作流 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":32,"cursorChar":"","loop":false,"scope":"home"},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Hinageshi 的駄菓子屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Background.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">GitHub 工作流</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-07-22 14:39" pubdate>
+          2023年7月22日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">GitHub 工作流</h1>
+            
+              <p id="updated-time" class="note note-info" style="display: none">
+                
+                  
+                    本文最后更新于 2024-07-17T18:13:11+08:00
+                  
+                  
+
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h2><p>&emsp;&emsp;一些工作中常用的 git &#x2F; GitHub 概念整理。</p>
+<h2 id="License"><a href="#License" class="headerlink" title="License"></a>License</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/51331026">如何为自己的 Github 项目选择开源许可证？</a></p>
+<h2 id="分支与开发"><a href="#分支与开发" class="headerlink" title="分支与开发"></a>分支与开发</h2><p>对于正规一点的仓库，main branch 通常是受保护的，而我们的提交与推送都在单独的 branch 上进行。</p>
+<h3 id="查看分支"><a href="#查看分支" class="headerlink" title="查看分支"></a>查看分支</h3><ul>
+<li><code>git branch</code> 查看本地分支</li>
+<li><code>git branch -r</code> 查看远程分支</li>
+<li><code>git branch -a</code> 查看所有分支</li>
+</ul>
+<p>注意：如果远程新建了 branch，在本地运行 <code>git remote update origin</code> 之前，新的 branch 是不会显示在 <code>git branch -r</code> 上的。顺便在任意 branch 上的 <code>git pull</code> 也能实现这一效果。</p>
+<h3 id="操作分支"><a href="#操作分支" class="headerlink" title="操作分支"></a>操作分支</h3><ul>
+<li><code>git branch &lt;Name&gt;</code> 创建新的本地分支，不会 checkout</li>
+<li><code>git branch -m &lt;OldName&gt; &lt;NewName&gt;</code> 重命名本地分支</li>
+<li><code>git branch -d &lt;Name&gt;</code> 删除本地分支，不能删除当前分支</li>
+<li><code>git branch -d -r &lt;Name&gt;</code> 删除远程分支</li>
+</ul>
+<h3 id="关联分支"><a href="#关联分支" class="headerlink" title="关联分支"></a>关联分支</h3><ul>
+<li><code>git branch --set-upstream-to=origin/&lt;RemoteName&gt; &lt;LocalName&gt;</code> 将本地分支与远程分支关联起来</li>
+<li><code>git push --set-upstream origin &lt;RemoteName&gt;</code> 在远程新建分支，并将当前分支与远程新分支关联并推送。</li>
+</ul>
+<p>当然最简单的命令是本地识别到远程新分支后直接：<br><code>git checkout &lt;RemoteName&gt;</code><br>这个命令相当于<br><code>git checkout -b &lt;LocalName&gt; origin/&lt;RemoteName&gt;</code><br>即在本地新建分支，并且切换过去，并且与远程分支建立联系。</p>
+<ul>
+<li><code>git branch -vv</code> 查看本地分支核远程的对应关系</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>当你的 branch 准备好之后，就可以在 github 上发起 Pull Request，通知仓库相关的开发者检查代码以及帮忙合并。<br><img src="/img/GitHub/pr.png" srcset="/img/loading.gif" lazyload alt="Pull Request"></li>
+<li>add, rm, commit, push 之类的操作直接用 VS 的 <code>Git 更改</code> 视图，或者 <code>Git GUI</code> 就好，比命令方便得多。</li>
+<li>一般来说，除非很紧急的情况，请在获得 approve 和 review 之后再进行合并。</li>
+<li>选择 Sauash Merge 的方式将 pr 内多个 commit 合并为一个 commit 提交到 main 分支上。</li>
+</ul>
+<h2 id="冲突与合并"><a href="#冲突与合并" class="headerlink" title="冲突与合并"></a>冲突与合并</h2><h3 id="冲突"><a href="#冲突" class="headerlink" title="冲突"></a>冲突</h3><p>在发起 pr 后，github 会自动帮你检查该分支是否与主分支有冲突。简单的冲突可以直接在网页端解决，也可以回到本地进行如下操作：</p>
+<ul>
+<li><code>git checkout main</code> 切换回主分支</li>
+<li><code>git pull</code> 拉取最新的主分支</li>
+<li>可以顺便确认一下主分支的编译与运行是否正常</li>
+<li><code>git checkout &lt;Name&gt;</code> 切换回冲突分支</li>
+<li><code>git merge main</code> 合并主分支与冲突分支</li>
+<li>进入 <code>Git 更改</code> 视图解决冲突</li>
+<li>提交与推送，查看 github</li>
+</ul>
+<p>VS 提供了非常直观的图形界面来帮助我们解决冲突，在不确定如何解决的情况下可以联系冲突文件的上一个开发者帮忙合并。</p>
+<h3 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h3><ul>
+<li>想在当前 branch 应用某个别的 branch 的修改？同样是将对应的 branch pull 下来，merge 即可。</li>
+<li>不想 merge 整个 branch，或者 对方的 branch 还在开发中？使用 <code>git cherry-pick &lt;CommitHash&gt;</code> 以 commit 为粒度进行合并。</li>
+</ul>
+<h2 id="撤销"><a href="#撤销" class="headerlink" title="撤销"></a>撤销</h2><h3 id="工作区"><a href="#工作区" class="headerlink" title="工作区"></a>工作区</h3><p>本地所有未 add 的改动我都不想要，怎么撤销？</p>
+<ul>
+<li><code>git checkout .</code> 清除未 add 的所有改动，无法删除新增的文件。</li>
+</ul>
+<h3 id="暂存区"><a href="#暂存区" class="headerlink" title="暂存区"></a>暂存区</h3><p>本地 add 了的改动我也不想要，怎么撤销？</p>
+<ul>
+<li><code>git reset [--soft | --mixed | --hard] [HEAD]</code><ul>
+<li><code>--mixed</code> 默认模式，不删除改动代码，撤销 commit，撤销 add</li>
+<li><code>--soft</code> 不删除改动代码，撤销 commit，不撤销 add</li>
+<li><code>--hard</code> 删除改动代码，撤销 commit，撤销 add</li>
+<li><code>HEAD</code> 默认版本<ul>
+<li><code>HEAD</code> 和 <code>HEAD~0</code> 表示当前版本</li>
+<li><code>HEAD^</code> 和 <code>HEAD~1</code> 表示上一个版本</li>
+<li><code>HEAD^^</code> 和 <code>HEAD~2</code> 表示上上个版本</li>
+<li>依此类推</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>当我们需要撤销暂存区里的代码时，可以 <code>git reset</code> 将暂存区回退到工作区，然后 <code>git checkout .</code> 清除工作区。<br>或者直接 <code>git reset --hard</code> 把工作区和暂存区的修改全扬了，这个指令也能删除暂存区中的新增文件，反而删除不了工作区中的新增文件。</p>
+<h3 id="Git-更改视图"><a href="#Git-更改视图" class="headerlink" title="Git 更改视图"></a>Git 更改视图</h3><p>其实对工作区和暂存区的操作完全可以由 VS 提供的图形界面完成，非常方便直观。</p>
+<h3 id="Commit"><a href="#Commit" class="headerlink" title="Commit"></a>Commit</h3><p>上一个 commit 太蠢了，怎么撤销？</p>
+<ul>
+<li><code>git log</code> 查看提交日志，获取想要回退的 commit 哈希<br><em>ps: 按q退出</em></li>
+<li><code>git reset --soft &lt;CommitHash&gt;</code> 回退到 CommitHash 对应的 commit，即如果我要撤销 commit <code>balabala</code>，reset 的参数应该是 <code>balabala</code> 的上一个 commit 的哈希。<br>这种情况下我比较习惯用 <code>--soft</code> 将 commit 回退到暂存区而非默认的工作区，如果此时本地工作区有修改便能将他们区分开来。</li>
+</ul>
+<h3 id="Push"><a href="#Push" class="headerlink" title="Push"></a>Push</h3><p>commit 已经 push 上去了，怎么撤销？<br>在完成上一节之后，本地和远程其实处于一个冲突的状态，这时候只需要用<br><code>git push --force</code><br>强制将远程的 log 同步成本地的状态。</p>
+<h3 id="PR"><a href="#PR" class="headerlink" title="PR"></a>PR</h3><p>pr 已经 merge 了，怎么撤销？<br>在该 pr 的最下方的 merge 右侧找到 <code>Revert</code>，这个按钮会自动创建一个新的 branch 以及 pr，并且在其中将原 pr 内的所有修改反向操作。当然尽量不要出现这种不得不 Revert 的情况。<br><img src="/img/GitHub/revert.png" srcset="/img/loading.gif" lazyload alt="Revert"></p>
+<h2 id="Git-Submodule"><a href="#Git-Submodule" class="headerlink" title="Git Submodule"></a>Git Submodule</h2><p>git 提供了子模块功能将一个仓库集成为另一个仓库的子目录，并且让他们保持独立的提交。<br>子模块有一个非常抽象的特性：在主仓库中如果不使用 <code>submodule</code> 相关的指令，子模块的内容不会受到任何 git 指令的影响，不受主仓库切换分支的影响，甚至不会在主仓库 clone 之后出现在你的硬盘里。</p>
+<h3 id="添加子模块"><a href="#添加子模块" class="headerlink" title="添加子模块"></a>添加子模块</h3><p><code>git submodule add &lt;url&gt; &lt;path&gt;</code> 将 url 对应的仓库作为子模块添加到 path 路径下<br>添加子模块后主仓库会新增一个 <code>.gitmodules</code> 文件来描述子模块的信息。<br><img src="/img/GitHub/sb.png" srcset="/img/loading.gif" lazyload alt=".gitmodules"><br><em>不想让第三方库的不受控的更新破坏自己的主仓库？将其 fork 一份再集成为子模块即可。</em></p>
+<h3 id="Clone-带有子模块的仓库"><a href="#Clone-带有子模块的仓库" class="headerlink" title="Clone 带有子模块的仓库"></a>Clone 带有子模块的仓库</h3><p><code>git clone --recursive &lt;url&gt;</code> 将仓库内容以及子模块内容以及子模块的子模块内容递归地 clone 下来。<br>如果 clone 的时候没有带上 <code>--recursive</code> 参数，也可以在 clone 结束后在仓库目录运行 <code>git submodule update --init --recursive</code> 达成一样的效果。<br><code>--init</code> 参数用于在 <code>.git/config</code> 中注册子模块信息。</p>
+<h3 id="更新子模块"><a href="#更新子模块" class="headerlink" title="更新子模块"></a>更新子模块</h3><p><code>git submodule update</code> 将子模块更新到最新版本<br><code>git submodule update --remote</code> 将子模块更新到远程的最新版本<br>有什么区别呢，这里要引出子模块另一个非常抽象的特性：区分六个概念：<code>远程的主仓库</code>、<code>本地的主仓库</code>、<code>远程的子仓库</code>、<code>本地的子仓库</code>、<code>远程主仓库中的子仓库</code>、<code>本地主仓库中的子仓库</code>，这六个东西的版本是可以不同的。</p>
+<ul>
+<li>重点在于，主仓库中会存储一个子模块的 commit 版本，<code>git submodule update</code> 只能将 <code>本地的子仓库</code> 更新为 <code>本地主仓库中的子仓库</code> 版本。</li>
+<li>或者先使用 <code>git pull</code> 将 <code>本地主仓库中的子仓库</code> 版本更新为 <code>远程主仓库中的子仓库</code> 版本，再结合使用 <code>git submodule update</code> 即可将 <code>本地的子仓库</code> 更新为 <code>远程主仓库中的子仓库</code> 版本。<br><em>这也是 clone 之后，对着空空如也的子模块文件夹使用 <code>git submodule update</code> 即可将其更新的原因</em></li>
+<li>而 <code>git submodule update --remote</code> 实际上相当于进入每一个子模块执行 <code>git pull</code>，即将 <code>本地的子仓库</code> 更新为 <code>远程的子仓库</code>。</li>
+<li>最后一步，如何更新 <code>远程主仓库中的子仓库</code> 版本呢？在 <code>本地主仓库中的子仓库</code> 版本与 <code>本地的子仓库</code> 不同时，在主仓库执行 commit 即可更新 <code>本地主仓库中的子仓库</code> 版本。在 <code>远程主仓库中的子仓库</code> 与 <code>本地主仓库中的子仓库</code> 版本不同时，在主仓库执行 push 即可更新 <code>远程主仓库中的子仓库</code> 版本。</li>
+</ul>
+<h4 id="其他-1"><a href="#其他-1" class="headerlink" title="其他"></a>其他</h4><ul>
+<li>如果 <code>.gitmodules</code> 中的 url 有变或者新增，<code>git submodule update</code> 是无法将其更新的，保险起见，我们可以在每一次 update 子模块之前执行 <code>git submodule init</code>。</li>
+<li>只希望 <code>git submodule update --remote</code> 更新指定的子模块而非更新所有的子模块？使用 <code>git submodule update --remote &lt;Path&gt;</code> 指定子模块的路径即可。具体路径可以在 <code>.gitmodules</code> 文件中确认。</li>
+</ul>
+<h3 id="开发子模块"><a href="#开发子模块" class="headerlink" title="开发子模块"></a>开发子模块</h3><p>子模块最抽象的特性：当我们使用 <code>git submodule update</code> 对子模块进行更新之后，子模块实际上会处于一个游离的 branch 上并且这个 branch 是 main（不一定是 main，可以配置）的复制。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">git <span class="hljs-keyword">branch</span><br><span class="hljs-keyword"></span>* (HEAD detached <span class="hljs-built_in">at</span> abcdefg)<br>  main<br></code></pre></td></tr></table></figure>
+<p>在这个 branch 上的所有工作不但无法进行 push，甚至会在下一次 <code>git submodule update</code> 之后丢失。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>子模块的设计非常复杂且反直觉，好在我们可以通过一些项目规范和开发习惯来规避一些使用子模块带来的的副作用。</p>
+<ul>
+<li>对子模块的 main branch 进行保护，所有的开发都在特定的 branch 上进行，以避免游离的 HEAD 带来的困扰。</li>
+<li>开发子模块时，将其单独 clone 下来或者复制出来，总之不要直接在主仓库里的子模块里进行开发，以免主仓库检测到子模块 commit 的更新。</li>
+<li>在主仓库中更新子模块时，不要在更新 <code>主仓库中的子仓库</code> 版本之前更新依赖于子模块新版本的代码。</li>
+<li>主仓库与子模块同步更新之后视情况通知其他开发者，毕竟在主仓库 <code>git pull</code> 只会更新依赖于子模块新版本的代码，而无法更新子模块。</li>
+<li>当我们在主仓库 <code>git pull</code> 之后发现检测出了子模块的更新（这种情况属于 <code>本地的子仓库</code> 落后于 <code>本地主仓库中的子仓库</code> 版本），手动执行 submodule update。</li>
+<li>项目保证主仓库只使用子模块的特定分支，且当 <code>主仓库中的子仓库</code> 产生冲突时，以最新的子模块版本为准。</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://iphysresearch.github.io/blog/post/programing/git/git_submodule/">Git: submodule 子模块简明教程</a><br><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%AD%90%E6%A8%A1%E5%9D%97">7.11 Git 工具 - 子模块</a></p>
+<h2 id="GitHub-Actions"><a href="#GitHub-Actions" class="headerlink" title="GitHub Actions"></a>GitHub Actions</h2><p>GitHub Actions 是 github 推出的持续集成工具，简单来说就是可以在我们每次提交代码后在服务器上自动运行一些指令。我们不需要太复杂的 action，在仓库 build system 完备的基础上，只需要在代码提交后让 github 服务器自动运行我们的构建脚本并且检查仓库的构建与编译是否正常即可，以保证每一次 pr 都不会破坏仓库。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.github.com/zh/actions">官方文档</a><br>GitHub Actions 使用 YAML 来定义工作流程。 每个工作流都作为单独的 YAML 文件存储在 <code>.github/workflows/*.yml</code>。</p>
+<p>一个简单的例子：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">name:</span> <span class="hljs-string">build</span><br><br><span class="hljs-attr">on:</span><br>  <span class="hljs-attr">push:</span><br>    <span class="hljs-attr">branches:</span> [ <span class="hljs-string">&quot;main&quot;</span> ]<br>  <span class="hljs-attr">pull_request:</span><br>    <span class="hljs-attr">branches:</span> [ <span class="hljs-string">&quot;main&quot;</span> ]<br><br><span class="hljs-attr">jobs:</span><br>  <span class="hljs-attr">Windows:</span><br>    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">windows-latest</span><br>    <span class="hljs-attr">steps:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Check</span> <span class="hljs-string">out</span> <span class="hljs-string">repository</span> <span class="hljs-string">under</span> <span class="hljs-string">$GITHUB_WORKSPACE.</span><br>      <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v3</span><br>    <br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Add</span> <span class="hljs-string">MSBuild</span> <span class="hljs-string">to</span> <span class="hljs-string">PATH.</span><br>      <span class="hljs-attr">uses:</span> <span class="hljs-string">microsoft/setup-msbuild@v1.1</span><br><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Setup</span> <span class="hljs-string">project.</span><br>      <span class="hljs-attr">run:</span> <span class="hljs-string">$&#123;&#123;github.workspace&#125;&#125;/Setup.bat</span><br><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">x64</span> <span class="hljs-string">Debug.</span><br>      <span class="hljs-attr">run:</span> <span class="hljs-string">msbuild</span> <span class="hljs-string">$&#123;&#123;github.workspace&#125;&#125;/HinaEngine.sln</span> <span class="hljs-string">/p:Configuration=Debug</span> <span class="hljs-string">/p:Platform=x64</span><br>      <br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">x64</span> <span class="hljs-string">Release.</span><br>      <span class="hljs-attr">run:</span> <span class="hljs-string">msbuild</span> <span class="hljs-string">$&#123;&#123;github.workspace&#125;&#125;/HinaEngine.sln</span> <span class="hljs-string">/p:Configuration=Release</span> <span class="hljs-string">/p:Platform=x64</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="on"><a href="#on" class="headerlink" title="on"></a>on</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">on:</span><br>  <span class="hljs-attr">push:</span><br>    <span class="hljs-attr">branches:</span> [ <span class="hljs-string">&quot;main&quot;</span> ]<br>  <span class="hljs-attr">pull_request:</span><br>    <span class="hljs-attr">branches:</span> [ <span class="hljs-string">&quot;main&quot;</span> ]<br></code></pre></td></tr></table></figure>
+<p>代表这个 actions 会被 main branch 上的 push 和 pr 动作触发。</p>
+<h3 id="jobs"><a href="#jobs" class="headerlink" title="jobs"></a>jobs</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">jobs:</span><br>  <span class="hljs-attr">Windows:</span><br>    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">windows-latest</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>job 定义了最粗粒度的任务，默认每个 job 之间是并行的， 也可以用 <code>needs:</code> 来指定 job 之间的依赖关系，不过我们习惯使用多个 .yml 每个运行一个 job。</li>
+<li><code>Windows:</code> 是自定义的 job 名称，<code>runs-on:</code> 用于指定系统的运行环境，其他环境详见 <a target="_blank" rel="noopener" href="https://docs.github.com/zh/actions/using-workflows/workflow-syntax-for-github-actions#%E9%80%89%E6%8B%A9-github-%E6%89%98%E7%AE%A1%E7%9A%84%E8%BF%90%E8%A1%8C%E5%99%A8">选择 GitHub 托管的运行器</a>。</li>
+</ul>
+<h3 id="steps"><a href="#steps" class="headerlink" title="steps"></a>steps</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">steps:</span><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Check</span> <span class="hljs-string">out</span> <span class="hljs-string">repository</span> <span class="hljs-string">under</span> <span class="hljs-string">$GITHUB_WORKSPACE.</span><br>  <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v3</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Add</span> <span class="hljs-string">MSBuild</span> <span class="hljs-string">to</span> <span class="hljs-string">PATH.</span><br>  <span class="hljs-attr">uses:</span> <span class="hljs-string">microsoft/setup-msbuild@v1.1</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Setup</span> <span class="hljs-string">project.</span><br>  <span class="hljs-attr">run:</span> <span class="hljs-string">$&#123;&#123;github.workspace&#125;&#125;/Setup.bat</span><br><br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">x64</span> <span class="hljs-string">Debug.</span><br>  <span class="hljs-attr">run:</span> <span class="hljs-string">msbuild</span> <span class="hljs-string">$&#123;&#123;github.workspace&#125;&#125;/HinaEngine.sln</span> <span class="hljs-string">/p:Configuration=Debug</span> <span class="hljs-string">/p:Platform=x64</span><br>  <br><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Build</span> <span class="hljs-string">x64</span> <span class="hljs-string">Release.</span><br>  <span class="hljs-attr">run:</span> <span class="hljs-string">msbuild</span> <span class="hljs-string">$&#123;&#123;github.workspace&#125;&#125;/HinaEngine.sln</span> <span class="hljs-string">/p:Configuration=Release</span> <span class="hljs-string">/p:Platform=x64</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><code>steps:</code> 定义了该 job 中的每一步指令，在这里我们的流程是 1. 拉取仓库 2. 将 MSBuild 添加至环境变量 3. 构建与编译项目</li>
+<li>不同仓库中的一些操作是类似的，github 也在 <a target="_blank" rel="noopener" href="https://github.com/marketplace?type=actions">Actions 市场</a> 中提供了一系列封装好的命令。比如：<ul>
+<li><code>actions/checkout@v3</code> 代表了将仓库拉取到 <code>$GITHUB_WORKSPACE</code>。<a target="_blank" rel="noopener" href="https://github.com/marketplace/actions/checkout">Checkout</a></li>
+<li><code>microsoft/setup-msbuild@v1.1</code> 代表寻找 MSBuild 的路径，并且将其添加到环境变量。<a target="_blank" rel="noopener" href="https://github.com/marketplace/actions/setup-msbuild">setup-msbuild</a></li>
+<li>检查这些 action 的官方页面以获取最新的版本号。</li>
+</ul>
+</li>
+<li><code>$&#123;&#123;github.workspace&#125;&#125;</code> 代表了在命令行中该仓库的根目录。<code>Setup.bat</code> 是我们自定义的项目构建脚本，我们最终会在这个脚本中运行 premake 并且生成项目的 .sln 文件。</li>
+<li>接着在命令行中编译项目的 Debug 和 Release 版本。msbuild 命令行详见 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2022">MSBuild 命令行参考</a> 和 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2022">常用的 MSBuild 项目属性</a>。</li>
+</ul>
+<h3 id="Check-Failed"><a href="#Check-Failed" class="headerlink" title="Check Failed"></a>Check Failed</h3><p>Action 检查未通过是非常常见的，这时候只需要检查一下 Details 往往能帮我们定位错误。<br><img src="/img/GitHub/action.png" srcset="/img/loading.gif" lazyload alt=".gitmodules"><br>有时候他的报错会非常抽象，如果你认为这个 failed 可能不是你的问题，可以尝试在失败的 Actions 界面点击 <code>Re-run job</code> 按钮。</p>
+<h3 id="在-README-中添加状态徽章"><a href="#在-README-中添加状态徽章" class="headerlink" title="在 README 中添加状态徽章"></a>在 README 中添加状态徽章</h3><p>github actions 会将自身运行的状态生成为一张图片，我们可以用这个链接访问它：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/&lt;OWNER&gt;/</span>&lt;REPOSITORY&gt;<span class="hljs-regexp">/actions/</span>workflows<span class="hljs-regexp">/&lt;WORKFLOW_FILE&gt;/</span>badge.svg<br></code></pre></td></tr></table></figure>
+<p>然后将其作为图片塞入 markdown 语法中并指向仓库的 actions 界面：</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs md">[<span class="hljs-string">![win64_vs2022_msvc</span>](<span class="hljs-link">https://github.com/CatDogEngine/CatDogEngine/actions/workflows/win64_vs2022_msvc.yml/badge.svg?branch=main</span>)](<span class="hljs-link">https://github.com/CatDogEngine/CatDogEngine/actions/workflows/win64_vs2022_msvc.yml</span>)<br></code></pre></td></tr></table></figure>
+<p>效果：<br><a target="_blank" rel="noopener" href="https://github.com/CatDogEngine/CatDogEngine/actions/workflows/win64_vs2022_msvc.yml"><img src="https://github.com/CatDogEngine/CatDogEngine/actions/workflows/win64_vs2022_msvc.yml/badge.svg?branch=main" srcset="/img/loading.gif" lazyload alt="win64_vs2022_msvc"></a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Engineering/" class="print-no-link">#Engineering</a>
+      
+        <a href="/tags/Git/" class="print-no-link">#Git</a>
+      
+        <a href="/tags/GitHub/" class="print-no-link">#GitHub</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/13/GAMES101Review/" title="GAMES101 拾遗">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">GAMES101 拾遗</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/01/Song/" title="歌单">
+                        <span class="hidden-mobile">歌单</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '4c57d5e0ebaf6e9a519a3dbf1e7745d0'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  var relativeDate = function() {
+    var updatedTime = document.getElementById('updated-time');
+    if (updatedTime) {
+      var text = updatedTime.textContent;
+      var reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})/;
+      var matchs = text.match(reg);
+      if (matchs) {
+        var relativeTime = moment(matchs[0]).fromNow();
+        updatedTime.textContent = text.replace(reg, relativeTime);
+      }
+      updatedTime.style.display = '';
+    }
+  };
+  Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/moment.min.js', function() {
+    if (!'zh-cn'.startsWith('en')) {
+      Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/locale/zh-cn.min.js', function() {
+        relativeDate();
+      });
+    } else {
+      relativeDate();
+    }
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

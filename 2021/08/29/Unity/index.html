@@ -1,0 +1,820 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Hinageshi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背包系统&emsp;&emsp;背包 GUI 的实现、ScriptableObject、数据的存储与读取。 层级结构  Bag 挂载 BagOnDrag 脚本 Grid 挂载 Grid Layout Group 组件，使其子物体（Slot）整齐地排放 Slot 挂载 Slot 脚本，更改其子物体（Item）以实现拖拽 Item 挂载 ItemOnDrag 脚本和 CanvasGroup 组件，以及">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Archive】背包，卡肉，镜头抖动，有限状态机">
+<meta property="og:url" content="http://example.com/2021/08/29/Unity/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="背包系统&emsp;&emsp;背包 GUI 的实现、ScriptableObject、数据的存储与读取。 层级结构  Bag 挂载 BagOnDrag 脚本 Grid 挂载 Grid Layout Group 组件，使其子物体（Slot）整齐地排放 Slot 挂载 Slot 脚本，更改其子物体（Item）以实现拖拽 Item 挂载 ItemOnDrag 脚本和 CanvasGroup 组件，以及">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/Unity/img.png">
+<meta property="article:published_time" content="2021-08-29T04:32:26.000Z">
+<meta property="article:modified_time" content="2024-07-13T10:20:01.969Z">
+<meta property="article:author" content="Hinageshi">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/Unity/img.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【Archive】背包，卡肉，镜头抖动，有限状态机 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":32,"cursorChar":"","loop":false,"scope":"home"},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Hinageshi 的駄菓子屋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/Background.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【Archive】背包，卡肉，镜头抖动，有限状态机</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-29 12:32" pubdate>
+          2021年8月29日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【Archive】背包，卡肉，镜头抖动，有限状态机</h1>
+            
+              <p id="updated-time" class="note note-info" style="display: none">
+                
+                  
+                    本文最后更新于 2024-07-13T18:20:01+08:00
+                  
+                  
+
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="背包系统"><a href="#背包系统" class="headerlink" title="背包系统"></a>背包系统</h2><p>&emsp;&emsp;背包 GUI 的实现、ScriptableObject、数据的存储与读取。</p>
+<h2 id="层级结构"><a href="#层级结构" class="headerlink" title="层级结构"></a>层级结构</h2><p><img src="/img/Unity/jg.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><strong>Bag</strong> 挂载 BagOnDrag 脚本</li>
+<li><strong>Grid</strong> 挂载 Grid Layout Group 组件，使其子物体（Slot）整齐地排放</li>
+<li><strong>Slot</strong> 挂载 Slot 脚本，更改其子物体（Item）以实现拖拽</li>
+<li><strong>Item</strong> 挂载 ItemOnDrag 脚本和 CanvasGroup 组件，以及作为 buttom 用于触发 Slot 中的 OnItemClicked()</li>
+<li><strong>Image 和 Count</strong> 负责物品图片和数量的显示</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/Manual/script-GridLayoutGroup.html">Grid Layout Group</a></p>
+<h2 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h2><h3 id="物品数据"><a href="#物品数据" class="headerlink" title="物品数据"></a>物品数据</h3><p>以 ScriptableObject 的方式存储每一种物品的数据。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cs">[<span class="hljs-meta">CreateAssetMenu(fileName = <span class="hljs-string">&quot;NewItem&quot;</span>,menuName = <span class="hljs-string">&quot;Inventory/New Item&quot;</span>)</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">InventoryItem</span> : <span class="hljs-title">ScriptableObject</span><br>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> itemName;<br>    <span class="hljs-keyword">public</span> Sprite itemSprite;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> itemCount = <span class="hljs-number">1</span>;<br>    [<span class="hljs-meta">TextArea</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> itemInfo;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="背包数据"><a href="#背包数据" class="headerlink" title="背包数据"></a>背包数据</h3><p>以 ScriptableObject 的方式存储每个背包的数据,每个背包类内维护一个 List 用于存储多个物品。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cs">[<span class="hljs-meta">CreateAssetMenu(fileName = <span class="hljs-string">&quot;NewBag&quot;</span>, menuName = <span class="hljs-string">&quot;Inventory/New Bag&quot;</span>)</span>]<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">InventoryBag</span> : <span class="hljs-title">ScriptableObject</span><br>&#123;<br>    <span class="hljs-keyword">public</span> List&lt;InventoryItem&gt; itemList = <span class="hljs-keyword">new</span> List&lt;InventoryItem&gt;();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="捡起物品"><a href="#捡起物品" class="headerlink" title="捡起物品"></a>捡起物品</h3><p>ItemOnWorld 挂载在物品对象上，随时更新两个 SO 的数据。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ItemOnWorld</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> InventoryItem inventoryItem;<br>    <span class="hljs-keyword">public</span> InventoryBag inventoryBag;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnTriggerEnter2D</span>(<span class="hljs-params">Collider2D collision</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span> (collision.CompareTag(<span class="hljs-string">&quot;Player&quot;</span>)) &#123;<br>            AddItemToBag();<br>            Destroy(gameObject);<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">AddItemToBag</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span> (inventoryBag.itemList.Contains(inventoryItem)) &#123;<br>            inventoryItem.itemCount++;<br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 背包内不存在此物品</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>; i &lt; inventoryBag.itemList.Count; i++) &#123;<br>                <span class="hljs-comment">// 顺序找到背包内第一个空余位置</span><br>                <span class="hljs-keyword">if</span> (inventoryBag.itemList[i] == <span class="hljs-literal">null</span>) &#123;<br>                    inventoryBag.itemList[i] = inventoryItem;<br>                    <span class="hljs-keyword">break</span>;<br>                &#125;<br>                Debug.Log(<span class="hljs-string">&quot;Bag Over Flow!&quot;</span>);<br>            &#125;<br>        &#125;<br>        InventoryManager.UpdateGUI();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h2><h3 id="Manager"><a href="#Manager" class="headerlink" title="Manager"></a>Manager</h3><p>单例模式的 InventoryManager，主要作用是提供更新 GUI 的接口 <strong>InventoryManager.UpdateGUI()</strong> 。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">InventoryManager</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">static</span> InventoryManager instance;<br><br>    <span class="hljs-keyword">public</span> InventoryBag bag;<br>    <span class="hljs-keyword">public</span> GameObject grid;<br>    <span class="hljs-keyword">public</span> GameObject emptySlot;<span class="hljs-comment">// 预制体Slot</span><br>    <span class="hljs-keyword">public</span> Text itemInfo;<span class="hljs-comment">// 显示在背包左下角的UI</span><br>    <span class="hljs-keyword">public</span> List&lt;GameObject&gt; slotList = <span class="hljs-keyword">new</span> List&lt;GameObject&gt;();<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span> (instance != <span class="hljs-literal">null</span>) &#123;<br>            Destroy(gameObject);<br>        &#125;<br>        instance = <span class="hljs-keyword">this</span>;<br>        UpdateGUI();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">UpdateItemInfo</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> info</span>)</span> &#123;<br>        instance.itemInfo.text = info;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">UpdateGUI</span>()</span> &#123;<br>        <span class="hljs-comment">// 先清空Grid的子物体与slotList[]</span><br>        instance.slotList.Clear();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>; i &lt; instance.grid.transform.childCount; i++) &#123;<br>            Destroy(instance.grid.transform.GetChild(i).gameObject);<br>        &#125;<br><br>        <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>; i &lt; instance.bag.itemList.Count; i++) &#123;<br>            <span class="hljs-comment">// 将emptySlot生成为grid的子物体，然后加入slotList[]</span><br>            instance.slotList.Add(Instantiate(<br>                instance.emptySlot, instance.grid.transform, <span class="hljs-literal">false</span>));<br><br>            <span class="hljs-comment">// 用itemList[]刷新slotList[]</span><br>            instance.slotList[i].GetComponent&lt;Slot&gt;()<br>                .InitSlot(instance.bag.itemList[i]);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Slot"><a href="#Slot" class="headerlink" title="Slot"></a>Slot</h3><p>负责 UpdateGUI() 中针对具体 Slot 中 Item 数据的更新，以及负责 bag 中物品描述的更新。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Slot</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> GameObject slotItem;<br>    <span class="hljs-keyword">public</span> Image slotImage;<br>    <span class="hljs-keyword">public</span> Text slotCount;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> slotInfo;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnEnable</span>()</span> &#123;<br>        InventoryManager.UpdateItemInfo(<span class="hljs-string">&quot;&quot;</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnItemClicked</span>()</span> &#123;<br>        <span class="hljs-comment">// 在作Item中以OnClick的形式调用</span><br>        InventoryManager.UpdateItemInfo(slotInfo);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">InitSlot</span>(<span class="hljs-params">InventoryItem inventoryItem</span>)</span> &#123;<br>        <span class="hljs-comment">// 将传入的Itme信息写入该Slot的子物体</span><br>        <span class="hljs-keyword">if</span> (inventoryItem == <span class="hljs-literal">null</span>) &#123;<br>            slotItem.SetActive(<span class="hljs-literal">false</span>);<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<br>            slotImage.sprite = inventoryItem.itemSprite;<br>            slotCount.text = inventoryItem.itemCount.ToString();<br>            slotInfo = inventoryItem.itemInfo;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="背包内物品的拖拽"><a href="#背包内物品的拖拽" class="headerlink" title="背包内物品的拖拽"></a>背包内物品的拖拽</h3><p>实现 EventSystems 中三个接口以响应鼠标的交互。<br>更改 Item 的父级和 Item 的位置以实现拖拽效果。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">using</span> UnityEngine.EventSystems;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ItemOnDrag</span><br>    : <span class="hljs-title">MonoBehaviour</span>, <span class="hljs-title">IBeginDragHandler</span>, <span class="hljs-title">IDragHandler</span>, <span class="hljs-title">IEndDragHandler</span><br>&#123;<br>    <span class="hljs-keyword">public</span> InventoryBag bag;<br><br>    <span class="hljs-keyword">private</span> Transform originalParent;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> firstIndex, secondIndex;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnBeginDrag</span>(<span class="hljs-params">PointerEventData eventData</span>)</span> &#123;<br>        firstIndex = GetIndex(transform.parent);<br>        originalParent = transform.parent;<br>        <span class="hljs-comment">// 将Item移至Canvas子集以不至于被其他UI遮挡</span><br>        transform.SetParent(transform.parent.parent.parent.parent);<br>        transform.position = eventData.position;<br>        <span class="hljs-comment">// 令所拖拽的Item本身不会遮挡鼠标射线</span><br>        GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnDrag</span>(<span class="hljs-params">PointerEventData eventData</span>)</span> &#123;<br>        transform.position = eventData.position;<br>        <span class="hljs-comment">// Debug.Log(eventData.pointerCurrentRaycast.gameObject.name);</span><br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnEndDrag</span>(<span class="hljs-params">PointerEventData eventData</span>)</span> &#123;<br>        GameObject crtObject = eventData.pointerCurrentRaycast.gameObject;<br>        <span class="hljs-keyword">if</span> (crtObject == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-comment">// 拖至UI界面之外，Item复位</span><br>            transform.SetParent(originalParent);<br>            transform.position = originalParent.transform.position;<br>            GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = <span class="hljs-literal">true</span>;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (crtObject.name == <span class="hljs-string">&quot;Image&quot;</span> || crtObject.name == <span class="hljs-string">&quot;Count&quot;</span>) &#123;<br>            <span class="hljs-comment">// 拖至另一Item上，交换两者</span><br>            Transform crtItem = crtObject.transform.parent;<br>            Transform crtSlot = crtItem.parent;<br>            secondIndex = GetIndex(crtSlot);<br><br>            transform.SetParent(crtSlot);<br>            transform.position = crtSlot.position;<br><br>            crtItem.SetParent(originalParent);<br>            crtItem.position = originalParent.position;<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(crtObject.name == <span class="hljs-string">&quot;Slot(Clone)&quot;</span>) &#123;<br>            <span class="hljs-comment">// 拖至空Slot</span><br>            secondIndex = GetIndex(crtObject.transform);<br>            transform.SetParent(crtObject.transform);<br>            transform.position = crtObject.transform.position;<br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 拖至其他UI上，Item复位</span><br>            transform.SetParent(originalParent);<br>            transform.position = originalParent.transform.position;<br>            GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = <span class="hljs-literal">true</span>;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        Debug.Log(<span class="hljs-string">&quot;firstIndex: &quot;</span> + firstIndex + <span class="hljs-string">&quot; &quot;</span> + <span class="hljs-string">&quot;secondIndex: &quot;</span> + secondIndex);<br>    <br>        <span class="hljs-comment">// 更新itemList</span><br>        InventoryItem tmp = bag.itemList[firstIndex];<br>        bag.itemList[firstIndex] = bag.itemList[secondIndex];<br>        bag.itemList[secondIndex] = tmp;<br><br>        GetComponent&lt;CanvasGroup&gt;().blocksRaycasts = <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-built_in">int</span> <span class="hljs-title">GetIndex</span>(<span class="hljs-params">Transform currentSlot</span>)</span> &#123;<br>        <span class="hljs-comment">// 返回slot在grid中的顺序</span><br>        Transform grid = currentSlot.parent;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-built_in">int</span> i=<span class="hljs-number">0</span>;i&lt; grid.childCount; i++) &#123;<br>            <span class="hljs-keyword">if</span> (grid.GetChild(i) == currentSlot) &#123;<br>                <span class="hljs-keyword">return</span> i;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="背包的拖拽"><a href="#背包的拖拽" class="headerlink" title="背包的拖拽"></a>背包的拖拽</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">BagOnDrag</span> : <span class="hljs-title">MonoBehaviour</span>, <span class="hljs-title">IDragHandler</span><br>&#123;<br>    <span class="hljs-keyword">private</span> RectTransform rectTransform;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        rectTransform = GetComponent&lt;RectTransform&gt;();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnDrag</span>(<span class="hljs-params">PointerEventData eventData</span>)</span> &#123;<br>        rectTransform.anchoredPosition += eventData.delta;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="存储-Scriptable-Object"><a href="#存储-Scriptable-Object" class="headerlink" title="存储 Scriptable Object"></a>存储 Scriptable Object</h2><p><strong>存储时</strong><br>Scriptable Object 通过 JsonUtility.ToJson(so) 转换为 json。<br>json 通过 formatter.Serialize(file, json) 写入文件。</p>
+<p><strong>读取时</strong><br>文件通过 formatter.Deserialize(file) 转换为 json。<br>json 通过 JsonUtility.FromJsonOverwrite(json, so) 写入 Scriptable Object。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">using</span> System.IO;<br><span class="hljs-keyword">using</span> System.Runtime.Serialization.Formatters.Binary;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">SaveLoadManager</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> InventoryBag inventoryBag;<br>    <span class="hljs-keyword">public</span> InventoryItem item1;<br>    <span class="hljs-keyword">public</span> InventoryItem item2;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">string</span> PATH;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        PATH = Application.persistentDataPath;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SaveGame</span>()</span> &#123;<br>        <span class="hljs-comment">// 在bottom中被调用</span><br>        Debug.Log(PATH);<br>        <span class="hljs-keyword">if</span> (!Directory.Exists(PATH + <span class="hljs-string">&quot;/SaveData&quot;</span>)) &#123;<br>            Directory.CreateDirectory(PATH + <span class="hljs-string">&quot;/SaveData&quot;</span>);<br>        &#125;<br><br>        SaveData(inventoryBag, <span class="hljs-keyword">nameof</span>(inventoryBag));<br>        SaveData(item1, <span class="hljs-keyword">nameof</span>(item1));<br>        SaveData(item2, <span class="hljs-keyword">nameof</span>(item2));<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SaveData</span>&lt;<span class="hljs-title">T</span>&gt;(<span class="hljs-params">T so, <span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        BinaryFormatter formatter = <span class="hljs-keyword">new</span> BinaryFormatter();<br>        FileStream file = File.Create(PATH + <span class="hljs-string">&quot;/SaveData/&quot;</span> + name + <span class="hljs-string">&quot;.bin&quot;</span>);<br>        <span class="hljs-built_in">string</span> json = JsonUtility.ToJson(so);<br>        formatter.Serialize(file, json);<br>        file.Close();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">LoadGame</span>()</span> &#123;<br>        <span class="hljs-comment">// 在bottom中被调用</span><br>        LodData(inventoryBag, <span class="hljs-keyword">nameof</span>(inventoryBag));<br>        LodData(item1, <span class="hljs-keyword">nameof</span>(item1));<br>        LodData(item2, <span class="hljs-keyword">nameof</span>(item2));<br><br>        InventoryManager.UpdateGUI();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">LodData</span>&lt;<span class="hljs-title">T</span>&gt;(<span class="hljs-params">T so, <span class="hljs-built_in">string</span> name</span>)</span> &#123;<br>        BinaryFormatter formatter = <span class="hljs-keyword">new</span> BinaryFormatter();<br>        <span class="hljs-keyword">if</span> (File.Exists(PATH + <span class="hljs-string">&quot;/SaveData/&quot;</span> + name + <span class="hljs-string">&quot;.bin&quot;</span>)) &#123;<br>            FileStream file =<br>                File.Open(PATH + <span class="hljs-string">&quot;/SaveData/&quot;</span> + name + <span class="hljs-string">&quot;.bin&quot;</span>, FileMode.Open);<br>            <span class="hljs-built_in">string</span> json = (<span class="hljs-built_in">string</span>)formatter.Deserialize(file);<br>            JsonUtility.FromJsonOverwrite(json, so);<br>            file.Close();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><p><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/ScriptableObject.html">Scriptable Object</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/CreateAssetMenuAttribute.html">Create Asset Menu Attribute</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Object.Instantiate.html">Instantiate</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/Manual/SupportedEvents.html">Supported Events</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/RectTransform.html">Rect Transform</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Application-persistentDataPath.html">persistentDataPath</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Windows.Directory.html">Directory</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/JsonUtility.html">JsonUtility</a><br><a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.serialization.formatters.binary.binaryformatter?view=net-5.0">BinaryFormatter</a></p>
+<h2 id="打击感"><a href="#打击感" class="headerlink" title="打击感"></a>打击感</h2><p>&emsp;&emsp;一般来说，打击感由帧冻结、镜头抖动与运动、敌人的受击反馈（动画、音效、击退等）、特效、环境的反馈等组成。<br><img src="/img/Unity/dhq.png" srcset="/img/loading.gif" lazyload alt="动画器"></p>
+<h3 id="连击"><a href="#连击" class="headerlink" title="连击"></a>连击</h3><div class="note note-secondary">
+            <p>&emsp;&emsp;攻击结束方法可以不在攻击动画的最后一帧调用，而是提前几帧。这是因为连击往往存在预输入，这样做可以提高连贯性，提升手感。</p>
+          </div>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">private</span> Coroutine tmpCoroutine = <span class="hljs-literal">null</span>;<span class="hljs-comment">// 仅在 Attack 中使用</span><br><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Attack</span>()</span> &#123;<br>    <span class="hljs-keyword">if</span> (!animator.GetBool(isAttackID) &amp;&amp; !isHurt &amp;&amp; !isDash &amp;&amp; !isParryStance) &#123;<br>        <span class="hljs-comment">// 可攻击的状态</span><br>        <span class="hljs-keyword">if</span> (uponGround) &#123;<br>            <span class="hljs-comment">// 地面攻击</span><br><br>            <span class="hljs-keyword">if</span> (Input.GetMouseButton(<span class="hljs-number">0</span>)) &#123;<br>                <span class="hljs-comment">// 左键轻攻击</span><br>                <span class="hljs-keyword">if</span> (tmpCoroutine != <span class="hljs-literal">null</span>) &#123;<br>                    StopCoroutine(tmpCoroutine);<br>                &#125;<br>                <span class="hljs-comment">/* 关闭协程确保这段时间内 isAttack 不会被设为 false</span><br><span class="hljs-comment">                   启动协程倒计时使 isAttack 为 false */</span><br>                tmpCoroutine = StartCoroutine(WaitForAttackOver(<span class="hljs-number">4f</span> / <span class="hljs-number">14f</span>));<br><br>                body.velocity = Vector2.zero;<br>                isAttack = <span class="hljs-literal">true</span>;<br>                <span class="hljs-comment">// 每次轻攻击时计时器重置为最大值</span><br>                timer = interval;<br>                combo++;<br>                <span class="hljs-keyword">if</span> (combo &gt; finalMaxCombo) &#123;<br>                    <span class="hljs-comment">// combo 为 1 时播放一段攻击动画，为 2 时播放二段攻击动画</span><br>                    combo = <span class="hljs-number">1</span>;<br>                &#125;<br><br>                animator.SetBool(isAttackID, <span class="hljs-literal">true</span>);<br>                animator.SetTrigger(lightAttackID);<br>                body.MovePosition(frontPoint.position);<br>                animator.SetInteger(comboID, combo);<br>                attackName = <span class="hljs-string">&quot;Light&quot;</span>;<br>            &#125;<br>            <span class="hljs-keyword">if</span> (Input.GetMouseButton(<span class="hljs-number">1</span>)) &#123;<br>                <span class="hljs-comment">// 右键重攻击</span><br>                <span class="hljs-keyword">if</span> (tmpCoroutine != <span class="hljs-literal">null</span>) &#123;<br>                    StopCoroutine(tmpCoroutine);<br>                &#125;<br>                tmpCoroutine = StartCoroutine(WaitForAttackOver(<span class="hljs-number">6f</span> / <span class="hljs-number">14f</span>));<br><br>                body.velocity = Vector2.zero;<br>                isAttack = <span class="hljs-literal">true</span>;<br>                animator.SetBool(isAttackID, <span class="hljs-literal">true</span>);<br>                animator.SetTrigger(haveyAttackID);<br>                attackName = <span class="hljs-string">&quot;Heavy&quot;</span>;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 空中攻击</span><br><br>            <span class="hljs-keyword">if</span> (Input.GetMouseButton(<span class="hljs-number">0</span>)) &#123;<br>                <span class="hljs-comment">// 空中普通攻击</span><br>                animator.SetBool(isAttackID, <span class="hljs-literal">true</span>);<br>                animator.SetTrigger(lightAttackID);<br>                attackName = <span class="hljs-string">&quot;Light&quot;</span>;<br>            &#125;<br>            <span class="hljs-keyword">if</span> (Input.GetMouseButton(<span class="hljs-number">1</span>)) &#123;<br>                <span class="hljs-comment">// 下落攻击</span><br>                <span class="hljs-keyword">if</span> (tmpCoroutine != <span class="hljs-literal">null</span>) &#123;<br>                    StopCoroutine(tmpCoroutine);<br>                &#125;<br>                tmpCoroutine = StartCoroutine(WaitForAttackOver(<span class="hljs-number">6f</span> / <span class="hljs-number">14f</span>));<br><br>                body.velocity = Vector2.zero;<br>                isAttack = <span class="hljs-literal">true</span>;<br>                isSlam = <span class="hljs-literal">true</span>;<br>                animator.SetBool(isAttackID, <span class="hljs-literal">true</span>);<br>                animator.SetTrigger(haveyAttackID);<br>                attackName = <span class="hljs-string">&quot;Slam&quot;</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (timer &gt;= <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-comment">// 倒计时结束后重置 combo 数</span><br>        timer -= Time.deltaTime;<br>        <span class="hljs-keyword">if</span> (timer &lt;= <span class="hljs-number">0</span>) &#123;<br>            combo = <span class="hljs-number">0</span>;<br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// 在Attack()中被调用</span><br><span class="hljs-function"><span class="hljs-keyword">private</span> IEnumerator <span class="hljs-title">WaitForAttackOver</span>(<span class="hljs-params"><span class="hljs-built_in">float</span> time</span>)</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title">WaitForSeconds</span>(<span class="hljs-params">time</span>)</span>;<br>    isAttack = <span class="hljs-literal">false</span>;<br>    isSlam = <span class="hljs-literal">false</span>;<br>    <span class="hljs-comment">// 确保即使攻击动画被打断，animator 中的 isAttack 也会正确地被重置</span><br>    animator.SetBool(isAttackID, <span class="hljs-literal">false</span>);<br>&#125;<br><br><span class="hljs-comment">// 在每个攻击动画快结束时调用</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">AttackOver</span>()</span> &#123;<br>    animator.SetBool(isAttackID, <span class="hljs-literal">false</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="帧冻结"><a href="#帧冻结" class="headerlink" title="帧冻结"></a>帧冻结</h3><div class="note note-secondary">
+            <p>帧冻结结束后可以适当提升3-5倍的动画速度以补偿缺失的时间。</p>
+          </div>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AttackSense</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> AttackSense instance;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">bool</span> isShake;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        instance = <span class="hljs-keyword">this</span>;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">FrameFreeze</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> pauseFrame</span>)</span> &#123;<br>        StartCoroutine(PauseOnAttack(pauseFrame));<br>    &#125;<br>    <span class="hljs-function">IEnumerator <span class="hljs-title">PauseOnAttack</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> pauseFrame</span>)</span> &#123;<br>        <span class="hljs-built_in">float</span> pauseTime = pauseFrame / <span class="hljs-number">60f</span>;<br>        Time.timeScale = <span class="hljs-number">0</span>;<br>        <span class="hljs-function"><span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title">WaitForSecondsRealtime</span>(<span class="hljs-params">pauseTime</span>)</span>;<br>        Time.timeScale = <span class="hljs-number">1</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="镜头抖动"><a href="#镜头抖动" class="headerlink" title="镜头抖动"></a>镜头抖动</h3><p>为相机添加<br><img src="/img/Unity/dd1.png" srcset="/img/loading.gif" lazyload><br>为玩家的攻击碰撞体添加，并调整对应的参数<br><img src="/img/Unity/dd2.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="反馈"><a href="#反馈" class="headerlink" title="反馈"></a>反馈</h3><p>敌人的反馈会在有限状态机中进行具体的实现。</p>
+<h2 id="有限状态机"><a href="#有限状态机" class="headerlink" title="有限状态机"></a>有限状态机</h2><p>&emsp;&emsp;有限状态机是一个具有有限数量状态的模型，并且同时只能处于一种状态，可以通过外部输入等方式触发状态之间的切换。这里实现一个简易的敌人 AI。</p>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>所有的状态类都继承这个接口。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IState</span><br>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnEnter</span>()</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnUpdate</span>()</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnFixedUpdate</span>()</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnExit</span>()</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="FSM"><a href="#FSM" class="headerlink" title="FSM"></a>FSM</h3><p>挂载在敌人身上，这里省略一些组件的定义与获取。一些对所有状态通用的方法也可以写在这里。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-comment">// 先创建一个枚举类存储所有状态，作为字典中的键</span><br><span class="hljs-keyword">public</span> <span class="hljs-built_in">enum</span> StateType &#123;<br>    Idle, Run, Attack, Hurt, Throw, SpecialAttack<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">FSM</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">private</span> IState crtState = <span class="hljs-literal">null</span>;<span class="hljs-comment">// 当前状态</span><br>    <span class="hljs-keyword">private</span> Dictionary&lt;StateType, IState&gt; stateLise =<br>        <span class="hljs-keyword">new</span> Dictionary&lt;StateType, IState&gt;();<br><br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-comment">// 注册状态并将 FSM 自身传入状态</span><br>        stateLise.Add(StateType.Idle, <span class="hljs-keyword">new</span> IdleState(<span class="hljs-keyword">this</span>));<br>        stateLise.Add(StateType.Run, <span class="hljs-keyword">new</span> RunState(<span class="hljs-keyword">this</span>));<br>        stateLise.Add(StateType.Attack, <span class="hljs-keyword">new</span> AttackState(<span class="hljs-keyword">this</span>));<br>        stateLise.Add(StateType.Hurt, <span class="hljs-keyword">new</span> HurtState(<span class="hljs-keyword">this</span>));<br>        stateLise.Add(StateType.Throw, <span class="hljs-keyword">new</span> ThrowState(<span class="hljs-keyword">this</span>));<br>        stateLise.Add(StateType.SpecialAttack, <span class="hljs-keyword">new</span> SpecialAttackState(<span class="hljs-keyword">this</span>));<br><br>        ChangeState(StateType.Idle);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span> &#123;<br>        crtState.OnUpdate();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">FixedUpdate</span>()</span> &#123;<br>        crtState.OnFixedUpdate();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ChangeState</span>(<span class="hljs-params">StateType type</span>)</span> &#123;<br>        <span class="hljs-keyword">if</span> (crtState != <span class="hljs-literal">null</span>) &#123;<br>            crtState.OnExit();<br>        &#125;<br>        crtState = stateLise[type];<br>        crtState.OnEnter();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="状态类"><a href="#状态类" class="headerlink" title="状态类"></a>状态类</h3><p><em>以普通攻击状态为例。</em><br>动画在具体的状态类中进行控制，动画中包含了录制好的攻击碰撞器（Trigger）的启用与变形。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AttackState</span> : <span class="hljs-title">IState</span> &#123;<br>    <span class="hljs-keyword">private</span> FSM fsm;<br>    <span class="hljs-keyword">private</span> AnimatorStateInfo animeInfo;<br>    <span class="hljs-comment">// 在构造函数中获取 fsm</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">AttackState</span>(<span class="hljs-params">FSM fsmIn</span>)</span> &#123;<br>        <span class="hljs-keyword">this</span>.fsm = fsmIn;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnEnter</span>()</span> &#123;<br>        fsm.body.velocity = Vector2.zero;<br>        fsm.animator.Play(<span class="hljs-string">&quot;Rogue_Attack&quot;</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnUpdate</span>()</span> &#123;<br>        animeInfo = fsm.animator.GetCurrentAnimatorStateInfo(<span class="hljs-number">0</span>);<br>        <span class="hljs-keyword">if</span> (animeInfo.normalizedTime &gt;= <span class="hljs-number">0.99f</span>) &#123;<br>            fsm.ChangeState(StateType.Idle);<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnFixedUpdate</span>()</span> &#123;<br>        <br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnExit</span>()</span> &#123;<br>        fsm.idleStartTime = Time.time;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="对象池"><a href="#对象池" class="headerlink" title="对象池"></a>对象池</h2><p>&emsp;&emsp;对于需要大量或者多次反复实例化，且需要销毁的物体（比如子弹、残影等），频繁地创建与销毁物体对于性能的开销过大。</p>
+<p>&emsp;&emsp;故使用对象池，提前生成一定数量的空物体，在需要时取一进行启用与赋值，一段时间后进行回收，一定程度上减少了动态加载性能的消耗。</p>
+<p>&emsp;&emsp;这里实现一个角色冲锋产生残影的效果。</p>
+<h3 id="预制体"><a href="#预制体" class="headerlink" title="预制体"></a>预制体</h3><p><img src="/img/Unity/image.png" srcset="/img/loading.gif" lazyload alt="空物体预制体"></p>
+<h3 id="对象池实现"><a href="#对象池实现" class="headerlink" title="对象池实现"></a>对象池实现</h3><p>由一单例控制空物体的预生成、启用和回收。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AfterimagePool</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> AfterimagePool instance;<br>    <span class="hljs-keyword">public</span> GameObject imagePrefab;<br><br>    <span class="hljs-keyword">private</span> Queue&lt;GameObject&gt; pool = <span class="hljs-keyword">new</span> Queue&lt;GameObject&gt;();<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span>(instance == <span class="hljs-literal">null</span>) &#123;<br>            instance = <span class="hljs-keyword">this</span>;<br>        &#125;<br>        FillPoll(<span class="hljs-number">10</span>);<br>    &#125;<br><br>    <span class="hljs-comment">// 在对象自身脚本中调用</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ReturnToPool</span>(<span class="hljs-params">GameObject objectIn</span>)</span> &#123;<br>        objectIn.SetActive(<span class="hljs-literal">false</span>);<br>        pool.Enqueue(objectIn);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">FillPoll</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> num</span>)</span> &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>; i &lt; num; i++) &#123;<br>            GameObject newImage = Instantiate(imagePrefab);<br>            newImage.transform.SetParent(transform);<br>            ReturnToPool(newImage);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// Player 为冲刺状态时会在 FixedUpdate 中反复调用</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">TakeFromPool</span>()</span> &#123;<br>        <span class="hljs-keyword">if</span> (pool.Count &lt;= <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-comment">// 对象池不够用时多生成几个预制件</span><br>            FillPoll(<span class="hljs-number">5</span>);<br>        &#125;<br>        GameObject crtImage = pool.Dequeue();<br>        crtImage.SetActive(<span class="hljs-literal">true</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="启用物体"><a href="#启用物体" class="headerlink" title="启用物体"></a>启用物体</h3><p>在 OnEnable() 中将 Player 此刻的 Sprite、位置等信息赋给空物体，然后不断减小其 Alpha 值。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Afterimage</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> activeTime;<br>    [<span class="hljs-meta">Range(0f, 1f)</span>]<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> startAlpha;<br><br>    <span class="hljs-keyword">private</span> Transform player;<br>    <span class="hljs-keyword">private</span> SpriteRenderer thisSR, playerSR;<br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">float</span> alpha, startTime;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnEnable</span>()</span> &#123;<br>        player = GameObject.FindGameObjectWithTag(<span class="hljs-string">&quot;Player&quot;</span>).transform;<br>        thisSR = GetComponent&lt;SpriteRenderer&gt;();<br>        playerSR = player.GetComponent&lt;SpriteRenderer&gt;();<br><br>        alpha = startAlpha;<br>        startTime = Time.time;<br><br>        thisSR.sprite = playerSR.sprite;<br>        transform.position = player.position;<br>        transform.localScale = player.localScale;<br>        transform.rotation = player.rotation;<br>        StartCoroutine(DecreaseAlpha());<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span> &#123;<br>        thisSR.color = <span class="hljs-keyword">new</span> Color(<span class="hljs-number">0.5f</span>, <span class="hljs-number">0.5f</span>, <span class="hljs-number">1</span>, alpha);<br>        <span class="hljs-keyword">if</span> (Time.time - startTime &gt;= activeTime) &#123;<br>            AfterimagePool.instance.ReturnToPool(gameObject);<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> IEnumerator <span class="hljs-title">DecreaseAlpha</span>()</span> &#123;<br>        <span class="hljs-keyword">while</span> (alpha &gt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-comment">// alpha 需要在 activeTime 秒内从 startAlpha 减为 0</span><br>            alpha -= (startAlpha / (activeTime * <span class="hljs-number">50</span>));<br>            <span class="hljs-function"><span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title">WaitForFixedUpdate</span>()</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><p>单例有且仅有一个静态的实例，可以直接通过这个实例调用方法，而无需实例化该类的对象。</p>
+<h3 id="简单实现"><a href="#简单实现" class="headerlink" title="简单实现"></a>简单实现</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ExampleManager</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ExampleManager instance;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span>&#123;<br>        <span class="hljs-keyword">if</span> (instance == <span class="hljs-literal">null</span>) &#123;<br>            instance = <span class="hljs-keyword">this</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ExampleFun</span>()</span>&#123;<br>        DO SOMETHING;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>外部调用时只需写作</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cs">ExampleManager.instance.ExampleFun();<br></code></pre></td></tr></table></figure>
+
+<h3 id="另一种做法"><a href="#另一种做法" class="headerlink" title="另一种做法"></a>另一种做法</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ExampleManager</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> ExampleManager instance;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ExampleManager Instance &#123;<br>        <span class="hljs-keyword">get</span> &#123;<br>            <span class="hljs-keyword">if</span> (instance == <span class="hljs-literal">null</span>) &#123;<br>                instance = FindObjectOfType&lt;ExampleManager&gt;();<br>            &#125;<br>            <span class="hljs-keyword">return</span> instance;<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ExampleFun</span>()</span>&#123;<br>        DO SOMETHING;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>外部调用时写作</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cs">ExampleManager.Instance.ExampleFun();<br></code></pre></td></tr></table></figure>
+
+<h3 id="更优雅的做法"><a href="#更优雅的做法" class="headerlink" title="更优雅的做法"></a>更优雅的做法</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ExampleManager</span>&lt;<span class="hljs-title">T</span>&gt; : <span class="hljs-title">MonoBehaviour</span> <span class="hljs-keyword">where</span> <span class="hljs-title">T</span> : <span class="hljs-title">ExampleManager</span>&lt;<span class="hljs-title">T</span>&gt;<br>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> T instance;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ExampleManager Instance &#123;<br>        <span class="hljs-keyword">get</span> &#123;<br>            <span class="hljs-keyword">return</span> instance;<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span>&#123;<br>        id(instance == <span class="hljs-literal">null</span>)&#123;<br>            instance = (T)<span class="hljs-keyword">this</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">bool</span> IsInit&#123;<br>        <span class="hljs-keyword">get</span>&#123;<br>            <span class="hljs-keyword">return</span> (instance != <span class="hljs-literal">null</span>);<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnDestory</span>()</span>&#123;<br>        <span class="hljs-keyword">if</span>(instance == <span class="hljs-keyword">this</span>)&#123;<br>            instance = <span class="hljs-literal">null</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>以后任何新的单例类只用继承这个泛型类即可。</p>
+<h3 id="我的-SoundManager"><a href="#我的-SoundManager" class="headerlink" title="我的 SoundManager"></a>我的 SoundManager</h3><h4 id="音效"><a href="#音效" class="headerlink" title="音效"></a>音效</h4><ul>
+<li>首先需要一个挂载 Manager 的 Object</li>
+<li>上一个场景的 Manager 实例需要带到下一个场景中去，故使用 DontDestroyOnLoad(gameObject)</li>
+<li>调试时若不从第一个场景进入则不存在该 Object，十分不便</li>
+<li>若每个场景都放置该 bject，大量不会销毁的 Object 会带着其上挂载的的 Manager 堆积起来</li>
+<li>故在 Awake 中做判断销毁任何新加载的 Object<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">SFXMananger</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> SFXMananger instance;<br><br>    [<span class="hljs-meta">SerializeField</span>]<br>    <span class="hljs-keyword">private</span> AudioClip hurtAudio, collectAudio, enemyDestoryAudio;<br>    <span class="hljs-keyword">private</span> AudioSource audioSource;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span>()</span> &#123;<br>        audioSource = GetComponent&lt;AudioSource&gt;();<br>        <span class="hljs-keyword">if</span> (instance == <span class="hljs-literal">null</span>) &#123;<br>            instance = <span class="hljs-keyword">this</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (instance != <span class="hljs-keyword">this</span>) &#123;<br>            Destroy(gameObject);<br>        &#125;<br>        DontDestroyOnLoad(gameObject);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">HurtAudio</span>()</span> &#123;<br>        audioSource.clip = hurtAudio;<br>        audioSource.Play();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">CollectAudio</span>()</span> &#123;<br>        audioSource.clip = collectAudio;<br>        audioSource.Play();<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">EnemyDestoryAudio</span>()</span> &#123;<br>        audioSource.clip = enemyDestoryAudio;<br>        audioSource.Play();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="bgm"><a href="#bgm" class="headerlink" title="bgm"></a>bgm</h4><p>在满足与音效相同的条件之上，反复加载同一场景时，我不希望 bgm 从头开始播放。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">BGMManager</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> BGMManager instance;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> sceneIndex;<br><br>    [<span class="hljs-meta">SerializeField</span>]<br>    <span class="hljs-keyword">private</span> AudioClip openingBGM, scene1BGM, scene2BGM, scene3BGM, endingBGM, defautBGM;<br>    <span class="hljs-keyword">private</span>  AudioSource audioSource;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Awake</span> ()</span> &#123;<br>        audioSource = GetComponent&lt;AudioSource&gt;();<br>        <span class="hljs-built_in">int</span> crtIndex = SceneManager.GetActiveScene().buildIndex;<br>        <span class="hljs-keyword">if</span> (instance == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-comment">// 只有首个 Manager 加载时会进入这个分支</span><br>            instance = <span class="hljs-keyword">this</span>;<br>            sceneIndex = crtIndex;<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (instance != <span class="hljs-keyword">this</span>) &#123;<br>            Destroy(gameObject);<br>            <span class="hljs-keyword">if</span> (sceneIndex != crtIndex) &#123;<br>                <span class="hljs-comment">// 根据关卡编号切换 bgm，重新加载同一关时则不需要切换</span><br>                instance.SwitchBGM(crtIndex);<br>                sceneIndex = crtIndex;<br>            &#125;<br>        &#125;<br>        DontDestroyOnLoad(gameObject);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SwitchBGM</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> i</span>)</span> &#123;<br>        <span class="hljs-keyword">switch</span> (i) &#123;<br>            <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:<br>                audioSource.clip = openingBGM;<br>                audioSource.Play();<br>                <span class="hljs-keyword">break</span>;<br>            <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:<br>                audioSource.clip = scene1BGM;<br>                audioSource.Play();<br>                <span class="hljs-keyword">break</span>;<br>            <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:<br>                audioSource.clip = scene2BGM;<br>                audioSource.Play();<br>                <span class="hljs-keyword">break</span>;<br>            <span class="hljs-keyword">case</span> <span class="hljs-number">3</span>:<br>                audioSource.clip = scene3BGM;<br>                audioSource.Play();<br>                <span class="hljs-keyword">break</span>;<br>            <span class="hljs-keyword">case</span> <span class="hljs-number">4</span>:<br>                audioSource.clip = endingBGM;<br>                audioSource.Play();<br>                <span class="hljs-keyword">break</span>;<br>            <span class="hljs-literal">default</span>:<br>                audioSource.clip = defautBGM;<br>                audioSource.Play();<br>                <span class="hljs-keyword">break</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><p>&emsp;&emsp;协程就像一个函数，能够暂停执行并将控制权返还给 Unity 一段时间，可以是等待一帧，可以是等待几秒，也可以是等待另一个协程。当需要一个函数的内容（如一个循环）不需要在单帧内执行完成时往往会使用协程。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-function">IEnumerator <span class="hljs-title">Fun</span>()</span>&#123;<br>    DO SOMETHING;<br>    <span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<span class="hljs-comment">// 暂停执行并在下一帧恢复的点</span><br>    <span class="hljs-function"><span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title">WaitForSeconds</span>(<span class="hljs-params"><span class="hljs-number">.1</span>f</span>)</span>;<span class="hljs-comment">// 暂停执行并等待 0.1s 后恢复的点</span><br>    <span class="hljs-function"><span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-title">StartCoroutine</span>(<span class="hljs-params">Fun2(</span>))</span>;<span class="hljs-comment">// 暂停执行并等待 Fun2() 返还控制权</span><br>&#125;<br><br>StartCoroutine(Fun());<br></code></pre></td></tr></table></figure>
+
+<h3 id="我的主菜单"><a href="#我的主菜单" class="headerlink" title="我的主菜单"></a>我的主菜单</h3><p>间隔dt秒依次激活所有 UI。</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs cs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">MainMenu</span> : <span class="hljs-title">MonoBehaviour</span><br>&#123;<br>    <span class="hljs-keyword">public</span> GameObject titleUI, startUI, endUI;<br>    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Start</span>()</span> &#123;<br>        StartCoroutine(Delayed(<span class="hljs-number">0.65f</span>, titleUI, startUI, endUI));<br>    &#125;<br>    <span class="hljs-function">IEnumerator <span class="hljs-title">Delayed</span>(<span class="hljs-params"><span class="hljs-built_in">float</span> dt, <span class="hljs-keyword">params</span> GameObject[] list</span>)</span> &#123;<br>        <span class="hljs-keyword">foreach</span> (GameObject obj <span class="hljs-keyword">in</span> list) &#123;<br>            <span class="hljs-function"><span class="hljs-keyword">yield</span> <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title">WaitForSeconds</span>(<span class="hljs-params">dt</span>)</span>;<br>            obj.SetActive(<span class="hljs-literal">true</span>);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="相关链接-1"><a href="#相关链接-1" class="headerlink" title="相关链接"></a>相关链接</h2><p><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Bounds.html">Bounds</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Rigidbody2D.MovePosition.html">MovePosition</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Animator.html">Animator</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/AnimatorStateInfo.html">AnimatorStateInfo</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/SpriteRenderer.html">SpriteRenderer</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/SceneManagement.SceneManager.html">SceneManager</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/SceneManagement.Scene.html">Scene</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/Object.DontDestroyOnLoad.html">DontDestroyOnLoad</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/Manual/Coroutines.html">Coroutines</a><br><a target="_blank" rel="noopener" href="https://docs.unity.cn/cn/2019.4/ScriptReference/YieldInstruction.html">YieldInstruction</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/C/" class="print-no-link">#C#</a>
+      
+        <a href="/tags/Unity/" class="print-no-link">#Unity</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/03/GAMES101/" title="【Archive】GAMES101">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【Archive】GAMES101</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/19/SunnyLand/" title="【Archive】Sunny Land, a platformmer game">
+                        <span class="hidden-mobile">【Archive】Sunny Land, a platformmer game</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '82ccbdf5793d29abf02f7fcf52bfcda9'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  var relativeDate = function() {
+    var updatedTime = document.getElementById('updated-time');
+    if (updatedTime) {
+      var text = updatedTime.textContent;
+      var reg = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})/;
+      var matchs = text.match(reg);
+      if (matchs) {
+        var relativeTime = moment(matchs[0]).fromNow();
+        updatedTime.textContent = text.replace(reg, relativeTime);
+      }
+      updatedTime.style.display = '';
+    }
+  };
+  Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/moment.min.js', function() {
+    if (!'zh-cn'.startsWith('en')) {
+      Fluid.utils.createScript('https://lib.baomitu.com/moment.js/2.29.4/locale/zh-cn.min.js', function() {
+        relativeDate();
+      });
+    } else {
+      relativeDate();
+    }
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
