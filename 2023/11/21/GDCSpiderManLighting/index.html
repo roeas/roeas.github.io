@@ -19,12 +19,12 @@
   <meta name="author" content="Hinageshi">
   <meta name="keywords" content="">
   
-    <meta name="description" content="原标题Marvel’s Spider-Man: Procedural Lighting Tools程序化布光以及 Probe &#x2F; Light Grid 分布。 Open World Tiles  将整个世界分成数个 128 x 128 米的 Tile，对于每个 Tile，由数个 JSON 文件描述该 Tile 所引用的资源。 只有玩家当前所在的和周围的 Tile 会流入内存，其余的 Ti">
+    <meta name="description" content="原标题 Marvel’s Spider-Man: Procedural Lighting Tools 程序化布光以及 Probe &#x2F; Light Grid 分布。 Open World Tiles   将整个世界分成数个 128 x 128 米的 Tile，对于每个 Tile，由数个 JSON 文件描述该 Tile 所引用的资源。 只有玩家当前所在的和周围的 Tile 会流入内存，其余的 Tile">
 <meta property="og:type" content="article">
 <meta property="og:title" content="漫威蜘蛛侠中的程序化光照">
 <meta property="og:url" content="http://example.com/2023/11/21/GDCSpiderManLighting/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="原标题Marvel’s Spider-Man: Procedural Lighting Tools程序化布光以及 Probe &#x2F; Light Grid 分布。 Open World Tiles  将整个世界分成数个 128 x 128 米的 Tile，对于每个 Tile，由数个 JSON 文件描述该 Tile 所引用的资源。 只有玩家当前所在的和周围的 Tile 会流入内存，其余的 Ti">
+<meta property="og:description" content="原标题 Marvel’s Spider-Man: Procedural Lighting Tools 程序化布光以及 Probe &#x2F; Light Grid 分布。 Open World Tiles   将整个世界分成数个 128 x 128 米的 Tile，对于每个 Tile，由数个 JSON 文件描述该 Tile 所引用的资源。 只有玩家当前所在的和周围的 Tile 会流入内存，其余的 Tile">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/GDCSpiderManLighting/img.png">
 <meta property="article:published_time" content="2023-11-21T06:23:14.000Z">
@@ -51,8 +51,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -254,7 +252,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          632 字
+          630 字
         
       </span>
     
@@ -405,19 +403,24 @@
             
               <div class="markdown-body">
                 
-                <h2 id="原标题"><a href="#原标题" class="headerlink" title="原标题"></a>原标题</h2><p><em>Marvel’s Spider-Man: Procedural Lighting Tools</em><br>程序化布光以及 Probe &#x2F; Light Grid 分布。</p>
-<h2 id="Open-World-Tiles"><a href="#Open-World-Tiles" class="headerlink" title="Open World Tiles"></a>Open World Tiles</h2><p><img src="/img/GDCSpiderManLighting/Tile.png" srcset="/img/loading.gif" lazyload alt="Tile"></p>
+                <h2 id="原标题">原标题</h2>
+<p><em>Marvel’s Spider-Man: Procedural Lighting Tools</em><br>
+程序化布光以及 Probe / Light Grid 分布。</p>
+<h2 id="Open-World-Tiles">Open World Tiles</h2>
+<p><img src="/img/GDCSpiderManLighting/Tile.png" srcset="/img/loading.gif" lazyload alt="Tile"></p>
 <ul>
 <li>将整个世界分成数个 128 x 128 米的 Tile，对于每个 Tile，由数个 JSON 文件描述该 Tile 所引用的资源。</li>
 <li>只有玩家当前所在的和周围的 Tile 会流入内存，其余的 Tile 卸载。</li>
 <li>极远处的渲染由下文会讲到的 Impostor 系统负责。</li>
 </ul>
-<h2 id="Procedural-Placement"><a href="#Procedural-Placement" class="headerlink" title="Procedural Placement"></a>Procedural Placement</h2><p><img src="/img/GDCSpiderManLighting/ProceduralPlacement.png" srcset="/img/loading.gif" lazyload alt="ProceduralPlacement"></p>
+<h2 id="Procedural-Placement">Procedural Placement</h2>
+<p><img src="/img/GDCSpiderManLighting/ProceduralPlacement.png" srcset="/img/loading.gif" lazyload alt="ProceduralPlacement"></p>
 <ul>
 <li>程序化沿着街道放置路灯。</li>
 <li>可视化所有光源的位置及其光照范围（RayCast），以找到打光不足的区域。</li>
 </ul>
-<h2 id="Light-Probes（Specular）"><a href="#Light-Probes（Specular）" class="headerlink" title="Light Probes（Specular）"></a>Light Probes（Specular）</h2><ul>
+<h2 id="Light-Probes（Specular）">Light Probes（Specular）</h2>
+<ul>
 <li>在每个 Tile 中均匀划分四个区域，在每个区域中心生成一个 Probe。</li>
 <li>将 Probe 移动到距离最近的街道上，优先主干道，然后次干道。</li>
 <li>如果 Probe 位于建筑物内，用 SDF 将其移出。</li>
@@ -428,14 +431,17 @@
 <li>在磁盘上存储 Light Probe 信息数据量过大，故使用实时的 Light Probe 生成。</li>
 <li>每个 Probe 的每个面分辨率为 512 x 512，然后向下进行 5 层卷积存储为 MipMap。</li>
 </ul>
-<h2 id="IG-Impostors"><a href="#IG-Impostors" class="headerlink" title="IG-Impostors"></a>IG-Impostors</h2><p><img src="/img/GDCSpiderManLighting/IG.png" srcset="/img/loading.gif" lazyload alt="IG"></p>
+<h2 id="IG-Impostors">IG-Impostors</h2>
+<p><img src="/img/GDCSpiderManLighting/IG.png" srcset="/img/loading.gif" lazyload alt="IG"></p>
 <ul>
 <li>相关的 Mesh 和 Texture 常驻于全局内存中，代表最低级别的 LOD。</li>
 <li>所有 Mesh 共占 100 MB，Texture 共占 90 MB，还有一些高质量的用于自发光以及反射的 Mesh 共占 30 MB。</li>
-<li>一共 220 MB 的数据来表示整个城市的最低级别 LOD，可以被任何系统访问。<br><img src="/img/GDCSpiderManLighting/Texture.png" srcset="/img/loading.gif" lazyload alt="Texture"></li>
+<li>一共 220 MB 的数据来表示整个城市的最低级别 LOD，可以被任何系统访问。<br>
+<img src="/img/GDCSpiderManLighting/Texture.png" srcset="/img/loading.gif" lazyload alt="Texture"></li>
 <li>一张贴图存储 albedo，一张一半分辨率的贴图存储 specular，gloss，emission。</li>
 </ul>
-<h2 id="Light-Grids"><a href="#Light-Grids" class="headerlink" title="Light Grids"></a>Light Grids</h2><p><img src="/img/GDCSpiderManLighting/Grid.png" srcset="/img/loading.gif" lazyload alt="Grid"></p>
+<h2 id="Light-Grids">Light Grids</h2>
+<p><img src="/img/GDCSpiderManLighting/Grid.png" srcset="/img/loading.gif" lazyload alt="Grid"></p>
 <ul>
 <li>每个 128 x 128 米的 Tile 被划分为数个 16 x 16 x 16 的 capture volume。</li>
 <li>由建筑物高度决定立方体的分布。</li>
@@ -448,10 +454,11 @@
 <li>每个样本生成每个面 256 x 256 像素的立方体贴图。</li>
 <li>然后每个面被卷积至单个 HDR 像素，用以表示 diffuse 和方向（高度可压缩的）。</li>
 </ul>
-<h2 id="Others"><a href="#Others" class="headerlink" title="Others"></a>Others</h2><ul>
+<h2 id="Others">Others</h2>
+<ul>
 <li>还存在一个 Hibernation 系统，简单来说只是拥有一个更远的剔除平面，用于处理一些被 Impostors 系统认为过于复杂而被剔除的物体，比如公园里的长椅，楼顶的空调外机等。</li>
 <li>Light Probe 的更新大约为每秒两次，具体则由引擎的任务系统调度。</li>
-<li>一共有 4 份 Light Grid 数据来描述一整天中的漫反射信息，分别为正午，阴天，黎明&#x2F;黄昏，夜晚，</li>
+<li>一共有 4 份 Light Grid 数据来描述一整天中的漫反射信息，分别为正午，阴天，黎明/黄昏，夜晚，</li>
 <li>每个 Probe 存储一份可见的建筑列表。</li>
 <li>通过视锥体，移动方向，移动速度来决定如何优化加载哪些 Tile。</li>
 </ul>
@@ -601,11 +608,6 @@
 
 
   
-
-
-  
-  
-
 
 
 

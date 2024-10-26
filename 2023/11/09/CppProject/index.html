@@ -19,12 +19,12 @@
   <meta name="author" content="Hinageshi">
   <meta name="keywords" content="">
   
-    <meta name="description" content="TODO待整理，但是最近发现了一些有趣的东西，先记一下 CMAKE_MSVC_RUNTIME_LIBRARY用于在 CMakeLists 里指定 MSVC 使用的运行时库。  MultiThreaded 对应 MT MultiThreadedDebug 对应 MTd MultiThreadedDLL 对应 MD MultiThreadedDebugDLL 对应 MDd  注意这项功能仅在 CMak">
+    <meta name="description" content="TODO 待整理，但是最近发现了一些有趣的东西，先记一下 CMAKE_MSVC_RUNTIME_LIBRARY 用于在 CMakeLists 里指定 MSVC 使用的运行时库。  MultiThreaded 对应 MT MultiThreadedDebug 对应 MTd MultiThreadedDLL 对应 MD MultiThreadedDebugDLL 对应 MDd  注意这项功能仅在 CM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="何为一个 C++ 项目">
 <meta property="og:url" content="http://example.com/2023/11/09/CppProject/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="TODO待整理，但是最近发现了一些有趣的东西，先记一下 CMAKE_MSVC_RUNTIME_LIBRARY用于在 CMakeLists 里指定 MSVC 使用的运行时库。  MultiThreaded 对应 MT MultiThreadedDebug 对应 MTd MultiThreadedDLL 对应 MD MultiThreadedDebugDLL 对应 MDd  注意这项功能仅在 CMak">
+<meta property="og:description" content="TODO 待整理，但是最近发现了一些有趣的东西，先记一下 CMAKE_MSVC_RUNTIME_LIBRARY 用于在 CMakeLists 里指定 MSVC 使用的运行时库。  MultiThreaded 对应 MT MultiThreadedDebug 对应 MTd MultiThreadedDLL 对应 MD MultiThreadedDebugDLL 对应 MDd  注意这项功能仅在 CM">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CppProject/img.png">
 <meta property="article:published_time" content="2023-11-09T03:33:50.000Z">
@@ -50,8 +50,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -253,7 +251,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          611 字
+          609 字
         
       </span>
     
@@ -340,8 +338,10 @@
             
               <div class="markdown-body">
                 
-                <h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><p>待整理，但是最近发现了一些有趣的东西，先记一下</p>
-<h2 id="CMAKE-MSVC-RUNTIME-LIBRARY"><a href="#CMAKE-MSVC-RUNTIME-LIBRARY" class="headerlink" title="CMAKE_MSVC_RUNTIME_LIBRARY"></a>CMAKE_MSVC_RUNTIME_LIBRARY</h2><p>用于在 CMakeLists 里指定 MSVC 使用的运行时库。</p>
+                <h2 id="TODO">TODO</h2>
+<p>待整理，但是最近发现了一些有趣的东西，先记一下</p>
+<h2 id="CMAKE-MSVC-RUNTIME-LIBRARY">CMAKE_MSVC_RUNTIME_LIBRARY</h2>
+<p>用于在 CMakeLists 里指定 MSVC 使用的运行时库。</p>
 <ul>
 <li><code>MultiThreaded</code> 对应 <code>MT</code></li>
 <li><code>MultiThreadedDebug</code> 对应 <code>MTd</code></li>
@@ -349,25 +349,45 @@
 <li><code>MultiThreadedDebugDLL</code> 对应 <code>MDd</code></li>
 </ul>
 <p>注意这项功能仅在 CMake 3.15 之后被支持，至少需要 <code>cmake_minimum_required(VERSION 3.15)</code>。</p>
-<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-built_in">set</span>(CMAKE_MSVC_RUNTIME_LIBRARY <span class="hljs-string">&quot;MultiThreaded$&lt;$&lt;CONFIG:Debug&gt;:Debug&gt;&quot;</span>)<br></code></pre></td></tr></table></figure>
-<p><code>$&lt;$&lt;CONFIG:Debug&gt;:Debug&gt;</code> 为生成器表达式，意为“如果当前为 Debug，返回 Debug，否则返回空字符串”。<br>要放在 <code>project</code> 之前才会生效。</p>
+<h3 id="用法">用法</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-built_in">set</span>(CMAKE_MSVC_RUNTIME_LIBRARY <span class="hljs-string">&quot;MultiThreaded$&lt;$&lt;CONFIG:Debug&gt;:Debug&gt;&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p><code>$&lt;$&lt;CONFIG:Debug&gt;:Debug&gt;</code> 为生成器表达式，意为“如果当前为 Debug，返回 Debug，否则返回空字符串”。<br>
+要放在 <code>project</code> 之前才会生效。</p>
 <p>在 3.15 以下的版本中要实现相同的功能需要类似于：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-built_in">set</span>(CompilerFlags<br>        CMAKE_CXX_FLAGS<br>        CMAKE_CXX_FLAGS_DEBUG<br>        CMAKE_CXX_FLAGS_RELEASE<br>        CMAKE_C_FLAGS<br>        CMAKE_C_FLAGS_DEBUG<br>        CMAKE_C_FLAGS_RELEASE<br>        )<br>foreach(CompilerFlag $&#123;CompilerFlags&#125;)<br>  <span class="hljs-built_in">string</span>(REPLACE <span class="hljs-string">&quot;/MD&quot;</span> <span class="hljs-string">&quot;/MT&quot;</span> $&#123;CompilerFlag&#125; <span class="hljs-string">&quot;$&#123;$&#123;CompilerFlag&#125;&#125;&quot;</span>)<br>endforeach()<br></code></pre></td></tr></table></figure>
-<p>详见：<br><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/14172856/compile-with-mt-instead-of-md-using-cmake">Compile with &#x2F;MT instead of &#x2F;MD using CMake</a></p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MSVC_RUNTIME_LIBRARY.html">CMAKE_MSVC_RUNTIME_LIBRARY</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/429849408">在 CMake 中设置 MSVC 运行库</a></p>
-<h2 id="使用-dumpbin-查看静态库的依赖"><a href="#使用-dumpbin-查看静态库的依赖" class="headerlink" title="使用 dumpbin 查看静态库的依赖"></a>使用 dumpbin 查看静态库的依赖</h2><p>在安装 VS2017 或以上的版本时会自动安装 dumpbin.exe，我的路径在：</p>
+<p>详见：<br>
+<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/14172856/compile-with-mt-instead-of-md-using-cmake">Compile with /MT instead of /MD using CMake</a></p>
+<h3 id="参考">参考</h3>
+<p><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MSVC_RUNTIME_LIBRARY.html">CMAKE_MSVC_RUNTIME_LIBRARY</a><br>
+<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/429849408">在 CMake 中设置 MSVC 运行库</a></p>
+<h2 id="使用-dumpbin-查看静态库的依赖">使用 dumpbin 查看静态库的依赖</h2>
+<p>在安装 VS2017 或以上的版本时会自动安装 dumpbin.exe，我的路径在：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-string">&quot;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\bin\Hostx64\x64\dumpbin.exe&quot;</span><br></code></pre></td></tr></table></figure>
 <p>将其加入环境变量即可在任意位置调用 <code>dumpbin</code>。</p>
-<h3 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h3><figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bat">dumpbin /directives &lt;<span class="hljs-built_in">path</span>&gt;<br></code></pre></td></tr></table></figure>
-<p><img src="/img/CppProject/directives.png" srcset="/img/loading.gif" lazyload alt="directives"><br>其中 <code>MT_StaticReleasd</code> 和 <code>LIBCMT</code> 都代表该文件使用的运行时库为 <code>MT</code>。<br>剩余对应详见 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-library-features?view=msvc-170#c-runtime-lib-files">C 运行时 .lib 文件</a><br><img src="/img/CppProject/CRT.png" srcset="/img/loading.gif" lazyload alt="directives"></p>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>dumpbin 看起来还有很多功能，可惜官方文档写的也不是很清楚：<br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/build/reference/dumpbin-options?view=msvc-170">DUMPBIN 选项</a></p>
-<h2 id="使用-depends-查看动态库的依赖"><a href="#使用-depends-查看动态库的依赖" class="headerlink" title="使用 depends 查看动态库的依赖"></a>使用 depends 查看动态库的依赖</h2><p>一个开源的 dll 依赖分析软件：<br><a target="_blank" rel="noopener" href="https://github.com/lucasg/Dependencies">https://github.com/lucasg/Dependencies</a><br>打开 GUI 将对应 dll 拖入：</p>
+<h3 id="用法-2">用法</h3>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bat">dumpbin /directives &lt;<span class="hljs-built_in">path</span>&gt;<br></code></pre></td></tr></table></figure>
+<p><img src="/img/CppProject/directives.png" srcset="/img/loading.gif" lazyload alt="directives"><br>
+其中 <code>MT_StaticReleasd</code> 和 <code>LIBCMT</code> 都代表该文件使用的运行时库为 <code>MT</code>。<br>
+剩余对应详见 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-library-features?view=msvc-170#c-runtime-lib-files">C 运行时 .lib 文件</a><br>
+<img src="/img/CppProject/CRT.png" srcset="/img/loading.gif" lazyload alt="directives"></p>
+<h3 id="其他">其他</h3>
+<p>dumpbin 看起来还有很多功能，可惜官方文档写的也不是很清楚：<br>
+<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/build/reference/dumpbin-options?view=msvc-170">DUMPBIN 选项</a></p>
+<h2 id="使用-depends-查看动态库的依赖">使用 depends 查看动态库的依赖</h2>
+<p>一个开源的 dll 依赖分析软件：<br>
+<a target="_blank" rel="noopener" href="https://github.com/lucasg/Dependencies">https://github.com/lucasg/Dependencies</a><br>
+打开 GUI 将对应 dll 拖入：</p>
 <ul>
 <li><code>msvcp&lt;version&gt;.dll</code> 对应 <code>/MD</code></li>
-<li><code>msvcp&lt;version&gt;d.dll</code> 对应 <code>/MDd</code><br>自 VS2017 以后这个 version 应该是 140。</li>
+<li><code>msvcp&lt;version&gt;d.dll</code> 对应 <code>/MDd</code><br>
+自 VS2017 以后这个 version 应该是 140。</li>
 </ul>
-<p>MD：<br><img src="/img/CppProject/MD.png" srcset="/img/loading.gif" lazyload alt="MD"><br>MT：<br><img src="/img/CppProject/MT.png" srcset="/img/loading.gif" lazyload alt="MT"></p>
-<h2 id="ABI"><a href="#ABI" class="headerlink" title="ABI"></a>ABI</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/577996608">C++ ABI总结</a></p>
+<p>MD：<br>
+<img src="/img/CppProject/MD.png" srcset="/img/loading.gif" lazyload alt="MD"><br>
+MT：<br>
+<img src="/img/CppProject/MT.png" srcset="/img/loading.gif" lazyload alt="MT"></p>
+<h2 id="ABI">ABI</h2>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/577996608">C++ ABI总结</a></p>
 <ul>
 <li>体现在跨编译器的 link 大概率是失败的，因为 C++ 编译器会对符号进行一个“名称重整”的行为以满足 C++ 中的多态，而不同编译器名称重整的逻辑完全不同。不过好像 clang 之类的是能够提供对其他编译器的兼容的。</li>
 <li>另一个方面是混合了同一个编译器不同版本的编译流程，比如 MSVC 自 VS2015 之后说，新的连接器可以混合链接旧版 MSVC 编译出来的库文件。<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/porting/binary-compat-2015-2017?view=msvc-170">C++ binary compatibility between Visual Studio versions</a></li>
@@ -497,11 +517,6 @@
 
 
   
-
-
-  
-  
-
 
 
 

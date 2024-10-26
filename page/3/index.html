@@ -266,7 +266,7 @@
       
       <a class="index-excerpt " href="/2021/09/03/GAMES101/" target="_self">
         <div>
-          渲染管线中的变换矩阵&emsp;&emsp;在渲染管线的前期，光栅化之前，需要对顶点和相机的坐标进行标准化变换，然后进行视口变换进入屏幕坐标空间。 相机的定义位置：$\vec{e}$;&emsp;看向：$\vec{g}$;&emsp;上方：$\vec{t}$; 我们规定相机位于 (0, 0, 0) ，看向 -Z，上方为 Y。对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。 视锥体的定义已知f
+          渲染管线中的变换矩阵   在渲染管线的前期，光栅化之前，需要对顶点和相机的坐标进行标准化变换，然后进行视口变换进入屏幕坐标空间。 相机的定义 位置：e⃗\vec{e}e; 看向：g⃗\vec{g}g​; 上方：t⃗\vec{t}t; 我们规定相机位于 (0, 0, 0) ，看向 -Z，上方为 Y。 对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。 视锥体的定义  已知fovY和aspect可
         </div>
       </a>
 
@@ -320,7 +320,7 @@
       
       <a class="index-excerpt " href="/2021/08/29/Unity/" target="_self">
         <div>
-          背包系统&emsp;&emsp;背包 GUI 的实现、ScriptableObject、数据的存储与读取。 层级结构  Bag 挂载 BagOnDrag 脚本 Grid 挂载 Grid Layout Group 组件，使其子物体（Slot）整齐地排放 Slot 挂载 Slot 脚本，更改其子物体（Item）以实现拖拽 Item 挂载 ItemOnDrag 脚本和 CanvasGroup 组件，以及
+          背包系统   背包 GUI 的实现、ScriptableObject、数据的存储与读取。 层级结构   Bag 挂载 BagOnDrag 脚本 Grid 挂载 Grid Layout Group 组件，使其子物体（Slot）整齐地排放 Slot 挂载 Slot 脚本，更改其子物体（Item）以实现拖拽 Item 挂载 ItemOnDrag 脚本和 CanvasGroup 组件，以及作为 butto
         </div>
       </a>
 
@@ -370,7 +370,7 @@
       
       <a class="index-excerpt " href="/2021/08/19/SunnyLand/" target="_self">
         <div>
-          序言 使用 Unity 制作的 2D 平台跳跃游戏 压缩包大小：46MB 平台：Win 只有三关，根据游戏经验的不同，完整的游戏时长会在 10min-60min 之间 百度网盘 提取码: twwx 蓝奏云  一览 关于关卡设计             如果您还未进行过游戏，强烈建议体验过后再继续阅读，以免破坏您的游戏体验。            林田宏一曾提到过任天堂的关卡设计公式：介绍、练习、掌
+          序言  使用 Unity 制作的 2D 平台跳跃游戏 压缩包大小：46MB 平台：Win 只有三关，根据游戏经验的不同，完整的游戏时长会在 10min-60min 之间 百度网盘 提取码: twwx 蓝奏云  一览   关于关卡设计              如果您还未进行过游戏，强烈建议体验过后再继续阅读，以免破坏您的游戏体验。            林田宏一曾提到过任天堂的关卡设计公式：介绍、
         </div>
       </a>
 
@@ -418,7 +418,7 @@
       
       <a class="index-excerpt " href="/2021/08/12/MakeYourFirstGame/" target="_self">
         <div>
-          角色控制，包括移动与多段跳朝向1234float forward = Input.GetAxisRaw(&quot;Horizontal&quot;);// 返回-1,0,1if (forward != 0) &#123; transform.localScale = new Vector3(forward, 1, 1);&#125;  移动1234567891011public float sp
+          角色控制，包括移动与多段跳 朝向 1234float forward = Input.GetAxisRaw(&quot;Horizontal&quot;);// 返回-1,0,1if (forward != 0) &#123; transform.localScale = new Vector3(forward, 1, 1);&#125; 移动 1234567891011public float
         </div>
       </a>
 
@@ -468,7 +468,7 @@
       
       <a class="index-excerpt " href="/2021/08/07/SoulForging/" target="_self">
         <div>
-          本模组所使用的 Forge 版本为 1.12.2-14.23.5.2847             序言欢迎使用SoulForging！&emsp;&emsp;这是一个关于灵魂和金属的模组，新的武器，新的盔甲，新的附魔，新的食物，新的村民，新的敌人等待着你的探索……  以“使原版用处最小的金发挥作用”为切入点 添加新的金属锭“赋魂金”，数值高于钻石且拥有与金相同的附魔品质
+          本模组所使用的 Forge 版本为 1.12.2-14.23.5.2847            序言 欢迎使用SoulForging！   这是一个关于灵魂和金属的模组，新的武器，新的盔甲，新的附魔，新的食物，新的村民，新的敌人等待着你的探索…  以“使原版用处最小的金发挥作用”为切入点 添加新的金属锭“赋魂金”，数值高于钻石且拥有与金相同的附魔品质 为大部分实体添加新
         </div>
       </a>
 
@@ -520,7 +520,7 @@
       
       <a class="index-excerpt " href="/1970/02/01/Audition/" target="_self">
         <div>
-          网易互娱：游戏引擎研发工程师C++ class 与 struct 有什么区别？ 了解过内存对齐吗，为什么要对齐，不对齐会怎样？struct 内存对齐__declspec(align(#)) 的用法和大小计算   struct TA &#123;   char a;   int b;   char c;   &#125;;   struct TB &#123;   char a;   char b;
+          网易互娱：游戏引擎研发工程师 C++  class 与 struct 有什么区别？ 了解过内存对齐吗，为什么要对齐，不对齐会怎样？ struct 内存对齐 __declspec(align(#)) 的用法和大小计算   struct TA &#123;       char a;       int b;       char c;   &#125;;   struct TB &#123;
         </div>
       </a>
 
@@ -559,7 +559,7 @@
       
       <a class="index-excerpt " href="/1970/01/01/HelloWorld/" target="_self">
         <div>
-          Markdown Test代码std::string str; 1234567#include &lt;stdio&gt;int main()&#123;    std::cout &lt;&lt; &quot;Hello CPP&quot; &lt;&lt; std::endl;    return 0;&#125;  公式$\dot{z}&#x3D;b$ $$L_o(x, \omega_o)
+          Markdown Test 代码 std::string str; 1234567#include &lt;stdio&gt;int main()&#123;    std::cout &lt;&lt; &quot;Hello CPP&quot; &lt;&lt; std::endl;    return 0;&#125; 公式 z˙=b\dot{z}=bz˙=b Lo(x,ωo)=Le(x,ωo
         </div>
       </a>
 

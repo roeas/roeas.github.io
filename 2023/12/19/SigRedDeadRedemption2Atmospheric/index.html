@@ -19,12 +19,12 @@
   <meta name="author" content="Hinageshi">
   <meta name="keywords" content="">
   
-    <meta name="description" content="原标题Creating the Atmospheric World of Red Dead Redemption 2: A Complete and Integrated Solution整套天气系统渲染的实现，包括大气、云雾、二十四小时、不同天气。 物理基础  这里只考虑单条光路上的单次散射。 以单个粒子为视角，当光线与其交互时，大致会发生吸收（转化为热能）、散射和反弹。 散射向相机的部分被称作">
+    <meta name="description" content="原标题 Creating the Atmospheric World of Red Dead Redemption 2: A Complete and Integrated Solution 整套天气系统渲染的实现，包括大气、云雾、二十四小时、不同天气。 物理基础   这里只考虑单条光路上的单次散射。 以单个粒子为视角，当光线与其交互时，大致会发生吸收（转化为热能）、散射和反弹。 散射向相机的部分">
 <meta property="og:type" content="article">
 <meta property="og:title" content="荒野大镖客 2 中的天气系统">
 <meta property="og:url" content="http://example.com/2023/12/19/SigRedDeadRedemption2Atmospheric/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="原标题Creating the Atmospheric World of Red Dead Redemption 2: A Complete and Integrated Solution整套天气系统渲染的实现，包括大气、云雾、二十四小时、不同天气。 物理基础  这里只考虑单条光路上的单次散射。 以单个粒子为视角，当光线与其交互时，大致会发生吸收（转化为热能）、散射和反弹。 散射向相机的部分被称作">
+<meta property="og:description" content="原标题 Creating the Atmospheric World of Red Dead Redemption 2: A Complete and Integrated Solution 整套天气系统渲染的实现，包括大气、云雾、二十四小时、不同天气。 物理基础   这里只考虑单条光路上的单次散射。 以单个粒子为视角，当光线与其交互时，大致会发生吸收（转化为热能）、散射和反弹。 散射向相机的部分">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/SigRedDeadRedemption2Atmospheric/img.png">
 <meta property="article:published_time" content="2023-12-19T08:26:36.000Z">
@@ -52,8 +52,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -379,68 +377,90 @@
             
               <div class="markdown-body">
                 
-                <h2 id="原标题"><a href="#原标题" class="headerlink" title="原标题"></a>原标题</h2><p><em>Creating the Atmospheric World of Red Dead Redemption 2: A Complete and Integrated Solution</em><br>整套天气系统渲染的实现，包括大气、云雾、二十四小时、不同天气。</p>
-<h2 id="物理基础"><a href="#物理基础" class="headerlink" title="物理基础"></a>物理基础</h2><p><img src="/img/SigRedDeadRedemption2Atmospheric/Scattering1.png" srcset="/img/loading.gif" lazyload alt="Scattering"></p>
+                <h2 id="原标题">原标题</h2>
+<p><em>Creating the Atmospheric World of Red Dead Redemption 2: A Complete and Integrated Solution</em><br>
+整套天气系统渲染的实现，包括大气、云雾、二十四小时、不同天气。</p>
+<h2 id="物理基础">物理基础</h2>
+<p><img src="/img/SigRedDeadRedemption2Atmospheric/Scattering1.png" srcset="/img/loading.gif" lazyload alt="Scattering"></p>
 <ul>
 <li>这里只考虑单条光路上的单次散射。</li>
 <li>以单个粒子为视角，当光线与其交互时，大致会发生吸收（转化为热能）、散射和反弹。</li>
-<li>散射向相机的部分被称作 in-scattering，剩余的部分被称作 out-scattering。<ul>
+<li>散射向相机的部分被称作 in-scattering，剩余的部分被称作 out-scattering。
+<ul>
 <li>out-scattering 会继续作用于其他粒子并造成多重散射，多重散射较为复杂，此处不做考虑。</li>
 <li>以一条光路为视角，远处的粒子发生的 in-scattering 会继续在近处的粒子上发生 out-scattering。</li>
 </ul>
 </li>
 <li><strong>Scattered Light</strong>：单个粒子上发生的散射，P 为相函数，V 为可见性，L 为入射 Radiance。</li>
 <li><strong>Extinction</strong>：消光系数，由吸收系数与散射系数定义，意为一束光经过单个粒子之后沿着原光路继续传播的占比。</li>
-<li><strong>Transmittance</strong>：透射率 &#x2F; 透光率，意为一束光经过给定距离之间所有粒子之后沿着原光路继续传播的占比。</li>
+<li><strong>Transmittance</strong>：透射率 / 透光率，意为一束光经过给定距离之间所有粒子之后沿着原光路继续传播的占比。</li>
 <li>总结：单光路上单次散射便可表示为，“着色点到达相机剩余的光”与“光路上所有粒子提供给相机的散射”之和。</li>
 </ul>
-<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><h3 id="云"><a href="#云" class="headerlink" title="云"></a>云</h3><p>贴图 + 参数生成两个通道用于表示两层云在平面上该如何放置，覆盖整张地图。<br><img src="/img/SigRedDeadRedemption2Atmospheric/CloudMap.png" srcset="/img/loading.gif" lazyload alt="Cloud Map"></p>
-<p>高度上的定义。<br><img src="/img/SigRedDeadRedemption2Atmospheric/CloudHeightLUT.png" srcset="/img/loading.gif" lazyload alt="Cloud Height LUT"></p>
-<p>细节，两张 2D 的位移贴图 + 一张 3D 的噪声贴图结合风速参数。<br><img src="/img/SigRedDeadRedemption2Atmospheric/CloudDetail.png" srcset="/img/loading.gif" lazyload alt="Cloud Detail"></p>
+<h2 id="模型">模型</h2>
+<h3 id="云">云</h3>
+<p>贴图 + 参数生成两个通道用于表示两层云在平面上该如何放置，覆盖整张地图。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/CloudMap.png" srcset="/img/loading.gif" lazyload alt="Cloud Map"></p>
+<p>高度上的定义。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/CloudHeightLUT.png" srcset="/img/loading.gif" lazyload alt="Cloud Height LUT"></p>
+<p>细节，两张 2D 的位移贴图 + 一张 3D 的噪声贴图结合风速参数。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/CloudDetail.png" srcset="/img/loading.gif" lazyload alt="Cloud Detail"></p>
 <p>在高空还有一层简化过的卷云，不过光照模型是一致的。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c">float2 c = SampleCloudMap(ray.p);<br>float3 cloudLut = SampleCloudLUT(altitude);<br><span class="hljs-type">float</span> density = smoothstep(g_CloudShape.xz + cloudLut.xy, g_CloudShape.yw + cloudLut.xy, c.xy);<br><span class="hljs-type">float</span> <span class="hljs-title function_">rescale</span><span class="hljs-params">(vMin, vMax, v)</span><br>&#123;<br>  <span class="hljs-keyword">return</span> saturate((v – vMin) / (vMax - vMin));<br>&#125;<br>density = rescale(noise, CloudLut.z, density);<br></code></pre></td></tr></table></figure>
-
-<h3 id="雾"><a href="#雾" class="headerlink" title="雾"></a>雾</h3><p>全局雾 + 局部雾。一张图覆盖所有可玩区域，存储起始高度，衰减距离和密度。<br><img src="/img/SigRedDeadRedemption2Atmospheric/FogMap.png" srcset="/img/loading.gif" lazyload alt="Fog Map"><br>同时也支持可以自由摆放的 Fog Volumes，球型或盒型，自定义颜色，alpha blending 或者 additive。</p>
-<h2 id="渲染"><a href="#渲染" class="headerlink" title="渲染"></a>渲染</h2><p>近处 frustum aligned volume，远处 raymarching。</p>
-<h3 id="相函数"><a href="#相函数" class="headerlink" title="相函数"></a>相函数</h3><p>单次散射，波长无关，trick 近似多重散射。<br><img src="/img/SigRedDeadRedemption2Atmospheric/PhaseFunction.png" srcset="/img/loading.gif" lazyload alt="Phase Function"></p>
+<h3 id="雾">雾</h3>
+<p>全局雾 + 局部雾。一张图覆盖所有可玩区域，存储起始高度，衰减距离和密度。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/FogMap.png" srcset="/img/loading.gif" lazyload alt="Fog Map"><br>
+同时也支持可以自由摆放的 Fog Volumes，球型或盒型，自定义颜色，alpha blending 或者 additive。</p>
+<h2 id="渲染">渲染</h2>
+<p>近处 frustum aligned volume，远处 raymarching。</p>
+<h3 id="相函数">相函数</h3>
+<p>单次散射，波长无关，trick 近似多重散射。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/PhaseFunction.png" srcset="/img/loading.gif" lazyload alt="Phase Function"></p>
 <ul>
 <li>叠加多级的 Henyey-Greenstein 函数，每次迭代 各向异性 g 减小。</li>
-<li>使用艺术导向的权重 $\omega_0$ 和 $\omega_1$ 以及 消光系数 $\sigma_{ext}$ 来混合。</li>
+<li>使用艺术导向的权重 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ω</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\omega_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">ω</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ω</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">\omega_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">ω</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 以及 消光系数 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>e</mi><mi>x</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\sigma_{ext}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">x</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 来混合。</li>
 <li>两次迭代。</li>
 </ul>
-<p>依旧缺乏向后的散射，clamp 至由消光系数和感知调整参数影响的 Lambertian BRDF 1&#x2F;PI。<br><em>不知道这个感知调整参数具体是什么玩意儿</em></p>
+<p>依旧缺乏向后的散射，clamp 至由消光系数和感知调整参数影响的 Lambertian BRDF 1/PI。<br>
+<em>不知道这个感知调整参数具体是什么玩意儿</em></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">float</span> <span class="hljs-title function_">ApplyBackScattering</span><span class="hljs-params">(<span class="hljs-type">float</span> phase, <span class="hljs-type">float</span> extinction)</span><br>&#123;<br>  <span class="hljs-type">float</span> v = <span class="hljs-number">1</span>/PI * rescale(BACK_SCATTER_MIN, BACK_SCATTER_MAX, extinction);<br>  <span class="hljs-keyword">return</span> max(phase, v);<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h3 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h3><p>主要是 Shadow Map。<br>对于云，则进行对太阳&#x2F;月亮的消光采样，通过天气参数控制采样长度。</p>
-<p>对地形的 Height Map 做 Raymarch，记录相交的高度，Ray length 用于调整 threshold。<br><img src="/img/SigRedDeadRedemption2Atmospheric/TerrainShadowMap.png" srcset="/img/loading.gif" lazyload alt="Terrain Shadow Map"></p>
-<p>云的 Shadw Map 存储为 ESM（Exponential Shadow Map），透射率加权射线长度，滤波存为 Mip Map。<br><img src="/img/SigRedDeadRedemption2Atmospheric/CloudShadowMap.png" srcset="/img/loading.gif" lazyload alt="Cloud Shadow Map"></p>
+<h3 id="可见性">可见性</h3>
+<p>主要是 Shadow Map。<br>
+对于云，则进行对太阳/月亮的消光采样，通过天气参数控制采样长度。</p>
+<p>对地形的 Height Map 做 Raymarch，记录相交的高度，Ray length 用于调整 threshold。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/TerrainShadowMap.png" srcset="/img/loading.gif" lazyload alt="Terrain Shadow Map"></p>
+<p>云的 Shadw Map 存储为 ESM（Exponential Shadow Map），透射率加权射线长度，滤波存为 Mip Map。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/CloudShadowMap.png" srcset="/img/loading.gif" lazyload alt="Cloud Shadow Map"></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">float</span> transmittance = <span class="hljs-number">1</span>;<br><span class="hljs-type">float</span> depth = maxDepth;<br><span class="hljs-keyword">while</span> (ray.t &lt; maxDepth &amp;&amp; transmittance &gt; <span class="hljs-number">0.001</span>)<br>&#123;<br>  <span class="hljs-type">float</span> density = SampleCloudDensity(ray.p + ray.d * ray.t);<br>  transmittance *= <span class="hljs-built_in">exp</span>(-density * stepLength);<br>  depth = lerp(depth, ray.t, <span class="hljs-built_in">pow</span>(transmittance, <span class="hljs-number">4</span>));<br>  ray.t += stepLength;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h3 id="环境光"><a href="#环境光" class="headerlink" title="环境光"></a>环境光</h3><p>复用上面 Cloud Shadow Map 的可见性。</p>
+<h3 id="环境光">环境光</h3>
+<p>复用上面 Cloud Shadow Map 的可见性。</p>
 <p>对于 Raymarching：</p>
 <ul>
 <li>将无云的 Rayleigh 和 Mie 散射加权平均</li>
 <li>渲染至低分辨率的抛物面贴图上</li>
 <li>Parallel Reduction</li>
-<li>太阳&#x2F;月亮方向加权</li>
+<li>太阳/月亮方向加权</li>
 </ul>
 <p>对于 Frustum Volume：</p>
 <ul>
 <li>采样 Irradiance Probe，存储了 sky light + indirect bounce light * AO</li>
 </ul>
-<h3 id="Local-Lights"><a href="#Local-Lights" class="headerlink" title="Local Lights"></a>Local Lights</h3><ul>
+<h3 id="Local-Lights">Local Lights</h3>
+<ul>
 <li>采样 light cluster volume</li>
 <li>Shadow Map 做可见性</li>
 <li>单级 HG 相函数</li>
 </ul>
-<h3 id="闪电"><a href="#闪电" class="headerlink" title="闪电"></a>闪电</h3><p>没有细讲，比较暴力的实现。</p>
+<h3 id="闪电">闪电</h3>
+<p>没有细讲，比较暴力的实现。</p>
 <ul>
 <li>每一击闪电添加一个点光源</li>
 <li>指数衰减 + 相函数</li>
 <li>简化的局部消光（用于近似阴影）</li>
 </ul>
-<h3 id="散射波瓣可视化"><a href="#散射波瓣可视化" class="headerlink" title="散射波瓣可视化"></a>散射波瓣可视化</h3><p><img src="/img/SigRedDeadRedemption2Atmospheric/ScatteredLightOverview.png" srcset="/img/loading.gif" lazyload alt="Scattered Light Overview"></p>
-<h3 id="Frustum-Voxel-Grid"><a href="#Frustum-Voxel-Grid" class="headerlink" title="Frustum Voxel Grid"></a>Frustum Voxel Grid</h3><p><img src="/img/SigRedDeadRedemption2Atmospheric/FrustumVoxelGrid.png" srcset="/img/loading.gif" lazyload alt="Frustum Voxel Grid"></p>
+<h3 id="散射波瓣可视化">散射波瓣可视化</h3>
+<p><img src="/img/SigRedDeadRedemption2Atmospheric/ScatteredLightOverview.png" srcset="/img/loading.gif" lazyload alt="Scattered Light Overview"></p>
+<h3 id="Frustum-Voxel-Grid">Frustum Voxel Grid</h3>
+<p><img src="/img/SigRedDeadRedemption2Atmospheric/FrustumVoxelGrid.png" srcset="/img/loading.gif" lazyload alt="Frustum Voxel Grid"></p>
 <ul>
 <li>动态可调深度（&lt;160m）</li>
 </ul>
@@ -451,87 +471,125 @@
 <li>Scattered Light and Extinction Volume</li>
 <li>分辨率 160 x 88 x 64</li>
 </ul>
-<h4 id="Shadow-Volume"><a href="#Shadow-Volume" class="headerlink" title="Shadow Volume"></a>Shadow Volume</h4><ul>
+<h4 id="Shadow-Volume">Shadow Volume</h4>
+<ul>
 <li>格式：R16F</li>
 <li>存储从 Shadow Map，Cloud Shadow Map 和 Terrain Shadow Map 采样到的直接光阴影项</li>
 <li>Temporal Filtering</li>
 </ul>
-<h4 id="Material-Volume"><a href="#Material-Volume" class="headerlink" title="Material Volume"></a>Material Volume</h4><p>分为两个子 Volume 存储不同参数。<br><img src="/img/SigRedDeadRedemption2Atmospheric/MaterialVolume.png" srcset="/img/loading.gif" lazyload alt="Material Volume"></p>
+<h4 id="Material-Volume">Material Volume</h4>
+<p>分为两个子 Volume 存储不同参数。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/MaterialVolume.png" srcset="/img/loading.gif" lazyload alt="Material Volume"></p>
 <ul>
-<li>混合顺序：Additive -&gt; Alpha -&gt; Particles<br>这样可以用一个大号的 Additive 包围整个建筑，然后用 Alpha 镂空室内，然后还支持用 Particles 表示的爆炸&#x2F;火灾。</li>
+<li>混合顺序：Additive -&gt; Alpha -&gt; Particles<br>
+这样可以用一个大号的 Additive 包围整个建筑，然后用 Alpha 镂空室内，然后还支持用 Particles 表示的爆炸/火灾。</li>
 <li>对散射和吸收系数做 Temporal Filtering</li>
 <li>与风速交互</li>
 </ul>
-<h4 id="Scattered-Light-Volume"><a href="#Scattered-Light-Volume" class="headerlink" title="Scattered Light Volume"></a>Scattered Light Volume</h4><ul>
-<li><p>采样 Material 和 Shadow Volume</p>
-</li>
-<li><p>累计直接光（太阳&#x2F;月亮&#x2F;局部光）和环境光（来自 irradiance probe）的 Radiance</p>
-</li>
-<li><p>格式：RGBA16F，RGB: Scattered light，A: Extinction</p>
-</li>
-<li><p>一个 slice marching pass 计算每个 slice 的 in-scattering 和 transmittance </p>
-</li>
-<li><p>无时间性的混合，动态光源拖影明显</p>
-</li>
-<li><p>使用抖动查找和 TAA</p>
-</li>
-</ul>
-<h3 id="Raymarch"><a href="#Raymarch" class="headerlink" title="Raymarch"></a>Raymarch</h3><p>Frustum Volumes 分辨率有限，无高频信息，使用时间性的混合依旧不稳定。<br>Raymarch 内存更小但是运行开销更大，剔除了雾, irradiance probe 和局部光。</p>
+<h4 id="Scattered-Light-Volume">Scattered Light Volume</h4>
 <ul>
-<li><p>射线长度由屏幕深度，与地平面&#x2F;穹顶的解析解决定</p>
+<li>
+<p>采样 Material 和 Shadow Volume</p>
 </li>
-<li><p>击中云的基本形状之后步长减半并回退一步，直到达到迭代最大次数</p>
+<li>
+<p>累计直接光（太阳/月亮/局部光）和环境光（来自 irradiance probe）的 Radiance</p>
 </li>
-<li><p>以此做为积分的开始位置</p>
+<li>
+<p>格式：RGBA16F，RGB: Scattered light，A: Extinction</p>
 </li>
-<li><p>离开云之后恢复初始步长</p>
+<li>
+<p>一个 slice marching pass 计算每个 slice 的 in-scattering 和 transmittance</p>
 </li>
-<li><p>射线起始位置 &#x3D; frustum volume 的最后一个 slice 之后 + offset(blue noise)</p>
+<li>
+<p>无时间性的混合，动态光源拖影明显</p>
 </li>
-<li><p>目标是半屏幕分辨率</p>
-</li>
-<li><p>还是太慢了，故不对所有像素投射光线，吧计算分布到 4 帧</p>
+<li>
+<p>使用抖动查找和 TAA</p>
 </li>
 </ul>
-<h4 id="Reconstruction"><a href="#Reconstruction" class="headerlink" title="Reconstruction"></a>Reconstruction</h4><ul>
+<h3 id="Raymarch">Raymarch</h3>
+<p>Frustum Volumes 分辨率有限，无高频信息，使用时间性的混合依旧不稳定。<br>
+Raymarch 内存更小但是运行开销更大，剔除了雾, irradiance probe 和局部光。</p>
+<ul>
+<li>
+<p>射线长度由屏幕深度，与地平面/穹顶的解析解决定</p>
+</li>
+<li>
+<p>击中云的基本形状之后步长减半并回退一步，直到达到迭代最大次数</p>
+</li>
+<li>
+<p>以此做为积分的开始位置</p>
+</li>
+<li>
+<p>离开云之后恢复初始步长</p>
+</li>
+<li>
+<p>射线起始位置 = frustum volume 的最后一个 slice 之后 + offset(blue noise)</p>
+</li>
+<li>
+<p>目标是半屏幕分辨率</p>
+</li>
+<li>
+<p>还是太慢了，故不对所有像素投射光线，吧计算分布到 4 帧</p>
+</li>
+</ul>
+<h4 id="Reconstruction">Reconstruction</h4>
+<ul>
 <li>每次只投射 2 x 2 tile 中的一条光线，并重投影上一帧中跳过的像素</li>
 <li>采样之前的 buffer 时将结果 clamp 至 3 x 3 的临近像素内</li>
 <li>放弃与当前像素深度差异过大的样本</li>
 <li>无历史信息时使用最近的 Raymarch 结果</li>
 </ul>
 <p><img src="/img/SigRedDeadRedemption2Atmospheric/RaymarchReconstruction.png" srcset="/img/loading.gif" lazyload alt="Raymarch Reconstruction"></p>
-<h4 id="Ray-Placement"><a href="#Ray-Placement" class="headerlink" title="Ray Placement"></a>Ray Placement</h4><p>先对深度进行棋盘下采样，这是一种交替存储 tile 内最大值与最小值的下采样方法，有助于保存细节。</p>
+<h4 id="Ray-Placement">Ray Placement</h4>
+<p>先对深度进行棋盘下采样，这是一种交替存储 tile 内最大值与最小值的下采样方法，有助于保存细节。</p>
 <ol>
-<li><p>假设以：“左上、右上、右下、左下”的顺序投射光线，在特定的情况下会遇到问题。例如在 Frame 2 我们试图重建左下的像素，会发现九个可信的 Raymarch 结果全部与其深度相差过大，即都应当被丢弃。这时这个像素便会失去在时间上的可信度。在这里其实可以反推出一个理想中光线分布方式应当是覆盖了尽可能大的深度范围的。<br><img src="/img/SigRedDeadRedemption2Atmospheric/RayPlacement.png" srcset="/img/loading.gif" lazyload alt="Ray Placement"></p>
+<li>
+<p>假设以：“左上、右上、右下、左下”的顺序投射光线，在特定的情况下会遇到问题。例如在 Frame 2 我们试图重建左下的像素，会发现九个可信的 Raymarch 结果全部与其深度相差过大，即都应当被丢弃。这时这个像素便会失去在时间上的可信度。在这里其实可以反推出一个理想中光线分布方式应当是覆盖了尽可能大的深度范围的。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/RayPlacement.png" srcset="/img/loading.gif" lazyload alt="Ray Placement"></p>
 </li>
-<li><p>又提出了一种不统一从左上角开始的分布方式，依旧不能适配所有情况。<br><img src="/img/SigRedDeadRedemption2Atmospheric/RayPlacement2.png" srcset="/img/loading.gif" lazyload alt="Ray Placement 2"></p>
+<li>
+<p>又提出了一种不统一从左上角开始的分布方式，依旧不能适配所有情况。<br>
+<img src="/img/SigRedDeadRedemption2Atmospheric/RayPlacement2.png" srcset="/img/loading.gif" lazyload alt="Ray Placement 2"></p>
 </li>
-<li><p>在 2 的基础上微调。比较中心 Ray 和周围八个 Ray 的深度，如果相差无几，就将 min 上的 Ray 移到 max 上去，反之亦然。<br><em>移动时每个 tile 内应该都有两个选项，具体怎么移动好像没有细说</em></p>
+<li>
+<p>在 2 的基础上微调。比较中心 Ray 和周围八个 Ray 的深度，如果相差无几，就将 min 上的 Ray 移到 max 上去，反之亦然。<br>
+<em>移动时每个 tile 内应该都有两个选项，具体怎么移动好像没有细说</em></p>
 </li>
 </ol>
-<h4 id="Full-Resolution-Upscale"><a href="#Full-Resolution-Upscale" class="headerlink" title="Full Resolution Upscale"></a>Full Resolution Upscale</h4><h5 id="Dithered-Upscale"><a href="#Dithered-Upscale" class="headerlink" title="Dithered Upscale"></a>Dithered Upscale</h5><ul>
+<h4 id="Full-Resolution-Upscale">Full Resolution Upscale</h4>
+<h5 id="Dithered-Upscale">Dithered Upscale</h5>
+<ul>
 <li>4 个采样点 + blue noise</li>
 <li>深度加权</li>
 </ul>
-<h5 id="TAA"><a href="#TAA" class="headerlink" title="TAA"></a>TAA</h5><ul>
-<li>卷积核宽度由透射率和深度决定，让远处云不会被处理的太糊。<br><em>原文是：… width … is chosen by the transmittance weighted depth of the ray of this pixel.</em></li>
-<li>查找 in-scattering &#x2F; transmittance accumulation volume 应用同样的原则。</li>
+<h5 id="TAA">TAA</h5>
+<ul>
+<li>卷积核宽度由透射率和深度决定，让远处云不会被处理的太糊。<br>
+<em>原文是：… width … is chosen by the transmittance weighted depth of the ray of this pixel.</em></li>
+<li>查找 in-scattering / transmittance accumulation volume 应用同样的原则。</li>
 </ul>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>有一篇结合了逆向的文章，还在 UE 里复现了一遍：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/127435500">荒野大镖客2天气系统云雾分帧处理细节</a></p>
-<h2 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h2><h3 id="Sky-Scattering"><a href="#Sky-Scattering" class="headerlink" title="Sky Scattering"></a>Sky Scattering</h3><ul>
+<h3 id="参考">参考</h3>
+<p>有一篇结合了逆向的文章，还在 UE 里复现了一遍：<br>
+<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/127435500">荒野大镖客2天气系统云雾分帧处理细节</a></p>
+<h2 id="集成">集成</h2>
+<h3 id="Sky-Scattering">Sky Scattering</h3>
+<ul>
 <li>基于 Precomputed Atmospheric Scattering [Bruneton07]</li>
 <li>改进自 Physically Based Sky, Atmosphere and Cloud Rendering in Frostbite [Hillaire16]</li>
 <li>支持 earth shadow <em>这啥？</em></li>
 <li>随时间段更新</li>
 <li>Raymarch 之后采样一次，而非每个采样点都采样 Sky Scattering</li>
 </ul>
-<h4 id="Light-Shaft-God-Ray"><a href="#Light-Shaft-God-Ray" class="headerlink" title="Light Shaft &#x2F; God Ray"></a>Light Shaft &#x2F; God Ray</h4><ul>
+<h4 id="Light-Shaft-God-Ray">Light Shaft / God Ray</h4>
+<ul>
 <li>分离 Sky Scattering 的可见性项</li>
 <li>每次 Raymarch 累计可见性，通过样本覆盖面积和透射率加权</li>
 <li>Raymarch 之后通过 光线长度进行归一化。</li>
 <li>物理不正确，但是开销小效果好</li>
 </ul>
-<h3 id="Sky-Irradiance-Probes"><a href="#Sky-Irradiance-Probes" class="headerlink" title="Sky Irradiance Probes"></a>Sky Irradiance Probes</h3><p><img src="/img/SigRedDeadRedemption2Atmospheric/SkyIrradianceProbes.png" srcset="/img/loading.gif" lazyload alt="Sky Irradiance Probes"></p>
+<h3 id="Sky-Irradiance-Probes">Sky Irradiance Probes</h3>
+<p><img src="/img/SigRedDeadRedemption2Atmospheric/SkyIrradianceProbes.png" srcset="/img/loading.gif" lazyload alt="Sky Irradiance Probes"></p>
 <ul>
 <li>云雾对大气提供的环境光的遮挡</li>
 <li>维护 32 x 32 个 probe，每 256 x 256 平方米一个</li>
@@ -539,23 +597,24 @@
 <li>编码为三阶球谐函数</li>
 </ul>
 <div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="/img/SigRedDeadRedemption2Atmospheric/SkyIrradianceProbes1.png" srcset="/img/loading.gif" lazyload alt="Sky Irradiance"></div><div class="group-image-wrap"><img src="/img/SigRedDeadRedemption2Atmospheric/SkyIrradianceProbes2.png" srcset="/img/loading.gif" lazyload alt="With Scattering / Transmittance"></div><div class="group-image-wrap"><img src="/img/SigRedDeadRedemption2Atmospheric/SkyIrradianceProbes3.png" srcset="/img/loading.gif" lazyload alt="With Direct Light"></div></div></div>
-
 <p>优化：</p>
 <ul>
 <li>可视的 Probe 投射 32 条光线，不可见投射 16 条</li>
 <li>每个线程一条射线</li>
 <li>不考虑云的高频噪声侵蚀</li>
-<li>不考虑彩虹 &#x2F; 闪电</li>
+<li>不考虑彩虹 / 闪电</li>
 <li>长步长，无需细化</li>
 <li>Shared memory parallel reduction</li>
 </ul>
-<h3 id="Reflection-Probes"><a href="#Reflection-Probes" class="headerlink" title="Reflection Probes"></a>Reflection Probes</h3><ul>
+<h3 id="Reflection-Probes">Reflection Probes</h3>
+<ul>
 <li>在相机位置生成低分辨率的 Cube Map</li>
 <li>存储 scattering 和 transmittance</li>
 <li>和 Sky Irradiance Probe 一样简化的 Raymarch</li>
 </ul>
-<h3 id="Water-Reflections"><a href="#Water-Reflections" class="headerlink" title="Water Reflections"></a>Water Reflections</h3><ul>
-<li>SSR 不包含半透明 &#x2F; 体积效果</li>
+<h3 id="Water-Reflections">Water Reflections</h3>
+<ul>
+<li>SSR 不包含半透明 / 体积效果</li>
 <li>取而代之使用简化的 Raymarch + temporal blend</li>
 </ul>
 
@@ -706,11 +765,6 @@
 
 
   
-
-
-  
-  
-
 
 
 
