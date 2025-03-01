@@ -4,6 +4,27 @@
   
   
   <entry>
+    <title>代码规范 / 书写习惯</title>
+    <link href="/2025/03/01/CodeStyle/"/>
+    <url>/2025/03/01/CodeStyle/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>CPP</tag>
+      
+      <tag>Engineering</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>VS2022 使用窍门</title>
     <link href="/2024/11/23/VSTips/"/>
     <url>/2024/11/23/VSTips/</url>
@@ -156,9 +177,9 @@
     
     <tags>
       
-      <tag>AtmosphericScattering</tag>
-      
       <tag>Rendering</tag>
+      
+      <tag>AtmosphericScattering</tag>
       
       <tag>VolumeRendering</tag>
       
@@ -187,9 +208,9 @@
     
     <tags>
       
-      <tag>GlobalIllumination</tag>
-      
       <tag>Rendering</tag>
+      
+      <tag>GlobalIllumination</tag>
       
       <tag>Procedural</tag>
       
@@ -301,9 +322,9 @@
       
       <tag>Math</tag>
       
-      <tag>Rendering</tag>
-      
       <tag>RayTracing</tag>
+      
+      <tag>Rendering</tag>
       
     </tags>
     
@@ -383,13 +404,13 @@
     
     <tags>
       
-      <tag>AtmosphericScattering</tag>
-      
-      <tag>GlobalIllumination</tag>
-      
       <tag>Math</tag>
       
       <tag>Rendering</tag>
+      
+      <tag>GlobalIllumination</tag>
+      
+      <tag>AtmosphericScattering</tag>
       
       <tag>VolumeRendering</tag>
       
@@ -410,9 +431,9 @@
     
     <tags>
       
-      <tag>GlobalIllumination</tag>
-      
       <tag>Rendering</tag>
+      
+      <tag>GlobalIllumination</tag>
       
     </tags>
     
@@ -473,17 +494,17 @@
     
     <tags>
       
-      <tag>GlobalIllumination</tag>
-      
       <tag>Math</tag>
       
+      <tag>RayTracing</tag>
+      
       <tag>Rendering</tag>
+      
+      <tag>GlobalIllumination</tag>
       
       <tag>GLSL</tag>
       
       <tag>JavaScript</tag>
-      
-      <tag>RayTracing</tag>
       
       <tag>Reflection</tag>
       
@@ -529,9 +550,9 @@
       
       <tag>Math</tag>
       
-      <tag>Rendering</tag>
-      
       <tag>RayTracing</tag>
+      
+      <tag>Rendering</tag>
       
       <tag>AntiAliasing</tag>
       
