@@ -8,7 +8,7 @@
     <link href="/2025/03/01/CodeStyle/"/>
     <url>/2025/03/01/CodeStyle/</url>
     
-    <content type="html"><![CDATA[]]></content>
+    <content type="html"><![CDATA[<ul><li><p>第三方库使用 &lt;&gt; 而非 “”</p></li><li><p>头文件包含顺序，清理不必要的头文件</p></li><li><p>命名空间大括号向左缩进</p></li><li><p>命名空间右大括号注释</p></li><li><p>命名规范，member，pointer, static</p></li><li><p>注释，does not instead of doesn’t</p></li><li><p>注释，非英文的部分用 `` 括起来</p></li><li><p>前向声明</p></li><li><p>[[nodiscard]]</p></li><li><p>final 和 explicit，不过 explicit 偶尔会很麻烦</p></li><li><p>成员可访问级别</p></li><li><p>三五法则</p></li><li><p>提供参数为右值的重载函数，传值就完事了，实现内再 move</p></li><li><p>将参数作为索引时用 const T&amp;，当 sizeof(T) &lt; 8 时不用 &amp;</p></li><li><p>用 const 修饰 this 指针</p></li><li><p>用 string_view 代替 string</p></li><li><p>尽量用 assert 代替 if check log，C++ 最好的错误检查就是崩在一个合理的地方</p></li></ul>]]></content>
     
     
     
@@ -177,9 +177,9 @@
     
     <tags>
       
-      <tag>Rendering</tag>
-      
       <tag>AtmosphericScattering</tag>
+      
+      <tag>Rendering</tag>
       
       <tag>VolumeRendering</tag>
       
@@ -208,9 +208,9 @@
     
     <tags>
       
-      <tag>Rendering</tag>
-      
       <tag>GlobalIllumination</tag>
+      
+      <tag>Rendering</tag>
       
       <tag>Procedural</tag>
       
@@ -322,9 +322,9 @@
       
       <tag>Math</tag>
       
-      <tag>RayTracing</tag>
-      
       <tag>Rendering</tag>
+      
+      <tag>RayTracing</tag>
       
     </tags>
     
@@ -404,13 +404,13 @@
     
     <tags>
       
-      <tag>Math</tag>
-      
-      <tag>Rendering</tag>
+      <tag>AtmosphericScattering</tag>
       
       <tag>GlobalIllumination</tag>
       
-      <tag>AtmosphericScattering</tag>
+      <tag>Math</tag>
+      
+      <tag>Rendering</tag>
       
       <tag>VolumeRendering</tag>
       
@@ -431,9 +431,9 @@
     
     <tags>
       
-      <tag>Rendering</tag>
-      
       <tag>GlobalIllumination</tag>
+      
+      <tag>Rendering</tag>
       
     </tags>
     
@@ -494,13 +494,13 @@
     
     <tags>
       
-      <tag>Math</tag>
+      <tag>GlobalIllumination</tag>
       
-      <tag>RayTracing</tag>
+      <tag>Math</tag>
       
       <tag>Rendering</tag>
       
-      <tag>GlobalIllumination</tag>
+      <tag>RayTracing</tag>
       
       <tag>GLSL</tag>
       
@@ -550,9 +550,9 @@
       
       <tag>Math</tag>
       
-      <tag>RayTracing</tag>
-      
       <tag>Rendering</tag>
+      
+      <tag>RayTracing</tag>
       
       <tag>AntiAliasing</tag>
       
