@@ -8,7 +8,7 @@
     <link href="/2025/03/01/CodeStyle/"/>
     <url>/2025/03/01/CodeStyle/</url>
     
-    <content type="html"><![CDATA[<h2 id="头文件">头文件</h2><ul><li>分四部分依次排列<ol><li>cpp 文件对应的头文件</li><li>自己的头文件</li><li>第三方库的头文件</li><li>标准库</li></ol></li><li>第三方库用 &lt;&gt; 自己的头文件用 “”</li><li>按字典序排序</li><li>清理不必要的头文件</li></ul><h2 id="大括号">大括号</h2><ul><li>不要省略单行代码的大括号</li><li>命名空间大括号向左缩进</li><li>命名空间右大括号后跟注释</li></ul><h2 id="命名规范">命名规范</h2><ul><li>成员函数首字母大写</li><li>成员变量 - <code>m_</code></li><li>指针 - <code>p_</code></li><li>静态变量 - <code>s_</code></li><li>常量 - 全大写</li><li>数组等容器中的元素数量 - <code>number</code></li><li>累计值 - <code>count</code></li><li>字节数 - <code>size</code></li><li>字符串长度 - <code>length</code></li></ul><h2 id="注释">注释</h2><ul><li><code>//</code> 前后加空格</li><li>多行注释每行开头加 <code>*</code></li><li>首字母大写</li><li>除非是长篇的描述，否则不加句号</li><li>does not instead of doesn’t</li><li>公式之类非英文的部分用 `` 括起来</li><li><code>// TODO: Do something</code></li></ul><h2 id="其他">其他</h2><ul><li>使用 <code>int16_t</code> 而非 <code>short</code>，使用 <code>uint32_t</code> 而非 <code>unsigned int</code></li><li>前向声明</li><li>final</li><li>成员可访问级别</li><li>三五法则</li><li>提供参数为右值的重载函数，传值就完事了，实现内再 move</li><li>将参数作为索引时用 const T&amp;，当 sizeof(T) &lt; 8 时不用 &amp;</li><li>用 const 修饰 this 指针</li><li>用 string_view 代替 string</li><li>尽量用 assert 代替 if check log，C++ 最好的错误检查就是崩在一个合理的地方</li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="头文件">头文件</h2><ul><li>分四部分依次排列<ol><li>cpp 文件对应的头文件</li><li>自己的头文件</li><li>第三方库的头文件</li><li>标准库</li></ol></li><li>第三方库用 &lt;&gt; 自己的头文件用 “”</li><li>按字典序排序</li><li>清理不必要的头文件</li><li>C++ 便准库头文件不带扩展名，C 头文件带 .h，C++ 程序中尽量用 C++ 头文件</li></ul><h2 id="大括号">大括号</h2><ul><li>不要省略单行代码的大括号</li><li>命名空间大括号向左缩进</li><li>命名空间右大括号后跟注释</li></ul><h2 id="命名规范">命名规范</h2><ul><li>成员函数首字母大写</li><li>成员变量 - <code>m_</code></li><li>指针 - <code>p_</code></li><li>静态变量 - <code>s_</code></li><li>常量 - 全大写</li><li>数组等容器中的元素数量 - <code>number</code></li><li>累计值 - <code>count</code></li><li>字节数 - <code>size</code></li><li>字符串长度 - <code>length</code></li></ul><h2 id="注释">注释</h2><ul><li><code>//</code> 前后加空格</li><li>多行注释每行开头加 <code>*</code></li><li>首字母大写</li><li>除非是长篇的描述，否则不加句号</li><li>does not instead of doesn’t</li><li>公式之类非英文的部分用 `` 括起来</li><li><code>// TODO: Do something</code></li></ul><h2 id="其他">其他</h2><ul><li>使用 <code>int16_t</code> 而非 <code>short</code>，使用 <code>uint32_t</code> 而非 <code>unsigned int</code></li><li>前向声明</li><li>final</li><li>成员可访问级别</li><li>三五法则</li><li>提供参数为右值的重载函数，传值就完事了，实现内再 move</li><li>将参数作为索引时用 const T&amp;，当 sizeof(T) &lt; 8 时不用 &amp;</li><li>用 const 修饰 this 指针</li><li>用 string_view 代替 string</li><li>尽量用 assert 代替 if check log，C++ 最好的错误检查就是崩在一个合理的地方</li></ul>]]></content>
     
     
     
@@ -471,9 +471,9 @@
     
     <tags>
       
-      <tag>CPP</tag>
-      
       <tag>Rendering</tag>
+      
+      <tag>CPP</tag>
       
       <tag>Rasterization</tag>
       
