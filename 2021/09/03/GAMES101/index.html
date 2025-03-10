@@ -19,22 +19,21 @@
   <meta name="author" content="Hinageshi">
   <meta name="keywords" content="">
   
-    <meta name="description" content="渲染管线中的变换矩阵   在渲染管线的前期，光栅化之前，需要对顶点和相机的坐标进行标准化变换，然后进行视口变换进入屏幕坐标空间。 相机的定义 位置：e⃗\vec{e}e; 看向：g⃗\vec{g}g​; 上方：t⃗\vec{t}t; 我们规定相机位于 (0, 0, 0) ，看向 -Z，上方为 Y。 对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。 视锥体的定义  已知fovY和aspect可">
+    <meta name="description" content="渲染管线中的变换矩阵   在渲染管线的前期，光栅化之前，需要对顶点和相机的坐标进行标准化变换，然后进行视口变换进入屏幕坐标空间。 相机的定义 位置：e⃗\vec{e}e; 看向：g⃗\vec{g}g​; 上方：t⃗\vec{t}t; 我们规定相机位于 (0, 0, 0) ，看向 -Z，上方为 Y。 对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。 视锥体的定义  已知 fovY 和 aspe">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【Archive】GAMES101">
 <meta property="og:url" content="http://example.com/2021/09/03/GAMES101/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="渲染管线中的变换矩阵   在渲染管线的前期，光栅化之前，需要对顶点和相机的坐标进行标准化变换，然后进行视口变换进入屏幕坐标空间。 相机的定义 位置：e⃗\vec{e}e; 看向：g⃗\vec{g}g​; 上方：t⃗\vec{t}t; 我们规定相机位于 (0, 0, 0) ，看向 -Z，上方为 Y。 对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。 视锥体的定义  已知fovY和aspect可">
+<meta property="og:description" content="渲染管线中的变换矩阵   在渲染管线的前期，光栅化之前，需要对顶点和相机的坐标进行标准化变换，然后进行视口变换进入屏幕坐标空间。 相机的定义 位置：e⃗\vec{e}e; 看向：g⃗\vec{g}g​; 上方：t⃗\vec{t}t; 我们规定相机位于 (0, 0, 0) ，看向 -Z，上方为 Y。 对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。 视锥体的定义  已知 fovY 和 aspe">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/GAMES101/img.png">
 <meta property="article:published_time" content="2021-09-03T02:24:01.000Z">
-<meta property="article:modified_time" content="2024-07-17T10:10:39.876Z">
+<meta property="article:modified_time" content="2025-03-09T11:44:04.257Z">
 <meta property="article:author" content="Hinageshi">
-<meta property="article:tag" content="Math">
-<meta property="article:tag" content="Rendering">
-<meta property="article:tag" content="RayTracing">
 <meta property="article:tag" content="AntiAliasing">
+<meta property="article:tag" content="LinearAlgebra">
 <meta property="article:tag" content="Rasterization">
+<meta property="article:tag" content="RayTracing">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/GAMES101/img.png">
   
@@ -53,6 +52,8 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -331,7 +332,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2024-07-17T18:10:39+08:00
+                    本文最后更新于 2025-03-09T19:44:04+08:00
                   
                   
 
@@ -367,7 +368,7 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
 对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。</p>
 <h2 id="视锥体的定义">视锥体的定义</h2>
 <p><img src="/img/GAMES101/fru.png" srcset="/img/loading.gif" lazyload alt=""><br>
-已知fovY和aspect可得</p>
+已知 fovY 和 aspect 可得</p>
 <ul>
 <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>a</mi><mi>n</mi><mfrac><mrow><mi>f</mi><mi>o</mi><mi>v</mi><mi>Y</mi></mrow><mn>2</mn></mfrac><mo>=</mo><mfrac><mi>t</mi><mrow><mi mathvariant="normal">∣</mi><mi>n</mi><mi mathvariant="normal">∣</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">tan\frac{fovY}{2} = \frac{t}{|n|}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2772em;vertical-align:-0.345em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">an</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4461em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span><span class="mord mathnormal mtight" style="margin-right:0.22222em;">Y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3446em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8246em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">∣</span><span class="mord mathnormal mtight">n</span><span class="mord mtight">∣</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></li>
 <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>s</mi><mi>p</mi><mi>e</mi><mi>c</mi><mi>t</mi><mo>=</mo><mfrac><mi>r</mi><mi>t</mi></mfrac></mrow><annotation encoding="application/x-tex">aspect = \frac{r}{t}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">s</span><span class="mord mathnormal">p</span><span class="mord mathnormal">ec</span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0404em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6954em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></li>
@@ -606,7 +607,7 @@ l0,-1344c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
 <h4 id="Projection-2">Projection</h4>
 <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>M</mi><mrow><mi>P</mi><mi>r</mi><mi>o</mi><mi>j</mi><mi>e</mi><mi>c</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>=</mo><msub><mi>M</mi><mrow><mi>O</mi><mi>r</mi><mi>t</mi><mi>h</mi><mi>o</mi><mi>g</mi><mi>r</mi><mi>a</mi><mi>p</mi><mi>h</mi><mi>i</mi><mi>c</mi></mrow></msub><msub><mi>M</mi><mrow><mi>P</mi><mi>e</mi><mi>r</mi><mi>s</mi><mi>p</mi><mi>r</mi><mi>c</mi><mi>t</mi><mi>i</mi><mi>v</mi><mi>e</mi><mi>T</mi><mi>o</mi><mi>O</mi><mi>r</mi><mi>t</mi><mi>h</mi><mi>o</mi><mi>g</mi><mi>r</mi><mi>a</mi><mi>p</mi><mi>h</mi><mi>i</mi><mi>c</mi></mrow></msub></mrow><annotation encoding="application/x-tex">M_{Projection}=M_{Orthographic}M_{PersprctiveToOrthographic}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">P</span><span class="mord mathnormal mtight">ro</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mord mathnormal mtight">ec</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">O</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight">hi</span><span class="mord mathnormal mtight">c</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">P</span><span class="mord mathnormal mtight">ers</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight">rc</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">O</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight">hi</span><span class="mord mathnormal mtight">c</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></p>
 <h2 id="Viewport">Viewport</h2>
-<p>先将标准化设备坐标拉伸至与屏幕同等大小，再将其中心(0, 0)移至屏幕中心。保留z轴不变用于之后做深度检测。<br>
+<p>先将标准化设备坐标拉伸至与屏幕同等大小，再将其中心 (0, 0) 移至屏幕中心。保留 z 轴不变用于之后做深度检测。<br>
 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>M</mi><mrow><mi>v</mi><mi>i</mi><mi>e</mi><mi>w</mi><mi>p</mi><mi>o</mi><mi>r</mi><mi>t</mi></mrow></msub><mo>=</mo></mrow><annotation encoding="application/x-tex">M_{viewport}=</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">wp</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">or</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span></span></span></p>
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo fence="true">(</mo><mtable rowspacing="0.16em" columnalign="center center center center" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mfrac><mrow><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi></mrow><mn>2</mn></mfrac></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mfrac><mrow><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><mi>h</mi></mrow><mn>2</mn></mfrac></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mfrac><mrow><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow><mn>2</mn></mfrac></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mfrac><mrow><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow><mn>2</mn></mfrac></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable><mo fence="true">)</mo></mrow><annotation encoding="application/x-tex">  \begin{pmatrix}
   \frac{width}{2} &amp; 0 &amp; 0 &amp; \frac{width}{2} \\
@@ -631,7 +632,7 @@ c242.7,-294.7,395.3,-681.7,458,-1161c21.3,-164.7,33.3,-350.7,36,-558
 l0,-1344c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
 -470,-1265c-4.7,-6,-9.7,-11.7,-15,-17c-0.7,-0.7,-6.7,-1,-18,-1z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:2.15em;"><span></span></span></span></span></span></span></span></span></span></span></span></p>
 <h1>Super Sample Anti-Aliasing</h1>
-<p>  SSAA 作为一种暴力的超采样手段带来的性能开销是难以接受的，但作为反走样的入门仍然有学习一下的必要。</p>
+<p>  SSAA 作为一种暴力的超采样手段带来的性能开销是难以接受的，但作为反走样的入门仍然有学习的必要。</p>
 <h2 id="insideTriangle">insideTriangle</h2>
 <p><strong>判断两向量的左右关系</strong></p>
 <p>假设两向量 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>a</mi><mo>⃗</mo></mover></mrow><annotation encoding="application/x-tex">\vec{a}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.714em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.714em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">a</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2355em;"><span class="overlay" style="height:0.714em;width:0.471em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.471em" height="0.714em" style="width:0.471em" viewBox="0 0 471 714" preserveAspectRatio="xMinYMin"><path d="M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
@@ -671,7 +672,7 @@ c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></spa
 -7 1c-4.667 0-9.167-1.833-13.5-5.5S337 184 337 178c0-12.667 15.667-32.333 47-59
 H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
 c-16-25.333-24-45-24-59z"/></svg></span></span></span></span></span></span></span></span></span></span> 的左侧，反之亦然。</p>
-<p>那么对于三角形三点形成的顺\逆时针三条向量来说，若有一点同时位于三向量的同一侧，则该点位于三角形内部。</p>
+<p>那么对于三角形三点形成的顺 \ 逆时针三条向量来说，若有一点同时位于三向量的同一侧，则该点位于三角形内部。</p>
 <p>假设三角形三点 a、b、c 与点 p 在同一平面上。<br>
 三角形三点按顺序形成三条向量 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mrow><mi>a</mi><mi>b</mi></mrow><mo>⃗</mo></mover></mrow><annotation encoding="application/x-tex">\vec{ab}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9774em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9774em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">ab</span></span></span><span style="top:-3.2634em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2355em;"><span class="overlay" style="height:0.714em;width:0.471em;"><svg xmlns="http://www.w3.org/2000/svg" width="0.471em" height="0.714em" style="width:0.471em" viewBox="0 0 471 714" preserveAspectRatio="xMinYMin"><path d="M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
 3.333 2.667 6.667 9 10 19 6.667 24.667 20.333 43.667 41 57 7.333 4.667 11
@@ -972,15 +973,13 @@ G：当 i 或 o 几乎平行于表面时，微观下凹凸不平的表面会发�
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Math/" class="print-no-link">#Math</a>
-      
-        <a href="/tags/Rendering/" class="print-no-link">#Rendering</a>
-      
-        <a href="/tags/RayTracing/" class="print-no-link">#RayTracing</a>
-      
         <a href="/tags/AntiAliasing/" class="print-no-link">#AntiAliasing</a>
       
+        <a href="/tags/LinearAlgebra/" class="print-no-link">#LinearAlgebra</a>
+      
         <a href="/tags/Rasterization/" class="print-no-link">#Rasterization</a>
+      
+        <a href="/tags/RayTracing/" class="print-no-link">#RayTracing</a>
       
     </div>
   
@@ -1004,7 +1003,7 @@ G：当 i 或 o 几乎平行于表面时，微观下凹凸不平的表面会发�
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/08/29/Unity/" title="【Archive】背包，卡肉，镜头抖动，有限状态机">
+                      <a href="/2021/08/29/UnityGameplay/" title="【Archive】背包，卡肉，镜头抖动，有限状态机">
                         <span class="hidden-mobile">【Archive】背包，卡肉，镜头抖动，有限状态机</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
@@ -1089,6 +1088,11 @@ G：当 i 或 o 几乎平行于表面时，微观下凹凸不平的表面会发�
 
 
   
+
+
+  
+  
+
 
 
 

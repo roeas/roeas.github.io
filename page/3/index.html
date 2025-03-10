@@ -286,17 +286,11 @@
             
               <a href="/tags/GlobalIllumination/">#GlobalIllumination</a>
             
-              <a href="/tags/Math/">#Math</a>
-            
-              <a href="/tags/Rendering/">#Rendering</a>
+              <a href="/tags/RayTracing/">#RayTracing</a>
             
               <a href="/tags/GLSL/">#GLSL</a>
             
               <a href="/tags/JavaScript/">#JavaScript</a>
-            
-              <a href="/tags/RayTracing/">#RayTracing</a>
-            
-              <a href="/tags/Reflection/">#Reflection</a>
             
               <a href="/tags/Shadow/">#Shadow</a>
             
@@ -344,9 +338,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Math/">#Math</a>
-            
               <a href="/tags/PBR/">#PBR</a>
+            
+              <a href="/tags/Photometry/">#Photometry</a>
+            
+              <a href="/tags/Radiometry/">#Radiometry</a>
             
           </div>
         
@@ -374,7 +370,7 @@
       
       <a class="index-excerpt " href="/2021/09/03/GAMES101/" target="_self">
         <div>
-          渲染管线中的变换矩阵   在渲染管线的前期，光栅化之前，需要对顶点和相机的坐标进行标准化变换，然后进行视口变换进入屏幕坐标空间。 相机的定义 位置：e⃗\vec{e}e; 看向：g⃗\vec{g}g​; 上方：t⃗\vec{t}t; 我们规定相机位于 (0, 0, 0) ，看向 -Z，上方为 Y。 对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。 视锥体的定义  已知fovY和aspect可
+          渲染管线中的变换矩阵   在渲染管线的前期，光栅化之前，需要对顶点和相机的坐标进行标准化变换，然后进行视口变换进入屏幕坐标空间。 相机的定义 位置：e⃗\vec{e}e; 看向：g⃗\vec{g}g​; 上方：t⃗\vec{t}t; 我们规定相机位于 (0, 0, 0) ，看向 -Z，上方为 Y。 对相机和顶点应用同一个变换矩阵，他们的相对位置则不变。 视锥体的定义  已知 fovY 和 aspe
         </div>
       </a>
 
@@ -392,15 +388,13 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Math/">#Math</a>
-            
-              <a href="/tags/Rendering/">#Rendering</a>
-            
-              <a href="/tags/RayTracing/">#RayTracing</a>
-            
               <a href="/tags/AntiAliasing/">#AntiAliasing</a>
             
+              <a href="/tags/LinearAlgebra/">#LinearAlgebra</a>
+            
               <a href="/tags/Rasterization/">#Rasterization</a>
+            
+              <a href="/tags/RayTracing/">#RayTracing</a>
             
           </div>
         
@@ -412,7 +406,7 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/08/29/Unity/" target="_self">
+        <a href="/2021/08/29/UnityGameplay/" target="_self">
           <img src="/img/Unity/img.png" srcset="/img/loading.gif" lazyload alt="【Archive】背包，卡肉，镜头抖动，有限状态机">
         </a>
       </div>
@@ -420,13 +414,13 @@
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/08/29/Unity/" target="_self">
+        <a href="/2021/08/29/UnityGameplay/" target="_self">
           【Archive】背包，卡肉，镜头抖动，有限状态机
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/08/29/Unity/" target="_self">
+      <a class="index-excerpt " href="/2021/08/29/UnityGameplay/" target="_self">
         <div>
           背包系统   背包 GUI 的实现、ScriptableObject、数据的存储与读取。 层级结构   Bag 挂载 BagOnDrag 脚本 Grid 挂载 Grid Layout Group 组件，使其子物体（Slot）整齐地排放 Slot 挂载 Slot 脚本，更改其子物体（Item）以实现拖拽 Item 挂载 ItemOnDrag 脚本和 CanvasGroup 组件，以及作为 butto
         </div>
@@ -449,6 +443,8 @@
               <a href="/tags/AI/">#AI</a>
             
               <a href="/tags/C/">#C#</a>
+            
+              <a href="/tags/Gameplay/">#Gameplay</a>
             
               <a href="/tags/Unity/">#Unity</a>
             
@@ -478,7 +474,7 @@
       
       <a class="index-excerpt " href="/2021/08/19/SunnyLand/" target="_self">
         <div>
-          序言  使用 Unity 制作的 2D 平台跳跃游戏 压缩包大小：46MB 平台：Win 只有三关，根据游戏经验的不同，完整的游戏时长会在 10min-60min 之间 百度网盘 提取码: twwx 蓝奏云  一览   关于关卡设计              如果您还未进行过游戏，强烈建议体验过后再继续阅读，以免破坏您的游戏体验。            林田宏一曾提到过任天堂的关卡设计公式：介绍、
+          序言  使用 Unity 制作的 2D 平台跳跃游戏 压缩包大小：46MB 平台：Win 只有三关，根据游戏经验的不同，完整的游戏时长会在 10min - 60min 之间 百度网盘 提取码: twwx 蓝奏云  一览   设计 林田宏一曾提到过任天堂的关卡设计公式：介绍、练习、掌握、决战。我对此的理解是：  介绍  在安全的环境下向玩家介绍一个新机制。 练习与掌握  逐渐提高难度，尝试将新机制与
         </div>
       </a>
 
@@ -496,9 +492,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/C/">#C#</a>
+              <a href="/tags/Gameplay/">#Gameplay</a>
             
               <a href="/tags/Unity/">#Unity</a>
+            
+              <a href="/tags/GameDesign/">#GameDesign</a>
             
           </div>
         
@@ -526,7 +524,7 @@
       
       <a class="index-excerpt " href="/2021/08/12/MakeYourFirstGame/" target="_self">
         <div>
-          角色控制，包括移动与多段跳 朝向 1234float forward = Input.GetAxisRaw(&quot;Horizontal&quot;);// 返回-1,0,1if (forward != 0) &#123; transform.localScale = new Vector3(forward, 1, 1);&#125; 移动 1234567891011public float
+          角色控制，包括移动与多段跳 朝向 1234float forward = Input.GetAxisRaw(&quot;Horizontal&quot;);// 返回-1,0,1if (forward != 0) &#123;    transform.localScale = new Vector3(forward, 1, 1);&#125; 移动 1234567891011public flo
         </div>
       </a>
 
@@ -547,6 +545,8 @@
               <a href="/tags/AI/">#AI</a>
             
               <a href="/tags/C/">#C#</a>
+            
+              <a href="/tags/Gameplay/">#Gameplay</a>
             
               <a href="/tags/Unity/">#Unity</a>
             
@@ -594,13 +594,15 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
+              <a href="/tags/Gameplay/">#Gameplay</a>
+            
               <a href="/tags/Forge/">#Forge</a>
             
               <a href="/tags/Java/">#Java</a>
             
-              <a href="/tags/mod/">#mod</a>
-            
               <a href="/tags/Minecraft/">#Minecraft</a>
+            
+              <a href="/tags/Mod/">#Mod</a>
             
           </div>
         

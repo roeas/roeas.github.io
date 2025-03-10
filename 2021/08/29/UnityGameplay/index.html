@@ -22,16 +22,17 @@
     <meta name="description" content="背包系统   背包 GUI 的实现、ScriptableObject、数据的存储与读取。 层级结构   Bag 挂载 BagOnDrag 脚本 Grid 挂载 Grid Layout Group 组件，使其子物体（Slot）整齐地排放 Slot 挂载 Slot 脚本，更改其子物体（Item）以实现拖拽 Item 挂载 ItemOnDrag 脚本和 CanvasGroup 组件，以及作为 butto">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【Archive】背包，卡肉，镜头抖动，有限状态机">
-<meta property="og:url" content="http://example.com/2021/08/29/Unity/index.html">
+<meta property="og:url" content="http://example.com/2021/08/29/UnityGameplay/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="背包系统   背包 GUI 的实现、ScriptableObject、数据的存储与读取。 层级结构   Bag 挂载 BagOnDrag 脚本 Grid 挂载 Grid Layout Group 组件，使其子物体（Slot）整齐地排放 Slot 挂载 Slot 脚本，更改其子物体（Item）以实现拖拽 Item 挂载 ItemOnDrag 脚本和 CanvasGroup 组件，以及作为 butto">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/Unity/img.png">
 <meta property="article:published_time" content="2021-08-29T04:32:26.000Z">
-<meta property="article:modified_time" content="2024-07-13T10:20:01.969Z">
+<meta property="article:modified_time" content="2025-03-09T09:55:09.917Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="AI">
 <meta property="article:tag" content="C#">
+<meta property="article:tag" content="Gameplay">
 <meta property="article:tag" content="Unity">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/Unity/img.png">
@@ -329,7 +330,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2024-07-13T18:20:01+08:00
+                    本文最后更新于 2025-03-09T17:55:09+08:00
                   
                   
 
@@ -496,6 +497,8 @@ json 通过 JsonUtility.FromJsonOverwrite(json, so) 写入 Scriptable Object。<
       
         <a href="/tags/C/" class="print-no-link">#C#</a>
       
+        <a href="/tags/Gameplay/" class="print-no-link">#Gameplay</a>
+      
         <a href="/tags/Unity/" class="print-no-link">#Unity</a>
       
     </div>
@@ -544,7 +547,7 @@ json 通过 JsonUtility.FromJsonOverwrite(json, so) 写入 Scriptable Object。<
         var options = Object.assign(
           {"clientID":"Ov23liTZlMV07y94Bygg","clientSecret":"f4d03461ecfe4b034b4e121eda4b32bc86462a18","repo":"roeas.github.io","owner":"roeas","admin":"roeas","language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: '82ccbdf5793d29abf02f7fcf52bfcda9'
+            id: 'd1eb5e4a505d6e7e3c342f5a9c05860b'
           }
         )
         var gitalk = new Gitalk(options);
