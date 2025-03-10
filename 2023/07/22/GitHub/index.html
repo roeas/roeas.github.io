@@ -19,16 +19,16 @@
   <meta name="author" content="Hinageshi">
   <meta name="keywords" content="">
   
-    <meta name="description" content="序言   一些工作中常用的 git &#x2F; GitHub 概念整理。 License 如何为自己的 Github 项目选择开源许可证？ 分支与开发 对于正规一点的仓库，main branch 通常是受保护的，而我们的提交与推送都在单独的 branch 上进行。 查看分支  git branch 查看本地分支 git branch -r 查看远程分支 git branch -a 查看所有分支  注意：如">
+    <meta name="description" content="序言   一些工常用的 Git &#x2F; GitHub 概念整理。 License 如何为自己的 Github 项目选择开源许可证？ 分支与开发 对于正规一点的仓库，main branch 通常是受保护的，我们的提交与推送都在另外的 branch 上进行。 查看分支  git branch 查看本地分支 git branch -r 查看远程分支 git branch -a 查看所有分支 git bran">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GitHub 工作流">
 <meta property="og:url" content="http://example.com/2023/07/22/GitHub/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="序言   一些工作中常用的 git &#x2F; GitHub 概念整理。 License 如何为自己的 Github 项目选择开源许可证？ 分支与开发 对于正规一点的仓库，main branch 通常是受保护的，而我们的提交与推送都在单独的 branch 上进行。 查看分支  git branch 查看本地分支 git branch -r 查看远程分支 git branch -a 查看所有分支  注意：如">
+<meta property="og:description" content="序言   一些工常用的 Git &#x2F; GitHub 概念整理。 License 如何为自己的 Github 项目选择开源许可证？ 分支与开发 对于正规一点的仓库，main branch 通常是受保护的，我们的提交与推送都在另外的 branch 上进行。 查看分支  git branch 查看本地分支 git branch -r 查看远程分支 git branch -a 查看所有分支 git bran">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/GitHub/img.png">
 <meta property="article:published_time" content="2023-07-22T06:39:56.000Z">
-<meta property="article:modified_time" content="2024-07-17T10:13:11.697Z">
+<meta property="article:modified_time" content="2025-03-10T19:20:01.823Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="Engineering">
 <meta property="article:tag" content="Git">
@@ -252,7 +252,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.3k 字
+          3.1k 字
         
       </span>
     
@@ -263,7 +263,7 @@
         
         
         
-          28 分钟
+          26 分钟
         
       </span>
     
@@ -329,7 +329,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2024-07-17T18:13:11+08:00
+                    本文最后更新于 2025-03-11T03:20:01+08:00
                   
                   
 
@@ -340,59 +340,38 @@
               <div class="markdown-body">
                 
                 <h2 id="序言">序言</h2>
-<p>  一些工作中常用的 git / GitHub 概念整理。</p>
+<p>  一些工常用的 Git / GitHub 概念整理。</p>
 <h2 id="License">License</h2>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/51331026">如何为自己的 Github 项目选择开源许可证？</a></p>
 <h2 id="分支与开发">分支与开发</h2>
-<p>对于正规一点的仓库，main branch 通常是受保护的，而我们的提交与推送都在单独的 branch 上进行。</p>
+<p>对于正规一点的仓库，main branch 通常是受保护的，我们的提交与推送都在另外的 branch 上进行。</p>
 <h3 id="查看分支">查看分支</h3>
 <ul>
 <li><code>git branch</code> 查看本地分支</li>
 <li><code>git branch -r</code> 查看远程分支</li>
 <li><code>git branch -a</code> 查看所有分支</li>
+<li><code>git branch -vv</code> 查看本地与远程的对应关系</li>
 </ul>
-<p>注意：如果远程新建了 branch，在本地运行 <code>git remote update origin</code> 之前，新的 branch 是不会显示在 <code>git branch -r</code> 上的。顺便在任意 branch 上的 <code>git pull</code> 也能实现这一效果。</p>
 <h3 id="操作分支">操作分支</h3>
 <ul>
+<li><code>git checkout -b &lt;Name&gt;</code> 创建新的本地分支并 checkout</li>
 <li><code>git branch &lt;Name&gt;</code> 创建新的本地分支，不会 checkout</li>
-<li><code>git branch -m &lt;OldName&gt; &lt;NewName&gt;</code> 重命名本地分支</li>
-<li><code>git branch -d &lt;Name&gt;</code> 删除本地分支，不能删除当前分支</li>
+<li><code>git branch -d &lt;Name&gt;</code> 删除本地分支</li>
 <li><code>git branch -d -r &lt;Name&gt;</code> 删除远程分支</li>
 </ul>
-<h3 id="关联分支">关联分支</h3>
-<ul>
-<li><code>git branch --set-upstream-to=origin/&lt;RemoteName&gt; &lt;LocalName&gt;</code> 将本地分支与远程分支关联起来</li>
-<li><code>git push --set-upstream origin &lt;RemoteName&gt;</code> 在远程新建分支，并将当前分支与远程新分支关联并推送。</li>
-</ul>
-<p>当然最简单的命令是本地识别到远程新分支后直接：<br>
-<code>git checkout &lt;RemoteName&gt;</code><br>
-这个命令相当于<br>
-<code>git checkout -b &lt;LocalName&gt; origin/&lt;RemoteName&gt;</code><br>
-即在本地新建分支，并且切换过去，并且与远程分支建立联系。</p>
-<ul>
-<li><code>git branch -vv</code> 查看本地分支核远程的对应关系</li>
-</ul>
-<h3 id="其他">其他</h3>
+<p>也可以在网页上新建分支，本地直接 checkout 过去</p>
+<h3 id="PR">PR</h3>
 <ul>
 <li>当你的 branch 准备好之后，就可以在 github 上发起 Pull Request，通知仓库相关的开发者检查代码以及帮忙合并。<br>
 <img src="/img/GitHub/pr.png" srcset="/img/loading.gif" lazyload alt="Pull Request"></li>
-<li>add, rm, commit, push 之类的操作直接用 VS 的 <code>Git 更改</code> 视图，或者 <code>Git GUI</code> 就好，比命令方便得多。</li>
 <li>一般来说，除非很紧急的情况，请在获得 approve 和 review 之后再进行合并。</li>
 <li>选择 Sauash Merge 的方式将 pr 内多个 commit 合并为一个 commit 提交到 main 分支上。</li>
+<li>add, rm, commit, push 之类的操作直接用 VS 的 <code>Git 更改</code> 视图，或者 <code>Git GUI</code> 就行，比命令方便得多。</li>
 </ul>
 <h2 id="冲突与合并">冲突与合并</h2>
 <h3 id="冲突">冲突</h3>
-<p>在发起 pr 后，github 会自动帮你检查该分支是否与主分支有冲突。简单的冲突可以直接在网页端解决，也可以回到本地进行如下操作：</p>
-<ul>
-<li><code>git checkout main</code> 切换回主分支</li>
-<li><code>git pull</code> 拉取最新的主分支</li>
-<li>可以顺便确认一下主分支的编译与运行是否正常</li>
-<li><code>git checkout &lt;Name&gt;</code> 切换回冲突分支</li>
-<li><code>git merge main</code> 合并主分支与冲突分支</li>
-<li>进入 <code>Git 更改</code> 视图解决冲突</li>
-<li>提交与推送，查看 github</li>
-</ul>
-<p>VS 提供了非常直观的图形界面来帮助我们解决冲突，在不确定如何解决的情况下可以联系冲突文件的上一个开发者帮忙合并。</p>
+<p>在发起 pr 后，github 会自动帮你检查该分支是否与主分支有冲突。简单的冲突可以直接在网页端解决，也可以回到本地手动 merge。<br>
+VS 提供了非常直观的图形界面来帮助我们解决冲突，在不确定如何解决的情况下可以联系冲突文件的上一个开发者帮忙合并。</p>
 <h3 id="合并">合并</h3>
 <ul>
 <li>想在当前 branch 应用某个别的 branch 的修改？同样是将对应的 branch pull 下来，merge 即可。</li>
@@ -440,7 +419,7 @@
 在完成上一节之后，本地和远程其实处于一个冲突的状态，这时候只需要用<br>
 <code>git push --force</code><br>
 强制将远程的 log 同步成本地的状态。</p>
-<h3 id="PR">PR</h3>
+<h3 id="PR-2">PR</h3>
 <p>pr 已经 merge 了，怎么撤销？<br>
 在该 pr 的最下方的 merge 右侧找到 <code>Revert</code>，这个按钮会自动创建一个新的 branch 以及 pr，并且在其中将原 pr 内的所有修改反向操作。当然尽量不要出现这种不得不 Revert 的情况。<br>
 <img src="/img/GitHub/revert.png" srcset="/img/loading.gif" lazyload alt="Revert"></p>
@@ -467,7 +446,7 @@
 <li>而 <code>git submodule update --remote</code> 实际上相当于进入每一个子模块执行 <code>git pull</code>，即将 <code>本地的子仓库</code> 更新为 <code>远程的子仓库</code>。</li>
 <li>最后一步，如何更新 <code>远程主仓库中的子仓库</code> 版本呢？在 <code>本地主仓库中的子仓库</code> 版本与 <code>本地的子仓库</code> 不同时，在主仓库执行 commit 即可更新 <code>本地主仓库中的子仓库</code> 版本。在 <code>远程主仓库中的子仓库</code> 与 <code>本地主仓库中的子仓库</code> 版本不同时，在主仓库执行 push 即可更新 <code>远程主仓库中的子仓库</code> 版本。</li>
 </ul>
-<h4 id="其他-2">其他</h4>
+<h4 id="其他">其他</h4>
 <ul>
 <li>如果 <code>.gitmodules</code> 中的 url 有变或者新增，<code>git submodule update</code> 是无法将其更新的，保险起见，我们可以在每一次 update 子模块之前执行 <code>git submodule init</code>。</li>
 <li>只希望 <code>git submodule update --remote</code> 更新指定的子模块而非更新所有的子模块？使用 <code>git submodule update --remote &lt;Path&gt;</code> 指定子模块的路径即可。具体路径可以在 <code>.gitmodules</code> 文件中确认。</li>

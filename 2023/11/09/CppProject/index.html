@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CppProject/img.png">
 <meta property="article:published_time" content="2023-11-09T03:33:50.000Z">
-<meta property="article:modified_time" content="2025-03-09T11:42:40.001Z">
+<meta property="article:modified_time" content="2025-03-10T17:56:04.575Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta property="article:tag" content="Engineering">
@@ -251,7 +251,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          612 字
+          560 字
         
       </span>
     
@@ -262,7 +262,7 @@
         
         
         
-          6 分钟
+          5 分钟
         
       </span>
     
@@ -328,7 +328,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-03-09T19:42:40+08:00
+                    本文最后更新于 2025-03-11T01:56:04+08:00
                   
                   
 
@@ -354,10 +354,6 @@ Premake 笔记…</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-built_in">set</span>(CMAKE_MSVC_RUNTIME_LIBRARY <span class="hljs-string">&quot;MultiThreaded$&lt;$&lt;CONFIG:Debug&gt;:Debug&gt;&quot;</span>)<br></code></pre></td></tr></table></figure>
 <p><code>$&lt;$&lt;CONFIG:Debug&gt;:Debug&gt;</code> 为生成器表达式，意为“如果当前为 Debug，返回 Debug，否则返回空字符串”。<br>
 要放在 <code>project</code> 之前才会生效。</p>
-<p>在 3.15 以下的版本中要实现相同的功能需要类似于：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-built_in">set</span>(CompilerFlags<br>        CMAKE_CXX_FLAGS<br>        CMAKE_CXX_FLAGS_DEBUG<br>        CMAKE_CXX_FLAGS_RELEASE<br>        CMAKE_C_FLAGS<br>        CMAKE_C_FLAGS_DEBUG<br>        CMAKE_C_FLAGS_RELEASE<br>        )<br>foreach(CompilerFlag $&#123;CompilerFlags&#125;)<br>  <span class="hljs-built_in">string</span>(REPLACE <span class="hljs-string">&quot;/MD&quot;</span> <span class="hljs-string">&quot;/MT&quot;</span> $&#123;CompilerFlag&#125; <span class="hljs-string">&quot;$&#123;$&#123;CompilerFlag&#125;&#125;&quot;</span>)<br>endforeach()<br></code></pre></td></tr></table></figure>
-<p>详见：<br>
-<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/14172856/compile-with-mt-instead-of-md-using-cmake">Compile with /MT instead of /MD using CMake</a></p>
 <h3 id="参考">参考</h3>
 <p><a target="_blank" rel="noopener" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MSVC_RUNTIME_LIBRARY.html">CMAKE_MSVC_RUNTIME_LIBRARY</a><br>
 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/429849408">在 CMake 中设置 MSVC 运行库</a></p>
