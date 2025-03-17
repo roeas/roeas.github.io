@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CPP/img.png">
 <meta property="article:published_time" content="2024-05-02T09:54:23.000Z">
-<meta property="article:modified_time" content="2025-03-11T10:05:08.615Z">
+<meta property="article:modified_time" content="2025-03-17T13:27:52.043Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta name="twitter:card" content="summary_large_image">
@@ -327,7 +327,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-03-11T18:05:08+08:00
+                    本文最后更新于 2025-03-17T21:27:52+08:00
                   
                   
 
@@ -500,6 +500,7 @@
 但是实测不生效，可能是一个 bug<br>
 现在而言的话可以写：</p>
 <figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">filter</span> &#123; <span class="hljs-string">&quot;action:vs*&quot;</span> &#125;<br>	<span class="hljs-keyword">buildoptions</span> &#123; <span class="hljs-string">&quot;/Zc:preprocessor&quot;</span> &#125;<br><span class="hljs-keyword">filter</span> &#123;&#125;<br></code></pre></td></tr></table></figure>
+<p>更新：Premake 最新版本已经解决了这个 bug</p>
 <h2 id="std-weak-ptr">std::weak_ptr</h2>
 <ul>
 <li><code>lock()</code>，返回一个 <code>std::shared_ptr</code>，如果对象已被释放，则返回空的 <code>std::shared_ptr</code></li>
