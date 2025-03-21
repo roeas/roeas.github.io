@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CPP/img.png">
 <meta property="article:published_time" content="2024-05-02T09:54:23.000Z">
-<meta property="article:modified_time" content="2025-03-21T11:11:49.850Z">
+<meta property="article:modified_time" content="2025-03-21T11:13:04.229Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta name="twitter:card" content="summary_large_image">
@@ -327,7 +327,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-03-21T19:11:49+08:00
+                    本文最后更新于 2025-03-21T19:13:04+08:00
                   
                   
 
@@ -542,6 +542,8 @@
 <p>如何用 std::format 格式化自定义类型呢，提供对应的 std::formatter 特化即可<br>
 最简单的方式，根据你的类型继承不同的 std::formatter 特化：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">template</span>&lt;&gt;<br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">std</span>::formatter&lt;MyType&gt; : std::formatter&lt;<span class="hljs-type">int</span>&gt;<br>&#123;<br>    <span class="hljs-function"><span class="hljs-keyword">auto</span> <span class="hljs-title">format</span><span class="hljs-params">(<span class="hljs-type">const</span> MyType&amp; myType, std::format_context&amp; ctx)</span> <span class="hljs-type">const</span></span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">return</span> std::formatter&lt;<span class="hljs-type">int</span>&gt;::format(myType.<span class="hljs-built_in">Value</span>(), ctx);<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://www.modernescpp.com/index.php/formatting-user-defined-types-in-c20/">https://www.modernescpp.com/index.php/formatting-user-defined-types-in-c20/</a></p>
+
                 
               </div>
             
