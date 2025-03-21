@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/ThirdParty/img.png">
 <meta property="article:published_time" content="2023-10-14T07:25:12.000Z">
-<meta property="article:modified_time" content="2025-03-09T11:55:24.589Z">
+<meta property="article:modified_time" content="2025-03-21T20:29:20.563Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="Engineering">
 <meta property="article:tag" content="CMake">
@@ -338,7 +338,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-03-09T19:55:24+08:00
+                    本文最后更新于 2025-03-22T04:29:20+08:00
                   
                   
 
@@ -431,6 +431,8 @@ OpenGL 扩展库。</p>
 <h2 id="spdlog">spdlog</h2>
 <p><a target="_blank" rel="noopener" href="https://github.com/gabime/spdlog">https://github.com/gabime/spdlog</a><br>
 支持纯头文件 / 编译两种方式。</p>
+<h3 id="编译-2">编译</h3>
+<p>工程需要定义 <code>SPDLOG_COMPILED_LIB</code>，如果使用 <code>std::format</code>，还需要定义 <code>SPDLOG_USE_STD_FORMAT</code></p>
 <h3 id="fmt">fmt</h3>
 <p>最近 MSVC 将 <code>stdext::checked_array_iterator</code> 标记为了已弃用，fmt 用到了这个函数，而 spdlog 默认用到了 fmt。这里有几个解决方案：</p>
 <h4 id="1-屏蔽这个警告">1. 屏蔽这个警告</h4>
