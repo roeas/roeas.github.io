@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CodeStyle/img.png">
 <meta property="article:published_time" content="2025-03-01T13:30:47.000Z">
-<meta property="article:modified_time" content="2025-03-23T20:10:41.016Z">
+<meta property="article:modified_time" content="2025-03-27T04:40:19.853Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta property="article:tag" content="Engineering">
@@ -251,7 +251,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          654 字
+          682 字
         
       </span>
     
@@ -328,7 +328,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-03-24T04:10:41+08:00
+                    本文最后更新于 2025-03-27T12:40:19+08:00
                   
                   
 
@@ -362,7 +362,7 @@
 <li>成员变量 - <code>m_</code></li>
 <li>指针 - <code>p_</code></li>
 <li>local 静态变量 - <code>s_</code>，静态成员变量不加，因为 T::m_ 的用法足以说明该变量的类型</li>
-<li>编译期常量 - 全大写</li>
+<li>编译期常量 - 全大写，下划线连接</li>
 <li>缩写 - 全大写</li>
 <li>数组等容器中的元素数量 - <code>number(num)</code></li>
 <li>累计值 - <code>count(cnt)</code></li>
@@ -386,7 +386,7 @@
 <li>公式之类非英文的部分用 `` 括起来</li>
 <li>对函数、类型的引用以 # 开头</li>
 <li>命名空间右大括号后跟注释</li>
-<li><code>#else</code> 或 <code>#endif</code> 后跟注释</li>
+<li>较长的 <code>#else</code> 或 <code>#endif</code> 后跟注释</li>
 <li>单行死代码用 <code>//</code>，多行用 <code>#if 0</code></li>
 </ul>
 <h2 id="类型">类型</h2>
@@ -400,6 +400,7 @@
 </ul>
 <h2 id="类">类</h2>
 <ul>
+<li>考虑到内存对齐，成员变量应按大小降序排序</li>
 <li>final</li>
 <li>成员以 static、public、protected、private 排列</li>
 <li>三五法则</li>
