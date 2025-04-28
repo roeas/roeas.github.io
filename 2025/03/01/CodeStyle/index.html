@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CodeStyle/img.png">
 <meta property="article:published_time" content="2025-03-01T13:30:47.000Z">
-<meta property="article:modified_time" content="2025-04-26T11:50:14.191Z">
+<meta property="article:modified_time" content="2025-04-28T11:55:57.276Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta property="article:tag" content="Engineering">
@@ -328,7 +328,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-04-26T19:50:14+08:00
+                    本文最后更新于 2025-04-28T19:55:57+08:00
                   
                   
 
@@ -454,7 +454,7 @@
 <li>对于会产生动态内存分配的类型
 <ul>
 <li>提供普通参数，内部必须 move，由函数的调用者决定 copy 进函数还是 move 进函数</li>
-<li>禁止使用 std::string_view 和 std::span<T></li>
+<li>禁止使用 std::string_view 和 std::span</li>
 </ul>
 </li>
 <li>如果参数在函数内不存在赋值行为
@@ -462,7 +462,7 @@
 <li>const &amp;T</li>
 <li>很多时候我们只需要一个 char *，优先用 const char *</li>
 <li>如果同时需要 char * 和 size，可以用 std::string_view</li>
-<li>如果只需要 void * 和 size，可以用 std::span<T></li>
+<li>如果只需要 void * 和 size，可以用 std::span</li>
 </ul>
 </li>
 </ul>
