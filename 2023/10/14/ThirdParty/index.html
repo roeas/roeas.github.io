@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/ThirdParty/img.png">
 <meta property="article:published_time" content="2023-10-14T07:25:12.000Z">
-<meta property="article:modified_time" content="2025-03-23T20:53:13.155Z">
+<meta property="article:modified_time" content="2025-05-01T07:10:13.509Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="Engineering">
 <meta property="article:tag" content="CMake">
@@ -338,7 +338,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-03-24T04:53:13+08:00
+                    本文最后更新于 2025-05-01T15:10:13+08:00
                   
                   
 
@@ -383,17 +383,9 @@ ps:<br>
 </li>
 </ol>
 <h3 id="配置">配置</h3>
-<p><a target="_blank" rel="noopener" href="https://docs.opencv.org/4.x/db/d05/tutorial_config_reference.html">DOC</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.opencv.org/4.x/db/d05/tutorial_config_reference.html">文档</a></p>
 <ul>
-<li>
-<p>静态 / 动态：<code>BUILD_SHARED_LIBS</code></p>
-</li>
-<li>
-<p>运行时库：<code>BUILD_WITH_STATIC_CRT</code></p>
-</li>
-<li>
-<p>生成单个库文件：<code>BUILD_opencv_world</code></p>
-</li>
+<li>生成单个库文件：<code>BUILD_opencv_world</code></li>
 </ul>
 <h2 id="fswatch">fswatch</h2>
 <p><a target="_blank" rel="noopener" href="https://github.com/emcrisostomo/fswatch">https://github.com/emcrisostomo/fswatch</a><br>
@@ -434,7 +426,8 @@ OpenGL 扩展库。</p>
 <h3 id="编译-2">编译</h3>
 <p>工程需要定义 <code>SPDLOG_COMPILED_LIB</code>，如果使用 <code>std::format</code>，还需要定义 <code>SPDLOG_USE_STD_FORMAT</code></p>
 <h3 id="fmt">fmt</h3>
-<p>最近 MSVC 将 <code>stdext::checked_array_iterator</code> 标记为了已弃用，fmt 用到了这个函数，而 spdlog 默认用到了 fmt。这里有几个解决方案：</p>
+<p>最近 MSVC 将 <code>stdext::checked_array_iterator</code> 标记为了已弃用，fmt 用到了这个函数，而 spdlog 默认用到了 fmt。这里有几个解决方案：<br>
+更新：spdlog 已经更新了内部的 fmt，不再有这个问题了（2025）</p>
 <h4 id="1-屏蔽这个警告">1. 屏蔽这个警告</h4>
 <p>为项目设置 <code>_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING</code> 宏。</p>
 <h4 id="2-将-spdlog-更新至-v2-x">2. 将 spdlog 更新至 v2.x</h4>
@@ -453,7 +446,6 @@ spdlog 使用 <code>find_package</code> 查找 fmt，我们需要先生成 fmt�
 YAML 解析库</p>
 <h3 id="配置-2">配置</h3>
 <ul>
-<li>运行时库：<code>YAML_MSVC_SHARED_RT</code></li>
 <li>静态库需要的宏定义 <code>YAML_CPP_STATIC_DEFINE</code></li>
 </ul>
 <h2 id="shaderc">shaderc</h2>
@@ -463,11 +455,6 @@ YAML 解析库</p>
 <p>没有 Release，但是有 Tag，commit message 也有写 <code>Finalize Shaderc v2024.2</code> 之类的。</p>
 <h3 id="下载依赖-2">下载依赖</h3>
 <p>执行 python 脚本下载依赖 <code>/utils/git-sync-deps</code></p>
-<h3 id="配置-3">配置</h3>
-<ul>
-<li>静态 / 动态：<code>BUILD_SHARED_LIBS</code></li>
-<li>运行时库：<code>SHADERC_ENABLE_SHARED_CRT</code></li>
-</ul>
 <h3 id="链接">链接</h3>
 <p>包含了所有功能的静态库 build/libshaderc/libshaderc_combined.lib</p>
 <h2 id="SPIRV-Cross">SPIRV-Cross</h2>
@@ -475,32 +462,21 @@ YAML 解析库</p>
 <a target="_blank" rel="noopener" href="https://github.com/KhronosGroup/SPIRV-Cross">https://github.com/KhronosGroup/SPIRV-Cross</a></p>
 <h3 id="版本-2">版本</h3>
 <p>没有 Release，只有 Tag</p>
-<h3 id="配置-4">配置</h3>
-<ul>
-<li>静态 / 动态：<code>SPIRV_CROSS_SHARED</code>, <code>SPIRV_CROSS_STATIC</code></li>
-<li>运行时库：没有 Cmake 配置，只能改 CMakeLists</li>
-</ul>
 <h3 id="链接-2">链接</h3>
 <p><code>spirv-cross-core</code>, <code>spirv-cross-glsl</code>, <code>spirv-cross-hlsl</code>, <code>spirv-cross-msl</code></p>
 <h2 id="SDL">SDL</h2>
 <h3 id="动态库">动态库</h3>
 <p>官方推荐编译为动态库，实际上编译为静态库时需要手动链接几个依赖库，具体可以查看 CMake log。</p>
-<h3 id="SDL-config-h">SDL_config.h</h3>
-<p>SDL 会在 build 目录下生成不同配置的 SDL_config.h，我们需要在工程里包含这个路径：<code>\build\include-config-release\SDL2\SDL_config.h</code></p>
 <h3 id="sdltargets-cmake">sdltargets.cmake</h3>
 <p>最近在编译 SDL3，CI 突然挂了，一看是 cmake 找不到 <code>SDL/cmake/sdltargets.cmake</code> 这个文件，再一看这个文件是被 SDL 自己 ignore 的，就很抽象。<br>
+更新：提 issue 修了（2025/4）<br>
 调整完 ignore 之后 CI 又挂了，这次是编译器找不到 <code>&lt;gameinput.h&gt;</code> 这个头文件，应该是 Actions 的一个 bug：<a target="_blank" rel="noopener" href="https://github.com/actions/runner-images/issues/10980">https://github.com/actions/runner-images/issues/10980</a><br>
 解决方案是将 <code>runs-on: windows-latest</code> 改为 <code>runs-on: windows-2025</code>，因为 runner-images 迁移 latest 的过程是滞后的，而 <code>windows-latest</code> 实际指向的是 <code>windows-2022</code>（2025/3/24）。</p>
 <h2 id="Assimp">Assimp</h2>
-<h3 id="配置-5">配置</h3>
-<ul>
-<li>静态 / 动态：<code>BUILD_SHARED_LIBS</code></li>
-<li>运行时库：<code> USE_STATIC_CRT</code></li>
-</ul>
 <h3 id="config-h">config.h</h3>
-<p>assimp 会在 build 目录下生成 config.h，我们需要在工程里包含这个路径：<code>\build\include\assimp\config.h</code></p>
+<p>assimp 会在 build 目录下生成 config.h，我们需要在工程里包含这个路径：<code>/assimp/build/include</code></p>
 <h3 id="zlib">zlib</h3>
-<p>还需要手动链接 zlib，这个库会被默认编译至 <code>\build\contrib\zlib</code></p>
+<p>还需要手动链接 zlib，这个库会被默认编译至 <code>/assimp/build/contrib/zlib</code></p>
 
                 
               </div>
