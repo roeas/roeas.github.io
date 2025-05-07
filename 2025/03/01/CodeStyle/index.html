@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CodeStyle/img.png">
 <meta property="article:published_time" content="2025-03-01T13:30:47.000Z">
-<meta property="article:modified_time" content="2025-05-05T22:04:40.732Z">
+<meta property="article:modified_time" content="2025-05-07T17:06:15.421Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta property="article:tag" content="Engineering">
@@ -328,7 +328,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-05-06T06:04:40+08:00
+                    本文最后更新于 2025-05-08T01:06:15+08:00
                   
                   
 
@@ -453,7 +453,7 @@
 </li>
 <li>对于会产生动态内存分配的类型
 <ul>
-<li>提供普通参数，内部必须 move，由函数的调用者决定 copy 进函数还是 move 进函数</li>
+<li>提供普通参数，内部必须 move，由函数调用者决定 copy 进函数还是 move 进函数</li>
 <li>禁止用 <code>std::string_view</code> 参数构造 <code>std::string</code></li>
 <li>禁止用 <code>std::span</code> / <code>std::initializer_list</code> 参数构造 <code>std::vector</code></li>
 </ul>
@@ -475,8 +475,11 @@
 <li><code>std::fstream</code> 就算用 <code>std::string</code> 构造也只会将参数的 <code>.data()</code> 转发给接受 <code>char *</code> 的重载</li>
 <li><code>std::filesystem::path</code> 用 <code>char *</code> 构造则会在内部用 for 循环计算长度并构造 <code>std::string_view</code></li>
 <li>换个编译器实现说不定就不一样了，换个 C++ 版本说不定也不一样了</li>
-<li>Anyway：</li>
-<li>if 调用处一定只有 <code>char *</code>
+</ul>
+</li>
+<li>Anyway：
+<ul>
+<li>if 调用处一定只存在 <code>char *</code>
 <ul>
 <li>用 <code>const char *</code>，真要计算长度早晚逃不掉，不如少 copy 点东西</li>
 </ul>
@@ -496,7 +499,7 @@
 </ul>
 </li>
 <li>当然也可以拉几把倒全用 <code>std::string_view</code>，扣这么细很麻烦而且不一定有意义</li>
-<li>STL 只要提供一堆重载就行，我们调用者要考虑的可就多了（</li>
+<li>STL 只要提供一堆重载就行，我们调库的要考虑的可就多了（</li>
 </ul>
 </li>
 </ul>
