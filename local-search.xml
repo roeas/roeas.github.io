@@ -367,11 +367,11 @@
     
     <tags>
       
-      <tag>Assimp</tag>
-      
       <tag>CPP</tag>
       
       <tag>Engineering</tag>
+      
+      <tag>Assimp</tag>
       
     </tags>
     
@@ -526,13 +526,13 @@
     
     <tags>
       
-      <tag>AntiAliasing</tag>
-      
       <tag>LinearAlgebra</tag>
       
-      <tag>Rasterization</tag>
-      
       <tag>RayTracing</tag>
+      
+      <tag>AntiAliasing</tag>
+      
+      <tag>Rasterization</tag>
       
     </tags>
     
