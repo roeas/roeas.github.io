@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CPP/img.png">
 <meta property="article:published_time" content="2024-05-02T09:54:23.000Z">
-<meta property="article:modified_time" content="2025-04-04T07:26:54.220Z">
+<meta property="article:modified_time" content="2025-05-11T21:40:45.502Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta name="twitter:card" content="summary_large_image">
@@ -327,7 +327,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-04-04T15:26:54+08:00
+                    本文最后更新于 2025-05-12T05:40:45+08:00
                   
                   
 
@@ -387,7 +387,7 @@
 <code>inline static</code> 成员变量的定义处自然是头文件，故此时会编译失败。将静态成员变量的定义分离至 cpp（总之是有类完整定义的地方）内才能编译。</p>
 <h2 id="decltype-auto">decltype(auto)</h2>
 <p>在完美转发返回值时尤为有用</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">class</span> F, <span class="hljs-keyword">class</span>... Args&gt;</span><br><span class="hljs-function"><span class="hljs-keyword">decltype</span>(<span class="hljs-keyword">auto</span>) <span class="hljs-title">PerfectForward</span><span class="hljs-params">(F fun, Args&amp;&amp;... args)</span></span><br><span class="hljs-function"></span>&#123; <br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">fun</span>(std::forward&lt;Args&gt;(args)...);<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">class</span> F, <span class="hljs-keyword">class</span> ...Args&gt;</span><br><span class="hljs-function"><span class="hljs-keyword">decltype</span>(<span class="hljs-keyword">auto</span>) <span class="hljs-title">PerfectForward</span><span class="hljs-params">(F fun, Args &amp;&amp;...args)</span></span><br><span class="hljs-function"></span>&#123; <br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">fun</span>(std::forward&lt;Args&gt;(args)...);<br>&#125;<br></code></pre></td></tr></table></figure>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp">    <span class="hljs-keyword">auto</span> c0 = a;             <span class="hljs-comment">// c0 的类型是 int，保有 a 的副本</span><br>    <span class="hljs-keyword">decltype</span>(<span class="hljs-keyword">auto</span>) c1 = a;   <span class="hljs-comment">// c1 的类型是 int，保有 a 的副本</span><br>    <span class="hljs-keyword">auto</span> c2 = (a);           <span class="hljs-comment">// c2 的类型是 int，保有 a 的副本</span><br>    <span class="hljs-keyword">decltype</span>(<span class="hljs-keyword">auto</span>) c3 = (a); <span class="hljs-comment">// c3 的类型是 int&amp;，它是 a 的别名</span><br>    <br>    <span class="hljs-keyword">auto</span> d = &#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>&#125;; <span class="hljs-comment">// OK：d 的类型是 std::initializer_list&lt;int&gt;</span><br>    <span class="hljs-keyword">auto</span> n = &#123;<span class="hljs-number">5</span>&#125;;    <span class="hljs-comment">// OK：n 的类型是 std::initializer_list&lt;int&gt;</span><br><span class="hljs-comment">//  auto e&#123;1, 2&#125;;    // C++17 起错误，之前是 std::initializer_list&lt;int&gt;</span><br>    <span class="hljs-keyword">auto</span> m&#123;<span class="hljs-number">5</span>&#125;;       <span class="hljs-comment">// OK：DR N3922 起 m 的类型是 int，之前是 initializer_list&lt;int&gt;</span><br><span class="hljs-comment">//  decltype(auto) z = &#123; 1, 2 &#125; // 错误：&#123;1, 2&#125; 不是表达式</span><br></code></pre></td></tr></table></figure>
 <h2 id="简写函数模板">简写函数模板</h2>
 <p>在 C++20 中，auto 能推导出作为参数的函数对象，也能推导出可变长参数<br>
