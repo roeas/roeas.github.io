@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CodeStyle/img.png">
 <meta property="article:published_time" content="2025-03-01T13:30:47.000Z">
-<meta property="article:modified_time" content="2025-05-14T08:54:20.763Z">
+<meta property="article:modified_time" content="2025-05-14T12:29:00.804Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta property="article:tag" content="Engineering">
@@ -328,7 +328,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-05-14T16:54:20+08:00
+                    本文最后更新于 2025-05-14T20:29:00+08:00
                   
                   
 
@@ -519,9 +519,9 @@
 <p>怎么处理编译期可确定的映射关系</p>
 <ul>
 <li>constexpr array（键为或者能够转换为非重复的整数下标）</li>
-<li>consteval 函数 / Lambda 里的 switch-case</li>
+<li>constexpr / consteval 函数 / Lambda 里的 switch-case</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> Lambda = []() <span class="hljs-keyword">consteval</span><br>&#123;<br>  <span class="hljs-comment">//...</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> Lambda = []() <span class="hljs-keyword">constexpr</span><br>&#123;<br>  <span class="hljs-comment">//...</span><br>&#125;;<br></code></pre></td></tr></table></figure>
 </li>
 </ul>
 
