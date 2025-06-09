@@ -29,7 +29,7 @@
     <link href="/2024/10/06/Blog/"/>
     <url>/2024/10/06/Blog/</url>
     
-    <content type="html"><![CDATA[<h1>博客</h1><p><a href="https://t-rvw.github.io/blog/">CatDogEngine</a><br><a href="https://technology.riotgames.com/tags/rendering">RiotGames</a><br><a href="https://sebh.github.io/publications/">Sébastien Hillaire’s website</a><br><a href="http://evasion.inrialpes.fr/~Eric.Bruneton/">Eric Bruneton</a><br><a href="https://www.scratchapixel.com/index.php?redirect">Scratchapixel</a><br><a href="http://walkingfat.com/">WalkingFat</a><br><a href="https://www.qiujiawei.com/">Wyman 的原创技术博客</a><br><a href="https://iquilezles.org/">Inigo Quilez</a><br><a href="http://kevinbeason.com/">Kevin Beason</a><br><a href="http://candycat1992.github.io/">Candycat Blog</a><br><a href="https://wickedengine.net/">Wicked Engine Net</a><br><a href="https://www.cnblogs.com/miloyip/">Milo 的游戏开发</a><br><a href="http://blog.hakugyokurou.net/">白玉楼之梦 - szszss’ blog</a><br><a href="https://blog.selfshadow.com/">Self Shadow</a><br><a href="https://www.cnblogs.com/ghl_carmack/">风恋残雪</a><br><a href="https://qiankanglai.me/">Loading &amp; Learning</a><br><a href="https://baddogzz.github.io/">恶毒的狗</a><br><a href="https://www.cnblogs.com/X-Jun/">X_Jun</a><br><a href="http://www.cppblog.com/Leaf/">麒麟子</a><br><a href="http://www.klayge.org/">KlayGE 游戏引擎</a><br><a href="https://imgeself.github.io/">Dear World,</a><br><a href="https://zhuanlan.zhihu.com/p/36675543">虚幻 4 渲染编程专题概述及目录</a><br><a href="https://blog.codingnow.com/">云风的 BLOG</a><br><a href="https://placeholderart.wordpress.com/">Placeholder Art</a><br><a href="https://knarkowicz.wordpress.com/">Krzysztof Narkowicz</a><br><a href="https://technology.riotgames.com/">RIOT GAMMES TECHBLOG</a><br><a href="https://agraphicsguynotes.com/">A GRAPHICS GUY’S NOTE</a><br><a href="https://kesen.realtimerendering.com/">Ke-Sen Huang’s Home Page</a><br><a href="https://www.o3de.org/community/">O3DE Community</a><br><a href="https://www.cnblogs.com/KillerAery/">KillerAery</a><br><a href="https://neil3d.gitee.io/reading/index.html">游戏程序员的自我修养</a></p>]]></content>
+    <content type="html"><![CDATA[<h1>博客</h1><p><a href="https://t-rvw.github.io/blog/">CatDogEngine</a><br><a href="https://technology.riotgames.com/tags/rendering">RiotGames</a><br><a href="https://sebh.github.io/publications/">Sébastien Hillaire’s website</a><br><a href="http://evasion.inrialpes.fr/~Eric.Bruneton/">Eric Bruneton</a><br><a href="https://www.scratchapixel.com/index.php?redirect">Scratchapixel</a><br><a href="http://walkingfat.com/">WalkingFat</a><br><a href="https://www.qiujiawei.com/">Wyman 的原创技术博客</a><br><a href="https://iquilezles.org/">Inigo Quilez</a><br><a href="http://kevinbeason.com/">Kevin Beason</a><br><a href="http://candycat1992.github.io/">Candycat Blog</a><br><a href="https://wickedengine.net/">Wicked Engine Net</a><br><a href="https://www.cnblogs.com/miloyip/">Milo 的游戏开发</a><br><a href="http://blog.hakugyokurou.net/">白玉楼之梦 - szszss’ blog</a><br><a href="https://blog.selfshadow.com/">Self Shadow</a><br><a href="https://www.cnblogs.com/ghl_carmack/">风恋残雪</a><br><a href="https://qiankanglai.me/">Loading &amp; Learning</a><br><a href="https://baddogzz.github.io/">恶毒的狗</a><br><a href="https://www.cnblogs.com/X-Jun/">X_Jun</a><br><a href="http://www.cppblog.com/Leaf/">麒麟子</a><br><a href="http://www.klayge.org/">KlayGE 游戏引擎</a><br><a href="https://imgeself.github.io/">Dear World,</a><br><a href="https://zhuanlan.zhihu.com/p/36675543">虚幻 4 渲染编程专题概述及目录</a><br><a href="https://blog.codingnow.com/">云风的 BLOG</a><br><a href="https://placeholderart.wordpress.com/">Placeholder Art</a><br><a href="https://knarkowicz.wordpress.com/">Krzysztof Narkowicz</a><br><a href="https://technology.riotgames.com/">RIOT GAMMES TECHBLOG</a><br><a href="https://agraphicsguynotes.com/">A GRAPHICS GUY’S NOTE</a><br><a href="https://kesen.realtimerendering.com/">Ke-Sen Huang’s Home Page</a><br><a href="https://www.o3de.org/community/">O3DE Community</a><br><a href="https://www.cnblogs.com/KillerAery/">KillerAery</a><br><a href="https://neil3d.gitee.io/reading/index.html">游戏程序员的自我修养</a><br><a href="http://www.klayge.org/">KlayGE 游戏引擎</a></p>]]></content>
     
     
     
@@ -221,11 +221,11 @@
     
     <tags>
       
-      <tag>CMake</tag>
-      
       <tag>CPP</tag>
       
       <tag>Engineering</tag>
+      
+      <tag>CMake</tag>
       
       <tag>MSBuild</tag>
       
@@ -248,9 +248,9 @@
     
     <tags>
       
-      <tag>CMake</tag>
-      
       <tag>Engineering</tag>
+      
+      <tag>CMake</tag>
       
       <tag>Eigen</tag>
       
@@ -346,11 +346,11 @@
     
     <tags>
       
+      <tag>Assimp</tag>
+      
       <tag>CPP</tag>
       
       <tag>Engineering</tag>
-      
-      <tag>Assimp</tag>
       
     </tags>
     
@@ -505,13 +505,13 @@
     
     <tags>
       
-      <tag>AntiAliasing</tag>
-      
       <tag>LinearAlgebra</tag>
       
-      <tag>Rasterization</tag>
-      
       <tag>RayTracing</tag>
+      
+      <tag>AntiAliasing</tag>
+      
+      <tag>Rasterization</tag>
       
     </tags>
     
