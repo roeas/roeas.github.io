@@ -505,13 +505,13 @@
     
     <tags>
       
-      <tag>LinearAlgebra</tag>
-      
-      <tag>RayTracing</tag>
-      
       <tag>AntiAliasing</tag>
       
+      <tag>LinearAlgebra</tag>
+      
       <tag>Rasterization</tag>
+      
+      <tag>RayTracing</tag>
       
     </tags>
     
