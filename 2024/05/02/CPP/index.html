@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/CPP/img.png">
 <meta property="article:published_time" content="2024-05-02T09:54:23.000Z">
-<meta property="article:modified_time" content="2025-05-11T21:40:45.502Z">
+<meta property="article:modified_time" content="2025-06-23T06:28:43.757Z">
 <meta property="article:author" content="Hinageshi">
 <meta property="article:tag" content="CPP">
 <meta name="twitter:card" content="summary_large_image">
@@ -250,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.3k 字
+          3.4k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
         
-          28 分钟
+          29 分钟
         
       </span>
     
@@ -327,7 +327,7 @@
               <p id="updated-time" class="note note-info" style="display: none">
                 
                   
-                    本文最后更新于 2025-05-12T05:40:45+08:00
+                    本文最后更新于 2025-06-23T14:28:43+08:00
                   
                   
 
@@ -558,6 +558,35 @@
 <li>first(count)</li>
 <li>last(count)</li>
 <li>subspan(offset, count)</li>
+</ul>
+<h2 id="折叠表达式">折叠表达式</h2>
+<p>对模板参数包中的元素进行二元运算，简化对参数包的递归展开。<br>
+左折叠（从左到右计算）右折叠（从右到左计算）：</p>
+<ul>
+<li>一元左折叠
+<ul>
+<li>( … op args )</li>
+<li>((arg1 op arg2) op arg3) op …</li>
+</ul>
+</li>
+<li>一元右折叠
+<ul>
+<li>( args op … )</li>
+<li>arg1 op (arg2 op (… op argN))</li>
+</ul>
+</li>
+<li>二元左折叠
+<ul>
+<li>( init op … op args )</li>
+<li>(((init op arg1) op arg2) op …)</li>
+</ul>
+</li>
+<li>二元右折叠
+<ul>
+<li>( args op … op init )</li>
+<li>(arg1 op (arg2 op (… op (argN op init))))</li>
+</ul>
+</li>
 </ul>
 
                 
